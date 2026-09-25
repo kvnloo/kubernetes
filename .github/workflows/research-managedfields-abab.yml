@@ -1,0 +1,40 @@
+name: ManagedFields bounded discovery
+on:
+  push:
+    branches:
+      - research/managedfields-abab-20260925
+    paths:
+      - .github/research/managedfields_abab.py
+      - .github/workflows/research-managedfields-abab.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: managedfields-abab-research
+  cancel-in-progress: false
+jobs:
+  discovery:
+    if: github.repository == 'kvnloo/kubernetes'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Check out research branch
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          fetch-depth: 8
+          persist-credentials: false
+      - name: Run 500 distinct source-pinned AST discovery checks
+        env:
+          GOTOOLCHAIN: local
+          GOWORK: 'off'
+        run: |
+          set -euo pipefail
+          python3 .github/research/managedfields_abab.py --repo "$GITHUB_WORKSPACE" --out "$RUNNER_TEMP/mf-audit" --limit 500
+      - name: Preserve evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: managedfields-abab-evidence
+          path: ${{ runner.temp }}/mf-audit/
+          if-no-files-found: error
+          retention-days: 7
