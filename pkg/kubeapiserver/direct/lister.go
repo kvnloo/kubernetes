@@ -62,6 +62,9 @@ func (l Lister[T]) List(selector labels.Selector) ([]T, error) {
 
 // ListWithContext lists all resources matching selector from the watch cache (RV=0) using ctx.
 func (l Lister[T]) ListWithContext(ctx context.Context, selector labels.Selector) ([]T, error) {
+	if labels.MatchesNothing(selector) {
+		return nil, nil
+	}
 	listOptions := metav1.ListOptions{
 		ResourceVersion: "0",
 	}
