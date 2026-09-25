@@ -1,0 +1,62 @@
+name: ManagedFields pinned package tests
+on:
+  push:
+    branches:
+      - research/managedfields-abab-20260925
+    paths:
+      - .github/workflows/research-managedfields-tests.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  package-tests:
+    if: github.repository == 'kvnloo/kubernetes'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        mode: [default, fieldsv1string]
+    steps:
+      - name: Check out exact upstream PR head
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          repository: Jefftree/kubernetes
+          ref: dff9a1db40999d73ed9e838b5c8d75d14c6528d5
+          persist-credentials: false
+      - name: Install project Go version
+        uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16
+        with:
+          go-version-file: .go-version
+          cache: false
+      - name: Run unchanged upstream package tests
+        env:
+          MODE: ${{ matrix.mode }}
+          GOTOOLCHAIN: local
+        run: |
+          set -euo pipefail
+          out="$RUNNER_TEMP/mf-tests"
+          mkdir -p "$out"
+          test "$(git rev-parse HEAD)" = dff9a1db40999d73ed9e838b5c8d75d14c6528d5
+          git status --porcelain > "$out/git-status.txt"
+          go version | tee "$out/go-version.txt"
+          tags=''
+          if [ "$MODE" = fieldsv1string ]; then tags=fieldsv1string; fi
+          set +e
+          go test -json -mod=vendor -p=2 -count=1 -tags "$tags" -timeout=6m \
+            k8s.io/apiserver/pkg/endpoints/handlers/fieldmanager \
+            k8s.io/apimachinery/pkg/apis/meta/v1/unstructured \
+            k8s.io/client-go/util/csaupgrade > "$out/tests.jsonl" 2>&1
+          status=$?
+          set -e
+          printf '%s\n' "$status" > "$out/exit-code.txt"
+          tail -n 60 "$out/tests.jsonl"
+          exit "$status"
+      - name: Preserve actual test logs
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: managedfields-package-tests-${{ matrix.mode }}
+          path: ${{ runner.temp }}/mf-tests/
+          if-no-files-found: warn
+          retention-days: 7
