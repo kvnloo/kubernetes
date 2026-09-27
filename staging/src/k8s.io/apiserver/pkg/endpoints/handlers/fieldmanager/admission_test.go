@@ -135,7 +135,7 @@ func TestAdmissionSkipsValidationWhenUnchanged(t *testing.T) {
 	}
 }
 
-func TestAdmissionUnchangedManagedFieldsRepresentation(t *testing.T) {
+// Research fixture for PR #142320: equivalent managedFields represented with fresh nested pointers.\nfunc TestAdmissionUnchangedManagedFieldsRepresentation(t *testing.T) {
 	fields := metav1.NewFieldsV1(`{"f:metadata":{"f:labels":{"f:test":{}}}}`)
 	entry := metav1.ManagedFieldsEntry{
 		APIVersion: "v1",
