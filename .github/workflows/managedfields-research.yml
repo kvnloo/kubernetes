@@ -19,16 +19,19 @@ jobs:
         with:
           go-version-file: go.mod
           cache: false
-      - name: Verify representation-gap regression test
+      - name: Verify managedFields admission tests
         run: |
           go test ./staging/src/k8s.io/apiserver/pkg/endpoints/handlers/fieldmanager \
-            -run '^TestAdmissionUnchangedManagedFieldsRepresentation$' \
+            -run '^TestAdmission' \
             -count=1 -v
-      - name: Benchmark current admission fast paths
+      - name: Verify alternate FieldsV1 representation
+        run: |
+          go test -tags=fieldsv1string ./staging/src/k8s.io/apiserver/pkg/endpoints/handlers/fieldmanager \
+            -run '^TestAdmission' \
+            -count=1 -v
+      - name: Benchmark admission fast paths
         run: |
           go test ./staging/src/k8s.io/apiserver/pkg/endpoints/handlers/fieldmanager \
             -run '^$' \
-            -bench '^BenchmarkAdmission/(unchanged|replaced|changed) \
-            -benchmem -count=3
- \
-            -benchmem -count=3
+            -bench '^BenchmarkAdmission/(unchanged|replaced|changed)$' \
+            -benchmem -count=5

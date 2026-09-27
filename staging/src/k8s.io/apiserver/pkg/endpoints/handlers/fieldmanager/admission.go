@@ -86,7 +86,6 @@ func (admit *managedFieldsValidatingAdmissionController) Admit(ctx context.Conte
 	return nil
 }
 
-
 func managedFieldsEqual(a, b []metav1.ManagedFieldsEntry) bool {
 	if len(a) != len(b) {
 		return false

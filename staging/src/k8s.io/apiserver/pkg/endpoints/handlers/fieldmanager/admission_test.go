@@ -176,6 +176,35 @@ func TestAdmissionSkipsValidationWhenUnchanged(t *testing.T) {
 	if got := run(t, unstructuredObj); got != 0 {
 		t.Fatalf("unstructured object: expected equivalent reconstructed managedFields to skip validation, got %d warning(s)", got)
 	}
+
+	t.Run("changed unstructured managedFields are still validated", func(t *testing.T) {
+		validEntry := entry
+		validEntry.Operation = metav1.ManagedFieldsOperationApply
+		obj := &unstructured.Unstructured{Object: map[string]interface{}{
+			"apiVersion": "v1",
+			"kind":       "ConfigMap",
+			"metadata": map[string]interface{}{
+				"name": "test",
+			},
+		}}
+		obj.SetManagedFields([]metav1.ManagedFieldsEntry{validEntry})
+
+		wrap := &mockAdmissionController{admit: replaceManagedFields(entry)}
+		ac := fieldmanager.NewManagedFieldsValidatingAdmissionController(wrap)
+		rec := &warningRecorder{}
+		ctx := warning.WithWarningRecorder(context.TODO(), rec)
+		attrs := admission.NewAttributesRecord(obj, obj, schema.GroupVersionKind{}, "default", "", schema.GroupVersionResource{}, "", admission.Update, nil, false, nil)
+		if err := ac.(admission.MutationInterface).Admit(ctx, attrs, nil); err != nil {
+			t.Fatal(err)
+		}
+		if len(rec.warnings) != 1 {
+			t.Fatalf("expected changed invalid managedFields to be validated, got %d warning(s)", len(rec.warnings))
+		}
+		got := obj.GetManagedFields()
+		if len(got) != 1 || got[0].Operation != metav1.ManagedFieldsOperationApply {
+			t.Fatalf("expected invalid managedFields mutation to be restored, got %#v", got)
+		}
+	})
 }
 
 func BenchmarkAdmission(b *testing.B) {
