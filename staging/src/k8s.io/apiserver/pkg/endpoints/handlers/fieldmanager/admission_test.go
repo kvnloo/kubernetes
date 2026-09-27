@@ -28,6 +28,8 @@ import (
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/meta"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
+	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apiserver/pkg/admission"
 	"k8s.io/apiserver/pkg/endpoints/handlers/fieldmanager"
@@ -130,6 +132,50 @@ func TestAdmissionSkipsValidationWhenUnchanged(t *testing.T) {
 	}
 	if len(rec.warnings) != 0 {
 		t.Errorf("managedFields were revalidated although admission did not change them: %v", rec.warnings)
+	}
+}
+
+
+func TestAdmissionUnchangedManagedFieldsRepresentation(t *testing.T) {
+	fields := metav1.NewFieldsV1(`{"f:metadata":{"f:labels":{"f:test":{}}}}`)
+	entry := metav1.ManagedFieldsEntry{
+		APIVersion: "v1",
+		Operation:  "invalid operation",
+		Manager:    "test",
+		FieldsType: "FieldsV1",
+		FieldsV1:   fields,
+	}
+
+	run := func(t *testing.T, obj runtime.Object) int {
+		t.Helper()
+		wrap := &mockAdmissionController{admit: func(context.Context, admission.Attributes, admission.ObjectInterfaces) error { return nil }}
+		ac := fieldmanager.NewManagedFieldsValidatingAdmissionController(wrap)
+		rec := &warningRecorder{}
+		ctx := warning.WithWarningRecorder(context.TODO(), rec)
+		attrs := admission.NewAttributesRecord(obj, obj, schema.GroupVersionKind{}, "default", "", schema.GroupVersionResource{}, "", admission.Update, nil, false, nil)
+		if err := ac.(admission.MutationInterface).Admit(ctx, attrs, nil); err != nil {
+			t.Fatal(err)
+		}
+		return len(rec.warnings)
+	}
+
+	typed := &v1.ConfigMap{}
+	typed.SetManagedFields([]metav1.ManagedFieldsEntry{entry})
+
+	unstructuredObj := &unstructured.Unstructured{Object: map[string]interface{}{
+		"apiVersion": "v1",
+		"kind":       "ConfigMap",
+		"metadata": map[string]interface{}{
+			"name": "test",
+		},
+	}}
+	unstructuredObj.SetManagedFields([]metav1.ManagedFieldsEntry{entry})
+
+	if got := run(t, typed); got != 0 {
+		t.Fatalf("typed object: expected unchanged managedFields to skip validation, got %d warning(s)", got)
+	}
+	if got := run(t, unstructuredObj); got != 1 {
+		t.Fatalf("unstructured object: expected reconstructed managedFields to miss the slices.Equal fast path and be revalidated, got %d warning(s)", got)
 	}
 }
 
