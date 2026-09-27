@@ -135,7 +135,6 @@ func TestAdmissionSkipsValidationWhenUnchanged(t *testing.T) {
 	}
 }
 
-
 func TestAdmissionUnchangedManagedFieldsRepresentation(t *testing.T) {
 	fields := metav1.NewFieldsV1(`{"f:metadata":{"f:labels":{"f:test":{}}}}`)
 	entry := metav1.ManagedFieldsEntry{
