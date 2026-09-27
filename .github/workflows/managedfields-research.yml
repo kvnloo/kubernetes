@@ -1,0 +1,32 @@
+name: managedFields research
+
+on:
+  push:
+    branches:
+      - research/pr-142320-content-equality
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: false
+      - name: Verify representation-gap regression test
+        run: |
+          go test ./staging/src/k8s.io/apiserver/pkg/endpoints/handlers/fieldmanager \
+            -run '^TestAdmissionUnchangedManagedFieldsRepresentation$' \
+            -count=1 -v
+      - name: Benchmark current admission fast paths
+        run: |
+          go test ./staging/src/k8s.io/apiserver/pkg/endpoints/handlers/fieldmanager \
+            -run '^$' \
+            -bench '^BenchmarkAdmission/(unchanged|replaced)$' \
+            -benchmem -count=3
