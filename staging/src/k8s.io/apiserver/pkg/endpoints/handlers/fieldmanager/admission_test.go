@@ -135,7 +135,7 @@ func TestAdmissionSkipsValidationWhenUnchanged(t *testing.T) {
 	}
 }
 
-// Research fixture for PR #142320: equivalent managedFields represented with fresh nested pointers.\nfunc TestAdmissionUnchangedManagedFieldsRepresentation(t *testing.T) {
+// Research fixture for PR #142320: equivalent managedFields represented with fresh nested pointers.\nfunc TestAdmissionSkipsValidationForEquivalentManagedFieldsRepresentations(t *testing.T) {
 	fields := metav1.NewFieldsV1(`{"f:metadata":{"f:labels":{"f:test":{}}}}`)
 	entry := metav1.ManagedFieldsEntry{
 		APIVersion: "v1",
@@ -173,8 +173,8 @@ func TestAdmissionSkipsValidationWhenUnchanged(t *testing.T) {
 	if got := run(t, typed); got != 0 {
 		t.Fatalf("typed object: expected unchanged managedFields to skip validation, got %d warning(s)", got)
 	}
-	if got := run(t, unstructuredObj); got != 1 {
-		t.Fatalf("unstructured object: expected reconstructed managedFields to miss the slices.Equal fast path and be revalidated, got %d warning(s)", got)
+	if got := run(t, unstructuredObj); got != 0 {
+		t.Fatalf("unstructured object: expected equivalent reconstructed managedFields to skip validation, got %d warning(s)", got)
 	}
 }
 
@@ -184,8 +184,12 @@ func BenchmarkAdmission(b *testing.B) {
 		b.Fatal(err)
 	}
 	entries := pod.ManagedFields
-	// Same content, distinct pointers, so the wrapper sees a change and decodes.
+	// Same content, distinct pointers. The content-equality fast path should avoid decoding these.
 	copied := pod.DeepCopy().ManagedFields
+	changedA := pod.DeepCopy().ManagedFields
+	changedA[0].Manager += "-a"
+	changedB := pod.DeepCopy().ManagedFields
+	changedB[0].Manager += "-b"
 
 	for _, tc := range []struct {
 		name  string
@@ -206,6 +210,21 @@ func BenchmarkAdmission(b *testing.B) {
 					objectMeta.SetManagedFields(copied)
 				} else {
 					objectMeta.SetManagedFields(entries)
+				}
+				return nil
+			},
+		},
+		{
+			name: "changed",
+			admit: func(ctx context.Context, a admission.Attributes, o admission.ObjectInterfaces) error {
+				objectMeta, err := meta.Accessor(a.GetObject())
+				if err != nil {
+					return err
+				}
+				if objectMeta.GetManagedFields()[0].Manager == changedA[0].Manager {
+					objectMeta.SetManagedFields(changedB)
+				} else {
+					objectMeta.SetManagedFields(changedA)
 				}
 				return nil
 			},

@@ -28,5 +28,7 @@ jobs:
         run: |
           go test ./staging/src/k8s.io/apiserver/pkg/endpoints/handlers/fieldmanager \
             -run '^$' \
-            -bench '^BenchmarkAdmission/(unchanged|replaced)$' \
+            -bench '^BenchmarkAdmission/(unchanged|replaced|changed) \
+            -benchmem -count=3
+ \
             -benchmem -count=3
