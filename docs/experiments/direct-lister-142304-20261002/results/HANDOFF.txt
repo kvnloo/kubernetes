@@ -7,7 +7,10 @@ Completed evidence publication: b61d417de18a0775fed2e4e4b4a305ebcf38c335
 Upstream PR head last checked: 5b10e94f39c7c5fdf4b07bf550525f9bdc2d07ed
 
 Start with RESULTS.txt, REPLICATION.json, INDEPENDENT_REVIEW.json and
-HOSTED_REVIEW.json. PREREG.json and EXECUTION_AMENDMENT_R2.json are in the
+HOSTED_REVIEW.json for completed evidence. For next steps, read
+NEXT_EXPERIMENTS.txt and NEXT_EXPERIMENTS.json: six prioritized designs with
+hypotheses, actual harnesses, controls, measurements and stop rules.
+PREREG.json and EXECUTION_AMENDMENT_R2.json are in the
 parent experiment directory. Runner/verifier code is there; Go probes are in
 pkg/kubeapiserver/direct. REPRODUCE.txt supplies exact replay instructions.
 
@@ -34,7 +37,10 @@ PR121979, current PR142304, issue142223 and Kubernetes architecture. They will
 have another model do broader deep research. Focus next work on falsifiable,
 executable experiments and decision criteria. No new experiment has been run
 or preregistered since the completed six-family packet. No upstream draft has
-been posted. Current architecture tracing/design is IN_PROGRESS.
+been posted. Experiment-focused tracing and the design catalog are COMPLETE.
+The catalog is DESIGN_ONLY / NOT_RUN / NOT_PREREGISTERED. Broader architectural
+research is pending the user's other model; this is not an exhaustive audit of
+Kubernetes or a claim that finite experiments establish future path fidelity.
 
 Discussion recontextualization established so far
 - The original opposition concerned maintaining a separate read path and
@@ -69,11 +75,16 @@ Candidate follow-ups (proposals; NOT_RUN; NOT_PREREGISTERED)
    call counts and cancellation/deadline outcomes; distinguish pre-sync cache
    results from post-sync contract comparisons.
 
-Next runner should locate existing storage/integration harnesses, register each
-experiment before running it, use smallest controls first, retain every attempt,
-and stop on evaluator failure or unresolved semantic mismatches. Do not use a
-finite component pass as a blanket production-safety or performance claim.
+Next runner should begin with N1's real cache/codec parity trial, then N6's
+bounded startup/version cases and N3's consumed-route qualification. Existing
+Pod REST helper uses UndecoratedStorage; Cacher helper waits until ready.
+CacheDelegator.Get delegates before cache readiness, whereas GetList behavior
+depends on options. Preserve these differences in the actual harness.
+Register each experiment before running, use smallest controls first, retain
+every attempt, and stop on evaluator failure or unresolved semantic mismatches.
+Do not use a finite component pass as a blanket production-safety or performance
+claim. Compatible etcd executable and exact fixture/gate budgets remain to qualify.
 
 Relevant snapshots are in DISCUSSION_SNAPSHOT.json. Source references are in
-SOURCE_REGISTER.json. The upcoming protocol catalog should retain separate
-source observations, predictions, measurements and NOT_RUN follow-ups.
+SOURCE_REGISTER.json. NEXT_EXPERIMENTS.json separates source observations,
+predictions, proposed measurements and NOT_RUN follow-ups.

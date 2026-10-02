@@ -1,0 +1,77 @@
+Next experiments: design handoff, not measured results
+======================================================
+
+Status: DESIGN_ONLY / NOT_RUN / NOT_PREREGISTERED.
+Tested source: 1f0afa8df5d7813706d0ca9fa64d0cb7857017ea
+Completed two-host evidence: b61d417de18a0775fed2e4e4b4a305ebcf38c335
+Full executable design: NEXT_EXPERIMENTS.json.
+Existing discussion snapshots: DISCUSSION_SNAPSHOT.json.
+
+Recommended next step: qualify one real Pod REST + CacheDelegator/Cacher +
+storage-codec comparison before adding more synthetic benchmark repetitions.
+The current copy and context experiments establish component boundaries.
+They do not establish codec/defaulting parity or net update-path savings.
+
+N1. Real storage differential (first)
+Use a root-repository integration test sharing one isolated etcd prefix between
+the direct path and normal loopback client/informer. Compare exact UID/RV
+snapshots, ordinary Get/List results and supported omitted-default fixtures.
+Record raw fields separately from the known GVK/managedFields differences.
+Never normalize away spec/status defaults. Confirm actual cache/backend calls.
+
+Critical harness traps: the existing Pod REST newStorage helper uses
+UndecoratedStorage, so it does not exercise Cacher. The staging Cacher helper
+waits for initialization, so it does not exercise startup. Staging tests cannot
+import the root direct package; cross-path integration belongs in root tests.
+REST Get is not itself an explicit defaulting hook; trace and record the codec.
+
+N2. Fair transform/copy allocation attribution
+Compare cached-trimmed/direct-output-trimmed and cached-retained/direct-retained
+as separate equal-output groups. Use current managedFields sizes and warm
+read shapes. Qualify exact values and source ownership before measuring.
+Trimming after conversion may restore representation but still pay copy costs.
+This distinguishes a representation mismatch from a conversion-cost mechanism.
+
+N3. Production consumer routes and readiness
+Exercise the actual initialization/adapters, with Pod List/Watch, direct read,
+fallback and handler-sync receipts. Keep namespace, device-class and other
+prerequisite informers alive. Verify a bounded update reaches any required Pod
+event handler. The stage-1 node graph still consumes Pod events; this is an
+explicit stage boundary. Do not infer informer elimination from lister-only
+factory tests. PSA adapter context handling must be measured at its used route.
+
+N4. Net resources under updates and reads
+Factor cached/direct lister x event consumer absent/present. Start update-only,
+then read-only, then fixed mixed successful operations. Measure allocation
+rate, retained heap under a fixed GC protocol, CPU/GC, propagation lag, actual
+watch/relist work and verified outcomes. Follow with isolated server trials.
+This tests the issue's update-propagation motivation. Do not attribute its
+combined-optimization throughput result to direct listers.
+
+N5. Bounded recovery, refining the existing issue proposal
+First distinguish resumed watch from full relist using actual route/RV/status
+receipts. Then compare A1/B/A2 with a small registered perturbation and a
+no-perturbation control. Measure allocation peak/area and recovery, preserving
+feature gates and WatchList negotiation. The issue already proposed this
+shape; the new value is mechanism attribution and calibrated stop rules.
+
+N6. Startup, freshness and benign fallback
+Own construction for pre-ready tests. Separate pre-registration, cache-ready
+and informer-synced stages, then create/update/delete/recreate benign Pods with
+identity/version barriers. Count token getter object-read fallback calls only.
+CacheDelegator.Get falls back to storage before cache readiness; GetList is
+option-dependent and can instead reach Cacher's not-ready error. Do not predict
+all startup outcomes from Cacher alone. Compare synchronized results only
+after the declared barrier; report permitted earlier staleness separately.
+
+Execution discipline
+Commit actual harness, exact fixtures, feature gates, budgets, masks and
+thresholds before running. Calibrate route counters and independent oracles
+with positive and known-mismatch controls. Preserve every attempt. Resource
+trials follow correctness gates, use fresh processes and balanced ordering.
+An unobserved intended route/perturbation is BLOCKED, never a green result.
+Replicate and independently verify before recommending broader claims.
+No new experiment results are asserted by this catalog.
+
+Recommended order: N1 -> N6 -> N3 -> N2 -> N4 -> N5.
+Broader research and architectural direction are pending the user's other model.

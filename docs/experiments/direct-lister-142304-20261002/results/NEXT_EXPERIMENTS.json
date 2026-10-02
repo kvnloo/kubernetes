@@ -1,0 +1,240 @@
+{
+  "format_version": 1,
+  "status": "DESIGN_ONLY_NOT_RUN_NOT_PREREGISTERED",
+  "designed_at_utc": "2026-10-02",
+  "tested_source": "1f0afa8df5d7813706d0ca9fa64d0cb7857017ea",
+  "completed_evidence_commit": "b61d417de18a0775fed2e4e4b4a305ebcf38c335",
+  "audit_handoff_commit": "19a5ac68edbf016ba0672303394e02c7273e08d8",
+  "scope": "Executable follow-ups grounded in PR121979, PR142304 and issue142223; broader research belongs to the user's other model. No new measurements.",
+  "common_protocol": {
+    "preregistration": "Before execution, commit hypotheses, exact source/toolchain/feature gates, fixtures, route counters, masks, budgets, repetitions/order and decision thresholds. These proposals are not that frozen preregistration.",
+    "stages": [
+      "Qualify evaluator using positive and deliberately mismatched controls",
+      "Smallest structural trial",
+      "Correctness gate",
+      "Resource/performance trials only after correctness",
+      "Independent verifier and separate-host replay"
+    ],
+    "oracle": "Use independently obtained fixture identity and version; preserve raw outputs, strict diffs and path receipts. No sleeping as a synchronization oracle. Keep setup, measured phase and teardown receipts distinct.",
+    "ordering": "Resource comparisons use separate fresh processes, declared warmup, counterbalanced AB/BA or balanced factorial blocks; report distributions and per-host results.",
+    "attempt_accounting": "Retain every launch and failed calibration. Setup or evaluator failure means BLOCKED, not an implementation pass/fail.",
+    "decisions": {
+      "KEEP": "Registered contract and improvement threshold pass in the measured configuration",
+      "KILL": "Registered contract violation or registered harmful resource result",
+      "REVISE": "Mixed result or narrower mechanism suggests a revised, separately registered experiment",
+      "BLOCKED": "Unqualified evaluator, missing actual route, missing version barrier or missing dependency"
+    },
+    "limitations": "Finite fixtures support bounded claims, not future semantic fidelity. Functional local fixture tests only; no authentication/authorization bypass or token-decision probes."
+  },
+  "experiments": [
+    {
+      "id": "N1",
+      "priority": 1,
+      "title": "Real Pod REST / cache / codec differential",
+      "hypothesis": "Conversion and benign Get/List results agree on the same stored object version once both caches have observed it; any defaulting difference is explicitly exposed.",
+      "why": "Original PR questioned defaulting and future path drift. Completed copy tests use synthetic storage and do not establish real-cache provenance.",
+      "harness": [
+        "Root-repository integration test using real Pod REST storage and the cache decorator, with direct clients and a normal loopback client/informer on the same isolated etcd prefix",
+        "pkg/registry/core/pod/storage/storage_test.go:newStorage is a starting point, but its UndecoratedStorage must be replaced for this experiment",
+        "staging/src/k8s.io/apiserver/pkg/storage/cacher/cacher_test.go:testSetupWithEtcdServer shows Cacher plus CacheDelegator construction",
+        "test/integration/apiserver/watchcache_test.go and test/integration/framework supply real server/etcd patterns"
+      ],
+      "factors": [
+        "Get and List, namespace selector cases, managedFields absent/present",
+        "Normal supported Pod writes and separately registered codec-level stored fixtures with omitted defaultable fields",
+        "Exact UID/resourceVersion synchronized snapshots; no concurrent updates during comparison"
+      ],
+      "controls": [
+        "Normal fully specified fixture must agree",
+        "Known informer managedFields trimming must be detected by raw comparison",
+        "Counters prove cache-enabled construction and actual Get/List route; enabling a flag alone is insufficient"
+      ],
+      "observations": [
+        "Raw HTTP decoded, informer and direct values/errors",
+        "Separate GVK and managedFields diffs; never mask defaulted spec/status fields",
+        "Cache/backend call counts, storage codec, identity/version and feature-gate receipts",
+        "Source ownership snapshots at the conversion boundary and subsequent independent reads"
+      ],
+      "gate": "BLOCKED if paths or same-version barrier cannot be established. REVISE on unexplained representation/defaulting difference. Copy-preservation conclusions require a real cache-owned source oracle, not only a later fresh backend read.",
+      "caveats": [
+        "Generated lister RV=0 may allow older cache data; synchronized comparison is a correctness condition, not proof of stronger freshness",
+        "REST Store.Get is not an explicit defaulting hook; locate and record codec/defaulting boundaries instead of assuming REST performs defaulting",
+        "Do not import k8s.io/kubernetes direct package from staging; cross-path test belongs in root repository"
+      ]
+    },
+    {
+      "id": "N2",
+      "priority": 2,
+      "title": "Attribute managedFields and transform placement costs fairly",
+      "hypothesis": "Part of measured direct-read allocation follows retained managedFields; trimming after conversion restores output shape without necessarily eliminating conversion allocations.",
+      "why": "Current informer trims managedFields while direct retains it. Completed benchmark reports this mismatch; exact-output comparisons improve interpretation.",
+      "harness": [
+        "Existing pkg/kubeapiserver/direct/read_cost_benchmark_test.go, first as a mechanism probe",
+        "Promote only qualified variants to N1's real storage harness"
+      ],
+      "factors": [
+        "Cached trimmed vs direct output-trimmed",
+        "Cached retained vs direct retained",
+        "ManagedFields payload 0/4082/32748 bytes; Get/List and existing populations"
+      ],
+      "controls": [
+        "All measured arms pass exact returned-field parity within their declared group",
+        "Pre/post source snapshots prove trimming only owned results",
+        "Include direct retained/output-trimmed comparison to locate savings rather than claim an end-to-end gain"
+      ],
+      "observations": [
+        "Allocations/op, bytes/op, CPU/time, raw and parity receipts",
+        "Separate fixture setup/update costs from reads",
+        "Payload-size slope and heap profile attribution"
+      ],
+      "gate": "No throughput/resource conclusion from mismatched outputs. A source mutation fails correctness. Do not propose a source-mutating early trim optimization.",
+      "caveats": [
+        "Mechanism results remain component results until replayed through real cache",
+        "Output trimming after conversion may leave its deep-copy allocation cost"
+      ]
+    },
+    {
+      "id": "N3",
+      "priority": 2,
+      "title": "Production consumer route and readiness inventory",
+      "hypothesis": "Actual production wiring leaves at least the node graph's Pod event consumer active in stage 1; context-aware and contextless routes differ by adapter.",
+      "why": "Completed factory lifecycle test is narrower than all production consumer wiring. PR calls itself stage 1 of 2, so residual Pod watch is a boundary, not an unexpected author claim.",
+      "harness": [
+        "pkg/controlplane/apiserver/config.go and pkg/registry/core/rest/storage_core.go wiring",
+        "Production initialization/adapters for NodeRestriction, PSA, ResourceClaim quota, token getter, node graph event registration",
+        "Existing lifecycle_contract_test.go and context_route_test.go as evaluator controls"
+      ],
+      "factors": [
+        "Watch cache enabled/disabled",
+        "Consumer enabled/disabled with necessary dependent informers kept active",
+        "Pod lister reads only vs required Pod event consumer present"
+      ],
+      "controls": [
+        "Positive Pod event consumer demonstrably receives one bounded fixture update",
+        "No-consumer arm must have zero Pod List/Watch starts",
+        "Namespace/device-class/node and other resource readiness remain independently observed"
+      ],
+      "observations": [
+        "Actual Pod List/Watch, direct Get/List and fallback-client counts",
+        "PSA ListPods cancellation/deadline observed at its consumed adapter",
+        "Informer start, handler synchronization and stop receipts; record relevant gates"
+      ],
+      "gate": "BLOCKED if initialization prerequisites are changed to produce the desired route. Scope node graph checks to registration/lifecycle/event counts, not authorization outcomes.",
+      "caveats": [
+        "PSA namespace readiness is separate from Pod cache readiness",
+        "Fake reflector may fall back from WatchList; register actual negotiated route",
+        "Any adapter experiment needs the production-consumed method, not an otherwise unused context-aware extension"
+      ]
+    },
+    {
+      "id": "N4",
+      "priority": 3,
+      "title": "Net update/read resource experiment with residual event consumer",
+      "hypothesis": "Direct lister benefit depends on whether it eliminates informer update processing; with the event consumer retained it can add per-read conversion while much update work remains.",
+      "why": "Issue142223 motivates update/relist allocations. Warm read-only microbench cannot establish total-system savings.",
+      "harness": [
+        "Begin with real client-go informer plus qualified isolated cache-backed direct path from N1/N3",
+        "Then one isolated API server process per trial for end-to-end totals; state whether process totals include etcd and clients"
+      ],
+      "factors": [
+        "Lister cached/direct x Pod event consumer absent/present",
+        "Read-only, update-only, then mixed workload with fixed successful operation counts",
+        "Fixed object population and separately varied managedFields shape"
+      ],
+      "controls": [
+        "Exact read values and successful bounded update counts",
+        "Informer/event counts prove what actually disappeared",
+        "Update-only phase qualifies propagation and memory accounting; matched no-op receipt checks runner overhead"
+      ],
+      "observations": [
+        "Allocation bytes/second and per successful update/read",
+        "Retained heap after a declared GC protocol, CPU, GC pause and propagation lag",
+        "Total operation outcomes, watch/relist counts, goroutines and transport bytes",
+        "Phase times and setup/teardown separately"
+      ],
+      "gate": "Preregister improvement threshold and paired/factorial analysis before measurement. If a residual informer remains, report measured stage-1 net result rather than extrapolate stage-2 elimination.",
+      "caveats": [
+        "Do not attribute umbrella issue's combined optimization QPS result to direct listers",
+        "Physical fake watch injection establishes mechanism only; a real-server trial must measure transport/update path"
+      ]
+    },
+    {
+      "id": "N5",
+      "priority": 4,
+      "title": "Bounded watch recovery and A1/B/A2 refinement",
+      "hypothesis": "Removing redundant informer work changes relist/recovery costs only when that work actually exists; a short watch restart may resume without a full relist.",
+      "why": "Issue142223 already has A1/burst/A2 proposal, so this refines and isolates it rather than claims a new idea.",
+      "harness": [
+        "Qualified isolated server and event consumer from N3/N4",
+        "One controlled watch restart or bounded List error in a test transport; then a modest registered workload step"
+      ],
+      "factors": [
+        "Direct/cached with event consumer absent/present",
+        "Watch restart versus proven full relist",
+        "WatchList feature/negotiated-route factor when applicable"
+      ],
+      "controls": [
+        "Counters distinguish resumed watch from full List",
+        "No-event-consumer arm verifies absence of an informer recovery mechanism",
+        "A1 without perturbation establishes ordinary timing/resource variability"
+      ],
+      "observations": [
+        "Requested RV, actual List/Watch route/status, event gap and UID/RV catch-up barrier",
+        "A1/B/A2 latency/outcomes, allocation peak/area, GC/CPU and recovery duration",
+        "Explicit relist size, WatchList fallback and residual consumer counts"
+      ],
+      "gate": "Do not call an event a relist without receipts. Fix recovery tolerance, window and perturbation size before execution; evaluator failing to observe perturbation is BLOCKED.",
+      "caveats": [
+        "Use small bounded fixtures and isolated test processes; no load on third-party clusters",
+        "Original issue's proposed recovery within 10% is a proposal; threshold must be calibrated and preregistered, not selected after results"
+      ]
+    },
+    {
+      "id": "N6",
+      "priority": 2,
+      "title": "Startup, catch-up and benign error/fallback contracts",
+      "hypothesis": "Storage registration, cache readiness and informer synchronization produce distinct benign outcomes; exact fallback calls reveal extra reads hidden behind successful results.",
+      "why": "Warm synchronized tests hide startup and fallback paths. CacheDelegator Get and GetList have different unready behavior.",
+      "harness": [
+        "Own cache constructor for pre-ready trials: current Cacher test helper waits via cacher.Wait(ctx)",
+        "pkg/kubeapiserver/direct/factory.go / client.go and actual Pod REST/CacheDelegator",
+        "pkg/controller/serviceaccount/tokengetter.go:GetPod tested only as a benign object getter with counting client"
+      ],
+      "factors": [
+        "Before storage registration, before cache ready, after cache ready, after informer sync",
+        "Absent object; ordinary create/update/delete/recreate with UID/RV barriers",
+        "Live/cancelled/expired context on methods that actually accept it",
+        "Successful lister result versus benign NotFound/unready/error causing fallback"
+      ],
+      "controls": [
+        "Known object after synchronization must return registered identity",
+        "Explicit counters for cache/backend/live-client calls",
+        "Underlying storage readiness separately proved"
+      ],
+      "observations": [
+        "Error type/status and returned UID/RV",
+        "CacheDelegator and backend route, handler-ready state and bounded cancellation completion",
+        "Number and timing of lister and fallback-client calls"
+      ],
+      "gate": "Do not demand equality before synchronization where contracts permit staleness. Register acceptable outcomes per readiness stage. Exclude token validation/authorization decisions.",
+      "caveats": [
+        "CacheDelegator.Get with unready cache delegates to underlying storage even with RV0",
+        "GetList delegation depends on List options; otherwise Cacher readiness may yield TooManyRequests",
+        "Do not assume the startup outcome from Cacher alone describes its delegator"
+      ]
+    }
+  ],
+  "recommended_first_sequence": [
+    "N1 smallest real-cache parity/codec case",
+    "N6 bounded startup/version/fallback cases",
+    "N3 production route qualification",
+    "N2 fair-output cost attribution",
+    "N4 update-only then mixed net resources",
+    "N5 bounded recovery after counters qualify"
+  ],
+  "unresolved_dependencies": [
+    "Locate compatible etcd executable and record its hash/version before real-storage execution",
+    "Commit exact new harness and frozen preregistration before collecting new results",
+    "Broader architectural direction remains pending the user's other model"
+  ]
+}
