@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   mutation:
-    runs-on: macos-15
+    runs-on: ubuntu-latest
     timeout-minutes: 25
     steps:
       - uses: actions/checkout@v5
@@ -19,10 +19,7 @@ jobs:
         with:
           go-version-file: go.mod
           cache: false
-      - name: Run direct lister mutation regression
-        run: go test ./pkg/kubeapiserver/direct -run 'Test(StorageClientReturnedObjectsAreIsolated|UnsafeConversionAliasesSource)
-      - name: Benchmark conversion copy boundaries
-        run: go test ./pkg/kubeapiserver/direct -run '^$' -bench 'BenchmarkPod.*ConversionCopyBoundary' -benchmem -count=3
- -count=1 -v
+      - name: Run safe and unsafe conversion controls
+        run: go test ./pkg/kubeapiserver/direct -run 'Test(StorageClientReturnedObjectsAreIsolated|UnsafeConversionAliasesSource)$' -count=1 -v
       - name: Benchmark conversion copy boundaries
         run: go test ./pkg/kubeapiserver/direct -run '^$' -bench 'BenchmarkPod.*ConversionCopyBoundary' -benchmem -count=3
