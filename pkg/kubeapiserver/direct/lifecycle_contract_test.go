@@ -38,7 +38,7 @@ import (
 )
 
 type experimentLifecycleStorage struct {
-	gets atomic.Int64
+	gets  atomic.Int64
 	lists atomic.Int64
 }
 
@@ -61,8 +61,8 @@ func (s *experimentLifecycleStorage) List(context.Context, *metainternalversion.
 // reads when the event consumer and direct lister coexist.
 func TestExperimentInformerLifecycle(t *testing.T) {
 	for _, tc := range []struct {
-		name string
-		wrapped bool
+		name          string
+		wrapped       bool
 		eventConsumer bool
 	}{
 		{name: "direct-lister-only", wrapped: true},
@@ -102,7 +102,10 @@ func TestExperimentInformerLifecycle(t *testing.T) {
 				informer = podInformer.Informer()
 				if _, err := informer.AddEventHandler(cache.ResourceEventHandlerFuncs{AddFunc: func(obj interface{}) {
 					if pod, ok := obj.(*corev1.Pod); ok && pod.Namespace == "ns" && pod.Name == "pod" {
-						select { case eventSeen <- struct{}{}: default: }
+						select {
+						case eventSeen <- struct{}{}:
+						default:
+						}
 					}
 				}}); err != nil {
 					t.Fatal(err)
@@ -117,7 +120,11 @@ func TestExperimentInformerLifecycle(t *testing.T) {
 					t.Fatalf("sync map=%v, want one synced Pod informer", synced)
 				}
 				for _, ready := range []<-chan struct{}{watchStarted, eventSeen} {
-					select { case <-ready: case <-ctx.Done(): t.Fatal("informer watch or event consumer did not start") }
+					select {
+					case <-ready:
+					case <-ctx.Done():
+						t.Fatal("informer watch or event consumer did not start")
+					}
 				}
 				obj, exists, err := informer.GetIndexer().GetByKey("ns/pod")
 				if err != nil || !exists {
@@ -133,12 +140,18 @@ func TestExperimentInformerLifecycle(t *testing.T) {
 				t.Fatalf("lister-only started informer: sync=%v list/watch=%d/%d", synced, clientLists.Load(), clientWatches.Load())
 			}
 			pod, err := lister.Pods("ns").Get("pod")
-			if err != nil { t.Fatal(err) }
+			if err != nil {
+				t.Fatal(err)
+			}
 			pods, err := lister.Pods("ns").List(labels.Everything())
-			if err != nil || len(pods) != 1 { t.Fatalf("List len=%d err=%v", len(pods), err) }
+			if err != nil || len(pods) != 1 {
+				t.Fatalf("List len=%d err=%v", len(pods), err)
+			}
 			wantMarker := "informer-cache"
 			var wantReads int64
-			if tc.wrapped { wantMarker, wantReads = "direct-storage", 1 }
+			if tc.wrapped {
+				wantMarker, wantReads = "direct-storage", 1
+			}
 			if pod.Labels["experiment-route"] != wantMarker || pods[0].Labels["experiment-route"] != wantMarker {
 				t.Fatalf("Get/List did not use expected route %q", wantMarker)
 			}

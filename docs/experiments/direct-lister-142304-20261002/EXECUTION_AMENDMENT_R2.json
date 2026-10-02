@@ -1,0 +1,10 @@
+{
+  "revision": "r2",
+  "registered_before": "Any correctness or performance measurements of the expanded experiment",
+  "prior_attempt": {"run_id": 37041656658, "source_sha": "1b984e74596c1ff18ba506a4a57b47ef436b8079", "disposition": "BLOCKED", "cause": "Go 1.27 gofmt -d returns status 1 when formatting differs; runner treated the diagnostic as fatal", "reached": "Verifier calibration passed; formatting output preserved; compilation and all experimental tests/benchmarks NOT_RUN"},
+  "correction": "Apply gofmt to experiment Go source. No assertion, fixture, hypothesis, mask, selector, trial count, order, or decision-rule change.",
+  "execution_amendment": "After a roughly 18-minute hosted runner queue, network access enabled a local pinned checkout and verified Go 1.27.0 toolchain. Permit the local Linux amd64 execution environment as the r2 measurement platform; retain GitHub ubuntu-slim as a separate replication. Never pool timings across hosts. Record actual platform, source, binary, and toolchain hashes for both.",
+  "toolchain_archive": {"filename": "go1.27.0.linux-amd64.tar.gz", "sha256": "675c26c449cbb18fc24b74650de1eabbae6e16f64326fd85a283fb3b58280685", "verified_against": "https://go.dev/dl/?mode=json&include=all"},
+  "unchanged_preregistration": "PREREG.json at commit 41201cbc7a25a7512f454517fab0e1781ec4d4e7",
+  "limits": "Both environments remain component tests with synthetic Storage; no production or full HTTP/filter-chain claim. First attempt is retained, not overwritten. Compilation-only local shakedown does not execute tests."
+}

@@ -136,11 +136,11 @@ func BenchmarkDirectListerReadCost(b *testing.B) {
 }
 
 type readCostFixture struct {
-	cached             corev1listers.PodNamespaceLister
-	direct             corev1listers.PodNamespaceLister
-	storage            *readCostStorage
-	count              int
-	managedFieldsBytes int
+	cached                corev1listers.PodNamespaceLister
+	direct                corev1listers.PodNamespaceLister
+	storage               *readCostStorage
+	count                 int
+	managedFieldsBytes    int
 	expectedManagedFields []metav1.ManagedFieldsEntry
 }
 
@@ -177,11 +177,11 @@ func newReadCostFixture(t testing.TB, count, targetBytes int) readCostFixture {
 	}
 	storage := &readCostStorage{getObject: &list.Items[0], listObject: list}
 	return readCostFixture{
-		cached:             corev1listers.NewPodLister(indexer).Pods("ns"),
-		direct:             NewPodLister(mutationTestClient(storage)).Pods("ns"),
-		storage:            storage,
-		count:              count,
-		managedFieldsBytes: len(raw),
+		cached:                corev1listers.NewPodLister(indexer).Pods("ns"),
+		direct:                NewPodLister(mutationTestClient(storage)).Pods("ns"),
+		storage:               storage,
+		count:                 count,
+		managedFieldsBytes:    len(raw),
 		expectedManagedFields: list.Items[0].DeepCopy().ManagedFields,
 	}
 }
