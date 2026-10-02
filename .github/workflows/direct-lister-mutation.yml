@@ -20,6 +20,9 @@ jobs:
           go-version-file: go.mod
           cache: false
       - name: Run direct lister mutation regression
-        run: go test ./pkg/kubeapiserver/direct -run TestStorageClientReturnedObjectsAreIsolated -count=1 -v
+        run: go test ./pkg/kubeapiserver/direct -run 'Test(StorageClientReturnedObjectsAreIsolated|UnsafeConversionAliasesSource)
+      - name: Benchmark conversion copy boundaries
+        run: go test ./pkg/kubeapiserver/direct -run '^$' -bench 'BenchmarkPod.*ConversionCopyBoundary' -benchmem -count=3
+ -count=1 -v
       - name: Benchmark conversion copy boundaries
         run: go test ./pkg/kubeapiserver/direct -run '^$' -bench 'BenchmarkPod.*ConversionCopyBoundary' -benchmem -count=3
