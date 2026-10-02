@@ -1,0 +1,42 @@
+{
+  "experiment_id": "k8s-direct-lister-contract-142304-20261002-r1",
+  "status_at_registration": "source-informed hypotheses; new probes not compiled or executed",
+  "source_base": "b7af3931105444bf5f0c31fca8ee012a779906f9",
+  "upstream_head": "5b10e94f39c7c5fdf4b07bf550525f9bdc2d07ed",
+  "branch": "experiment/direct-lister-contract-142304-20261002",
+  "decision": "Which bounded factual claims merit adding to PR 142304? No merge, deployment, or automatic upstream posting.",
+  "method_sources": ["https://github.com/kvnloo/cua/blob/exp/r2-03-guarded-live-20261001/docs/experiments/r2-03-2026-10-01/PREREG.json", "https://github.com/kvnloo/cua/issues/93#issuecomment-5952087563", "https://github.com/kvnloo/hermes-agent/issues/341#issuecomment-5942127574"],
+  "prior_evidence": {"run": 37028173140, "sha": "b7af3931105444bf5f0c31fca8ee012a779906f9", "known": "named safe-copy and unsafe-alias control tests passed; conversion-only microbenchmarks ran", "not_established": ["live cache isolation", "whole-system performance benefit", "full HTTP/storage semantic parity"]},
+  "hypotheses": [
+    {"id": "H1", "class": "correctness", "test": "TestExperimentConversionGVKIsolation", "prediction": "Get and List isolate source and independently returned objects, including nested maps/slices/metadata; outer GVK is cleared; synthetic populated List item GVK is retained", "oracle": "whole-source deep-equality snapshot, unchanged sibling/second/third reads, explicit GVK assertions", "control": "TestUnsafeConversionAliasesSource must detect aliasing; generic List checked separately", "scope": "real Scheme conversion and direct storage client, synthetic Storage"},
+    {"id": "H2", "class": "route", "test": "TestExperimentContextRoutes", "prediction": "direct context-aware ListPods preserves cancellation/deadline/private sentinel; production PodListerFromInformer adapter discards these; namespace and RV=0 still arrive", "oracle": "recording Storage, exact call counts, context fields and cancellation error", "control": "same context and fixture via direct ListPods", "scope": "actual adapter and lister, no HTTP or full admission pipeline"},
+    {"id": "H3", "class": "correctness", "test": "TestExperimentManagedFieldsTransformBoundary", "prediction": "informer WithTransform trim removes managedFields; direct Get/List retain it", "oracle": "actual fake-client informer with and without trim; exact object equality with ONLY managedFields masked", "control": "untransformed informer retains the field", "scope": "replica of production transform, synthetic API fixtures"},
+    {"id": "H4", "class": "lifecycle", "test": "TestExperimentInformerLifecycle", "prediction": "lister-only access starts no Pod informer; an explicit Informer consumer retains the informer while lister reads use direct Storage", "oracle": "factory sync map, actual client list/watch and direct Storage read counters, cached object after sync", "control": "standard factory plus informer; explicit Informer request", "scope": "production informer factory with fake client; source analysis needed for real consumer inventory"},
+    {"id": "H5", "class": "correctness", "test": "TestExperimentSelectorParity", "prediction": "supported selectors return identical namespace/name sets from cache lister and downstream direct path; Nothing returns empty without a Storage call", "oracle": "independent seeded client-go indexer vs parsed selector Storage", "control": "Nothing string roundtrip loses empty-set semantics and must be distinguished", "scope": "finite fixture, nil selector excluded from parity contract"},
+    {"id": "H6", "class": "performance", "test": "TestDirectListerReadCostFixtureParity", "benchmark": "BenchmarkDirectListerReadCost", "prediction": "direct conversion adds per-read allocations relative to cached pointer reads; retained managedFields increases copied bytes", "oracle": "Go benchmark allocations and warm ns/op; raw mismatch and managedFields-only normalized object equivalence verified before timing", "scope": "synthetic Storage; no watch-cache, etcd, networking, contention, full-apiserver throughput, or net retained-memory claim"}
+  ],
+  "execution": {
+    "platform": "GitHub Actions ubuntu-slim, toolchain from pinned go.mod; record CPU/OS/Go/binary/source hashes",
+    "required_tests": ["TestStorageClientReturnedObjectsAreIsolated", "TestUnsafeConversionAliasesSource", "TestPodListerSelectors", "TestExperimentConversionGVKIsolation", "TestExperimentGenericListIsolation", "TestExperimentContextRoutes", "TestExperimentManagedFieldsTransformBoundary", "TestExperimentInformerLifecycle", "TestExperimentSelectorParity", "TestDirectListerReadCostFixtureParity"],
+    "correctness_repetitions": 1,
+    "fresh_replication": "second process for all Experiment tests; independent raw-evidence verifier",
+    "benchmark_pairs": 10,
+    "benchmark_order": "even pairs cached then direct_synthetic; odd pairs reverse",
+    "benchmark_cells_per_arm": 12,
+    "benchmark_iterations": 100,
+    "benchmark_cpu": 1,
+    "dimensions": {"operation": ["get", "list"], "pod_count": [1, 100], "managed_fields_target_bytes": [0, 4096, 32768]},
+    "analysis": "per-cell paired direct-minus-cached ns/op and bytes/op; median and deterministic seeded bootstrap 95% interval (10000 resamples) for median time delta; descriptive single-runner microbenchmarks, no significance or production benefit gate",
+    "budget": "one 20-minute hosted job per harness revision, up to 3 revisions only for compile/harness defects; retain all failures; no threshold tuning",
+    "accounting": "wall spans for build, calibration, correctness, replication, every arm invocation, verifier; benchmark ns/op excludes fixture setup; no whole-task latency claim"
+  },
+  "gates": {
+    "BLOCKED": "build failure, missing expected tests, failed known-control, incomplete benchmark cells/pairs, missing provenance, or verifier rejection; do not promote affected claims",
+    "KEEP_BOUNDED": "named tests execute and pass assertions and controls; evidence packet validates; claim limited to exact tested route and fixture",
+    "REVISE": "an unexpected result falsifies prediction; preserve it and investigate via a separately registered follow-up, never change prediction to turn failure green",
+    "KILL_BROAD_CLAIM": "these experiments cannot establish end-to-end fidelity, production safety, informer elimination for all consumers, or net performance improvement"
+  },
+  "calibration": "Verifier must reject zero-test green output, missing required test, missing unsafe control, and incomplete benchmark data. Existing unsafe conversion is an intentionally incorrect benign copy control, never a proposed treatment.",
+  "deviations": [],
+  "publication": "prereg commit precedes harness execution; record tested source SHA, source base SHA, and later evidence publication SHA separately; no upstream comment sent automatically"
+}
