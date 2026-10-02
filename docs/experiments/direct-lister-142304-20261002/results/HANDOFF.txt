@@ -1,0 +1,79 @@
+Kubernetes direct-lister experiment handoff
+
+Repository: kvnloo/kubernetes
+Working branch: experiment/direct-lister-contract-142304-20261002
+Tested source: 1f0afa8df5d7813706d0ca9fa64d0cb7857017ea
+Completed evidence publication: b61d417de18a0775fed2e4e4b4a305ebcf38c335
+Upstream PR head last checked: 5b10e94f39c7c5fdf4b07bf550525f9bdc2d07ed
+
+Start with RESULTS.txt, REPLICATION.json, INDEPENDENT_REVIEW.json and
+HOSTED_REVIEW.json. PREREG.json and EXECUTION_AMENDMENT_R2.json are in the
+parent experiment directory. Runner/verifier code is there; Go probes are in
+pkg/kubeapiserver/direct. REPRODUCE.txt supplies exact replay instructions.
+
+Verified completed work
+- Six component experiment families; ten required root tests per host.
+- Local Linux and GitHub ubuntu-slim both passed every required test/control.
+- 88 selector matrix comparisons plus lossy-selector calibration per execution.
+- 12 benchmark workloads, ten alternating AB/BA pairs, 240 records per host.
+- Independent review checked all 480 records and exact subcase inventories.
+- Downloaded hosted binary replay: six experiment roots, 111 named passes.
+- Failed first hosted formatting attempt and first replay launcher retained.
+- Timings remain separate by host. Allocation medians agree in all 12 cells.
+
+Audit
+All 74 canonical evidence text files, four harness/preregistration files, and
+11 direct-package Go files matched the remote b61d417 tree by Git blob hash.
+See PUSH_AUDIT.json. Scratch duplicates and Python caches are not canonical
+experiment inputs. Binary locations, hashes and expiration are recorded in
+REPLICATION.json; the hosted binary is in GitHub Actions artifact 11244686886.
+
+Current task and scope
+The user requested additional experiment proposals, grounded in original
+PR121979, current PR142304, issue142223 and Kubernetes architecture. They will
+have another model do broader deep research. Focus next work on falsifiable,
+executable experiments and decision criteria. No new experiment has been run
+or preregistered since the completed six-family packet. No upstream draft has
+been posted. Current architecture tracing/design is IN_PROGRESS.
+
+Discussion recontextualization established so far
+- The original opposition concerned maintaining a separate read path and
+  future semantic drift; best-effort mutation detection was insufficient.
+- Current copy tests support isolation at the tested conversion boundary.
+  They do not answer live-cache provenance, storage defaulting or system gain.
+- Current PSA adapter drops ctx, as the existing informer API did too. Its
+  context-aware direct extension is not reached through that adapter.
+- Existing informer transform removes managedFields; direct reads retain it.
+- PR142304 explicitly calls itself stage 1 of 2 and leaves node-authorizer
+  informer elimination to a follow-up. Our lifecycle result agrees with that
+  limitation; it is not evidence the author expected stage 1 to eliminate it.
+- Issue142223 motivates fewer update/relist allocations and burst recovery,
+  not merely faster individual lister reads. Its >4k QPS result combines
+  several interventions; our warm read microbench does not isolate that claim.
+- A prior issue142223 comment already proposed A1/burst/A2 hysteresis testing.
+  Refine that existing proposal rather than presenting it as a new discovery.
+
+Candidate follow-ups (proposals; NOT_RUN; NOT_PREREGISTERED)
+1. Real Pod REST/Cacher/codec versus informer differential replay, including
+   omitted-default fixtures, ordinary errors and source-preservation oracles.
+2. Allocation attribution with identical returned values: managedFields
+   transform placement, explicit normalization, fixture setup excluded.
+3. Actual consumer lifecycle/readiness matrix, counting Pod informer List/Watch
+   and actual direct calls for production consumer wiring. All other resources
+   and their readiness prerequisites must remain active.
+4. Net resource experiment: lister strategy x event-consumer presence x
+   update/read workload; include update propagation, retained heap and GC.
+5. Bounded watch-restart/relist and A1/burst/A2 recovery experiments in isolated
+   test processes after the evaluator's counters and recovery gates qualify.
+6. Startup/cache-catch-up/error/fallback behavior using benign fixtures, exact
+   call counts and cancellation/deadline outcomes; distinguish pre-sync cache
+   results from post-sync contract comparisons.
+
+Next runner should locate existing storage/integration harnesses, register each
+experiment before running it, use smallest controls first, retain every attempt,
+and stop on evaluator failure or unresolved semantic mismatches. Do not use a
+finite component pass as a blanket production-safety or performance claim.
+
+Relevant snapshots are in DISCUSSION_SNAPSHOT.json. Source references are in
+SOURCE_REGISTER.json. The upcoming protocol catalog should retain separate
+source observations, predictions, measurements and NOT_RUN follow-ups.

@@ -1,0 +1,11 @@
+{
+  "remote_commit": "b61d417de18a0775fed2e4e4b4a305ebcf38c335",
+  "results_files_checked": 74,
+  "harness_files_checked": 4,
+  "direct_go_files_checked": 11,
+  "results_mismatches": [],
+  "source_mismatches": [],
+  "remote_results_extra_files": [],
+  "hash_algorithm": "Git blob SHA-1",
+  "passed": true
+}

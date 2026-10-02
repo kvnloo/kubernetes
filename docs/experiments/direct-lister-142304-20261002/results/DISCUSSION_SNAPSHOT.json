@@ -1,0 +1,558 @@
+{
+  "source_head": "5b10e94f39c7c5fdf4b07bf550525f9bdc2d07ed",
+  "snapshots": {
+    "pr121979": [
+      {
+        "url": "https://github.com/kubernetes/kubernetes/pull/121979#issuecomment-1820782225",
+        "id": 1820782225,
+        "author": "k8s-ci-robot",
+        "created_at": "2023-11-21T11:58:53Z",
+        "updated_at": "2023-11-21T11:58:53Z",
+        "path": null,
+        "line": null,
+        "in_reply_to_id": null,
+        "body": "Adding the \"do-not-merge/release-note-label-needed\" label because no release-note block was detected, please follow our [release note process](https://git.k8s.io/community/contributors/guide/release-notes.md) to remove it.\n\n<details>\n\nInstructions for interacting with me using PR comments are available [here](https://git.k8s.io/community/contributors/guide/pull-requests.md).  If you have questions or suggestions related to my behavior, please file an issue against the [kubernetes/test-infra](https://github.com/kubernetes/test-infra/issues/new?title=Prow%20issue:) repository.\n</details>"
+      },
+      {
+        "url": "https://github.com/kubernetes/kubernetes/pull/121979#issuecomment-1820786314",
+        "id": 1820786314,
+        "author": "linxiulei",
+        "created_at": "2023-11-21T12:01:46Z",
+        "updated_at": "2023-11-21T12:01:46Z",
+        "path": null,
+        "line": null,
+        "in_reply_to_id": null,
+        "body": "/cc @deads2k @jpbetz  @liggitt @wojtek-t "
+      },
+      {
+        "url": "https://github.com/kubernetes/kubernetes/pull/121979#issuecomment-1821391602",
+        "id": 1821391602,
+        "author": "jpbetz",
+        "created_at": "2023-11-21T17:53:32Z",
+        "updated_at": "2023-11-21T17:54:19Z",
+        "path": null,
+        "line": null,
+        "in_reply_to_id": null,
+        "body": "Thanks for prototyping this @linxiulei!\r\n\r\nHave we considered an alternative approach where instead of introducing an alternate implementation of informers, we instead implement an alternate implementation of the client? I'm imagining an \"internal client\" that is optimized to minimize copies. This client would probably only be optimized for reads, since writes MUST go through the admission chain. Would this be viable? Would it eliminate the need to generate alternate informers?\r\n\r\nIt also just occurred to me that bypassing the normal client flow also bypasses auth.."
+      },
+      {
+        "url": "https://github.com/kubernetes/kubernetes/pull/121979#issuecomment-1821744776",
+        "id": 1821744776,
+        "author": "linxiulei",
+        "created_at": "2023-11-21T21:45:35Z",
+        "updated_at": "2023-11-21T21:45:35Z",
+        "path": null,
+        "line": null,
+        "in_reply_to_id": null,
+        "body": "re: internal client, I am not too sure if I understand it correctly, but if the internal client doesn't have the same API as the informers have, then it will be larger effort to migrate the code in all those admission plugins (30+ [plugins](https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/) although not all using informers) to use the new client. It'd be even more non-trivial to keep both new client and current design if we need to handle safe fallback for special cases.\r\n\r\nThis was the major reason that I wanted to implement informer API. Also, please correct me if I'm wrong, I believe admission plugins don't write. \r\n\r\nre: bypassing auth. Yeah, it bypasses HTTP interface so every function related to it. I guess adminssion plugins don't need it in common cases\r\n\r\n"
+      },
+      {
+        "url": "https://github.com/kubernetes/kubernetes/pull/121979#issuecomment-1821858656",
+        "id": 1821858656,
+        "author": "jpbetz",
+        "created_at": "2023-11-21T23:30:25Z",
+        "updated_at": "2023-11-21T23:56:40Z",
+        "path": null,
+        "line": null,
+        "in_reply_to_id": null,
+        "body": "> re: internal client, I am not too sure if I understand it correctly, but if the internal client doesn't have the same API as the informers have, then it will be larger effort to migrate the code in all those admission plugins (30+ [plugins](https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/) although not all using informers) to use the new client. It'd be even more non-trivial to keep both new client and current design if we need to handle safe fallback for special cases.\r\n\r\nMy thought was along the lines of:  What if we could use the informers exactly as they exist today, but instead of wiring in the normal client, we somehow wire in a client  (implementation of `k8s.io/client-go/kubernetes.Interface`) that retrieves data directly from storage. Then, if we use that client [here](https://github.com/kubernetes/kubernetes/blob/ec5096fa869b801d6eb1bf019819287ca61edc4d/staging/src/k8s.io/client-go/informers/core/v1/pod.go#L58C29-L58C56) to perform reads directly from storage, would this optimization \"just work\"? \r\n\r\n> This was the major reason that I wanted to implement informer API. Also, please correct me if I'm wrong, I believe admission plugins don't write.\r\n\r\nYes, that's right. I brought up writes because, if we reimplement `k8s.io/client-go/kubernetes.Interface` we'd have tp decide what the implementation of writes do.  I think I'd be in favor of having writes delegate to the normal client.\r\n\r\n> re: bypassing auth. Yeah, it bypasses HTTP interface so every function related to it. I guess adminssion plugins don't need it in common cases\r\n\r\nThis makes me uncomfortable.  If we do this, I'd want to keep this optimization narrow as possible. It might make my client idea useless, since we'd be handling just a very few special cases.  Do we know which admission plugins benefit most from this optimization?  Everything that touches pod?\r\n"
+      },
+      {
+        "url": "https://github.com/kubernetes/kubernetes/pull/121979#issuecomment-1822215265",
+        "id": 1822215265,
+        "author": "wojtek-t",
+        "created_at": "2023-11-22T07:01:34Z",
+        "updated_at": "2023-11-22T07:01:34Z",
+        "path": null,
+        "line": null,
+        "in_reply_to_id": null,
+        "body": ">> re: bypassing auth. Yeah, it bypasses HTTP interface so every function related to it. I guess adminssion plugins don't need it in common cases\r\n\r\n> This makes me uncomfortable. If we do this, I'd want to keep this optimization narrow as possible. It might make my client idea useless, since we'd be handling just a very few special cases. Do we know which admission plugins benefit most from this optimization? Everything that touches pod?\r\n\r\nThis makes my uncomfortable too, because pretty much everything we're doing in the handler chain now no longer works. Auth seems to be the most serious example (@liggitt @enj - please chime in), but there are other consequences too, e.g. auditing, APF (rate-limitting), timeouts-handling, whole observability (logging/monitoring), etc.\r\n\r\nI understand the motivation and I admit that the savings are pretty significant, but I'm wondering how we can better ensure safety. Can we somehow hack it around differently to preserve the whole handler chain? Without putting a deeper thought into it, what if the model would be like:\r\n- we create a simple wrapper around rest storage that instead of returning the data, puts them into context under some well known key\r\n- we wrap this with the whole set of existing handlers from the handler chain\r\n- we implement only ListWatch interface for that and the implementation is using the above and gets data from the context...\r\n\r\nI admit it sounds much more hacky, but at least seems safer to me. But that's just a brainstorming - I would like to hear better options..."
+      },
+      {
+        "url": "https://github.com/kubernetes/kubernetes/pull/121979#issuecomment-1822940041",
+        "id": 1822940041,
+        "author": "jpbetz",
+        "created_at": "2023-11-22T15:03:50Z",
+        "updated_at": "2023-11-22T16:52:34Z",
+        "path": null,
+        "line": null,
+        "in_reply_to_id": null,
+        "body": "> This makes my uncomfortable too, because pretty much everything we're doing in the handler chain now no longer works.\r\n\r\nI was thinking about this last night and was finding it very difficult to reason through all the implications of skipping the handler chain. I agree we just shouldn't do that.\r\n\r\n> * we create a simple wrapper around rest storage that instead of returning the data, puts them into context under some well known key\r\n> * we wrap this with the whole set of existing handlers from the handler chain\r\n> * we implement only ListWatch interface for that and the implementation is using the above and gets data from the context...\r\n\r\nDo we still end up loosing any defaulting?  I'm worried there might be some old object in etcd that need defaulting and break the admission chain when it doesn't happen.\r\n\r\n"
+      },
+      {
+        "url": "https://github.com/kubernetes/kubernetes/pull/121979#issuecomment-1822945771",
+        "id": 1822945771,
+        "author": "enj",
+        "created_at": "2023-11-22T15:06:47Z",
+        "updated_at": "2023-11-22T15:06:47Z",
+        "path": null,
+        "line": null,
+        "in_reply_to_id": null,
+        "body": "I haven't looked at the code, but used to have tons of direct etcd calls back in the etcd2 days in OpenShift.  It was fast, but keeping the behavior consistent between the REST API and direct to storage paths was near impossible.  Any changes we make for performance should keep the code paths for all calls as identical as possible.  Audit, auth and similar layers should not be bypassed.  I think we do some of the conversion and defaulting in the REST layers so that would need to be preserved.\r\n\r\ncc @deads2k @soltysh "
+      },
+      {
+        "url": "https://github.com/kubernetes/kubernetes/pull/121979#issuecomment-1822956214",
+        "id": 1822956214,
+        "author": "enj",
+        "created_at": "2023-11-22T15:10:49Z",
+        "updated_at": "2023-11-22T21:42:28Z",
+        "path": null,
+        "line": null,
+        "in_reply_to_id": null,
+        "body": "~~Also, don't we need a copy of one of everything for the watch cache anyway?  Can we not rely on that instead?~~\r\n\r\nNevermind, I think this has the same issues if used directly without the REST layer."
+      },
+      {
+        "url": "https://github.com/kubernetes/kubernetes/pull/121979#issuecomment-1823116292",
+        "id": 1823116292,
+        "author": "logicalhan",
+        "created_at": "2023-11-22T16:42:04Z",
+        "updated_at": "2023-11-22T16:42:04Z",
+        "path": null,
+        "line": null,
+        "in_reply_to_id": null,
+        "body": "> Audit, auth and similar layers should not be bypassed. I think we do some of the conversion and defaulting in the REST layers so that would need to be preserved.\r\n\r\n+1000 (skipping those handlers seems pretty sketch to me)\r\n\r\n"
+      },
+      {
+        "url": "https://github.com/kubernetes/kubernetes/pull/121979#issuecomment-1823126620",
+        "id": 1823126620,
+        "author": "logicalhan",
+        "created_at": "2023-11-22T16:44:10Z",
+        "updated_at": "2023-11-22T16:44:10Z",
+        "path": null,
+        "line": null,
+        "in_reply_to_id": null,
+        "body": "/hold\r\n\r\nI think we need sig-auth to really scrutinize this. "
+      },
+      {
+        "url": "https://github.com/kubernetes/kubernetes/pull/121979#issuecomment-1823503733",
+        "id": 1823503733,
+        "author": "linxiulei",
+        "created_at": "2023-11-22T21:07:56Z",
+        "updated_at": "2023-11-22T21:07:56Z",
+        "path": null,
+        "line": null,
+        "in_reply_to_id": null,
+        "body": "> Everything that touches pod?\r\n\r\nYes, pod is the biggest factor in memory usage for most use cases.\r\n\r\nApologize in advance to ask more questions rather than addressing comments\r\n\r\nre: auth, the current `kubeClientConfig` for apiserver admission plugins is either using an ephemeral token created at initialization time or self-signed cert, does this make any differences?\r\n\r\nre: handler chain, this only does READ requests from restStorage and no writes, I wondered if there are handler chains doing mutations in READ requests?\r\n\r\nre: audit, was it by design that we want to audit self READ requests?"
+      },
+      {
+        "url": "https://github.com/kubernetes/kubernetes/pull/121979#issuecomment-1823922146",
+        "id": 1823922146,
+        "author": "wojtek-t",
+        "created_at": "2023-11-23T07:36:14Z",
+        "updated_at": "2023-11-23T07:36:14Z",
+        "path": null,
+        "line": null,
+        "in_reply_to_id": null,
+        "body": "> I think we do some of the conversion and defaulting in the REST layers so that would need to be preserved.\r\n\r\nI think conversion isn't a problem here, but yeah, I forgot about defaulting which isn't part of the chain itself...\r\nSo my idea doesn't address it, or at least in not that obvious way that I hoped.\r\n\r\n"
+      },
+      {
+        "url": "https://github.com/kubernetes/kubernetes/pull/121979#issuecomment-1823923214",
+        "id": 1823923214,
+        "author": "wojtek-t",
+        "created_at": "2023-11-23T07:37:29Z",
+        "updated_at": "2023-11-23T07:37:29Z",
+        "path": null,
+        "line": null,
+        "in_reply_to_id": null,
+        "body": "I think at this point it seems that if it's even possible, this would require a KEP.\r\nBut I wouldn't recomment to write a KEP without having a discussion with the people on this PR before..."
+      },
+      {
+        "url": "https://github.com/kubernetes/kubernetes/pull/121979#issuecomment-1824696583",
+        "id": 1824696583,
+        "author": "linxiulei",
+        "created_at": "2023-11-23T16:29:37Z",
+        "updated_at": "2023-11-23T16:29:37Z",
+        "path": null,
+        "line": null,
+        "in_reply_to_id": null,
+        "body": "> I think we do some of the conversion and defaulting in the REST layers so that would need to be preserved.\r\n\r\n@enj https://github.com/kubernetes/kubernetes/pull/121979/files#diff-05cd394e18da9e91dbf8b3d82e1e0813be670ee37db43ca5af6f91a39f78d08fR704 does reference REST object, which has the defaulting in List()/Get(). So this should have been transparently preserved. "
+      },
+      {
+        "url": "https://github.com/kubernetes/kubernetes/pull/121979#issuecomment-1957290522",
+        "id": 1957290522,
+        "author": "k8s-triage-robot",
+        "created_at": "2024-02-21T16:54:32Z",
+        "updated_at": "2024-02-21T16:54:32Z",
+        "path": null,
+        "line": null,
+        "in_reply_to_id": null,
+        "body": "The Kubernetes project currently lacks enough contributors to adequately respond to all PRs.\n\nThis bot triages PRs according to the following rules:\n- After 90d of inactivity, `lifecycle/stale` is applied\n- After 30d of inactivity since `lifecycle/stale` was applied, `lifecycle/rotten` is applied\n- After 30d of inactivity since `lifecycle/rotten` was applied, the PR is closed\n\nYou can:\n- Mark this PR as fresh with `/remove-lifecycle stale`\n- Close this PR with `/close`\n- Offer to help out with [Issue Triage][1]\n\nPlease send feedback to sig-contributor-experience at [kubernetes/community](https://github.com/kubernetes/community).\n\n/lifecycle stale\n\n[1]: https://www.kubernetes.dev/docs/guide/issue-triage/"
+      },
+      {
+        "url": "https://github.com/kubernetes/kubernetes/pull/121979#issuecomment-1977042397",
+        "id": 1977042397,
+        "author": "linxiulei",
+        "created_at": "2024-03-04T16:55:23Z",
+        "updated_at": "2024-03-04T16:55:23Z",
+        "path": null,
+        "line": null,
+        "in_reply_to_id": null,
+        "body": "Update after bringing this to sig-auth (pls see [meeting notes](https://docs.google.com/document/d/1woLGRoONE3EBVx-wTb4pvp4CI7tmLZ6lS26VTbosLKM/edit#bookmark=id.91v3wmsd91wi))\r\n\r\nRelevant to\r\n\r\n> /hold\r\n> \r\n> I think we need sig-auth to really scrutinize this.\r\n\r\n\r\n\r\n* Auth is not big risk here given the current implementation uses a hardcoded method to just make admission plugins work to fetch k8s objects\r\n* Audit might be a problem but given most objects are fetched via watches, the auditing is skipped.\r\n\r\nAlso discussed major risks that had not reached consensus because overall risk is high\r\n\r\n* There are no mechanisms to well test the objects returned from the new code path will be identical to what are returned by informers, which are well tested everywhere in k8s use cases, although for now, the returned objects in the proposal should be theoretically the same. \r\n* The potential modifications occur in the clients (i.e. admission plugins) with proposed design would bring larger blast radius since the modifications will be applied to the apiserver REST storage that essentially change the k8s objects and result in incorrect objects\r\n\r\n"
+      },
+      {
+        "url": "https://github.com/kubernetes/kubernetes/pull/121979#issuecomment-1980677933",
+        "id": 1980677933,
+        "author": "k8s-ci-robot",
+        "created_at": "2024-03-06T11:36:50Z",
+        "updated_at": "2024-03-06T11:36:50Z",
+        "path": null,
+        "line": null,
+        "in_reply_to_id": null,
+        "body": "PR needs rebase.\n\n<details>\n\nInstructions for interacting with me using PR comments are available [here](https://git.k8s.io/community/contributors/guide/pull-requests.md).  If you have questions or suggestions related to my behavior, please file an issue against the [kubernetes/test-infra](https://github.com/kubernetes/test-infra/issues/new?title=Prow%20issue:) repository.\n</details>"
+      },
+      {
+        "url": "https://github.com/kubernetes/kubernetes/pull/121979#issuecomment-2039654449",
+        "id": 2039654449,
+        "author": "k8s-triage-robot",
+        "created_at": "2024-04-05T12:19:23Z",
+        "updated_at": "2024-04-05T12:19:23Z",
+        "path": null,
+        "line": null,
+        "in_reply_to_id": null,
+        "body": "The Kubernetes project currently lacks enough active contributors to adequately respond to all PRs.\n\nThis bot triages PRs according to the following rules:\n- After 90d of inactivity, `lifecycle/stale` is applied\n- After 30d of inactivity since `lifecycle/stale` was applied, `lifecycle/rotten` is applied\n- After 30d of inactivity since `lifecycle/rotten` was applied, the PR is closed\n\nYou can:\n- Mark this PR as fresh with `/remove-lifecycle rotten`\n- Close this PR with `/close`\n- Offer to help out with [Issue Triage][1]\n\nPlease send feedback to sig-contributor-experience at [kubernetes/community](https://github.com/kubernetes/community).\n\n/lifecycle rotten\n\n[1]: https://www.kubernetes.dev/docs/guide/issue-triage/"
+      },
+      {
+        "url": "https://github.com/kubernetes/kubernetes/pull/121979#issuecomment-2094805835",
+        "id": 2094805835,
+        "author": "k8s-triage-robot",
+        "created_at": "2024-05-05T13:13:23Z",
+        "updated_at": "2024-05-05T13:13:23Z",
+        "path": null,
+        "line": null,
+        "in_reply_to_id": null,
+        "body": "The Kubernetes project currently lacks enough active contributors to adequately respond to all issues and PRs.\n\nThis bot triages PRs according to the following rules:\n- After 90d of inactivity, `lifecycle/stale` is applied\n- After 30d of inactivity since `lifecycle/stale` was applied, `lifecycle/rotten` is applied\n- After 30d of inactivity since `lifecycle/rotten` was applied, the PR is closed\n\nYou can:\n- Reopen this PR with `/reopen`\n- Mark this PR as fresh with `/remove-lifecycle rotten`\n- Offer to help out with [Issue Triage][1]\n\nPlease send feedback to sig-contributor-experience at [kubernetes/community](https://github.com/kubernetes/community).\n\n/close\n\n[1]: https://www.kubernetes.dev/docs/guide/issue-triage/"
+      },
+      {
+        "url": "https://github.com/kubernetes/kubernetes/pull/121979#issuecomment-2094805852",
+        "id": 2094805852,
+        "author": "k8s-ci-robot",
+        "created_at": "2024-05-05T13:13:27Z",
+        "updated_at": "2024-05-05T13:13:27Z",
+        "path": null,
+        "line": null,
+        "in_reply_to_id": null,
+        "body": "@k8s-triage-robot: Closed this PR.\n\n<details>\n\nIn response to [this](https://github.com/kubernetes/kubernetes/pull/121979#issuecomment-2094805835):\n\n>The Kubernetes project currently lacks enough active contributors to adequately respond to all issues and PRs.\n>\n>This bot triages PRs according to the following rules:\n>- After 90d of inactivity, `lifecycle/stale` is applied\n>- After 30d of inactivity since `lifecycle/stale` was applied, `lifecycle/rotten` is applied\n>- After 30d of inactivity since `lifecycle/rotten` was applied, the PR is closed\n>\n>You can:\n>- Reopen this PR with `/reopen`\n>- Mark this PR as fresh with `/remove-lifecycle rotten`\n>- Offer to help out with [Issue Triage][1]\n>\n>Please send feedback to sig-contributor-experience at [kubernetes/community](https://github.com/kubernetes/community).\n>\n>/close\n>\n>[1]: https://www.kubernetes.dev/docs/guide/issue-triage/\n\n\nInstructions for interacting with me using PR comments are available [here](https://git.k8s.io/community/contributors/guide/pull-requests.md).  If you have questions or suggestions related to my behavior, please file an issue against the [kubernetes-sigs/prow](https://github.com/kubernetes-sigs/prow/issues/new?title=Prow%20issue:) repository.\n</details>"
+      },
+      {
+        "url": "https://github.com/kubernetes/kubernetes/pull/121979#issuecomment-2162700912",
+        "id": 2162700912,
+        "author": "linxiulei",
+        "created_at": "2024-06-12T10:51:08Z",
+        "updated_at": "2024-06-12T10:51:08Z",
+        "path": null,
+        "line": null,
+        "in_reply_to_id": null,
+        "body": "> The potential modifications occur in the clients (i.e. admission plugins) with proposed design would bring larger blast radius since the modifications will be applied to the apiserver REST storage that essentially change the k8s objects and result in incorrect objects\r\n\r\nI just learned there is mutation detector enabled for tests https://github.com/kubernetes/kubernetes/blob/master/staging/src/k8s.io/client-go/tools/cache/mutation_detector.go. Would that be sufficient to detect client modification with tests? @liggitt "
+      },
+      {
+        "url": "https://github.com/kubernetes/kubernetes/pull/121979#issuecomment-2162701482",
+        "id": 2162701482,
+        "author": "linxiulei",
+        "created_at": "2024-06-12T10:51:28Z",
+        "updated_at": "2024-06-12T10:51:28Z",
+        "path": null,
+        "line": null,
+        "in_reply_to_id": null,
+        "body": "/reopen\r\n/remove-lifecycle rotten"
+      },
+      {
+        "url": "https://github.com/kubernetes/kubernetes/pull/121979#issuecomment-2162701606",
+        "id": 2162701606,
+        "author": "k8s-ci-robot",
+        "created_at": "2024-06-12T10:51:33Z",
+        "updated_at": "2024-06-12T10:51:33Z",
+        "path": null,
+        "line": null,
+        "in_reply_to_id": null,
+        "body": "@linxiulei: Reopened this PR.\n\n<details>\n\nIn response to [this](https://github.com/kubernetes/kubernetes/pull/121979#issuecomment-2162701482):\n\n>/reopen\r\n>/remove-lifecycle rotten\n\n\nInstructions for interacting with me using PR comments are available [here](https://git.k8s.io/community/contributors/guide/pull-requests.md).  If you have questions or suggestions related to my behavior, please file an issue against the [kubernetes-sigs/prow](https://github.com/kubernetes-sigs/prow/issues/new?title=Prow%20issue:) repository.\n</details>"
+      },
+      {
+        "url": "https://github.com/kubernetes/kubernetes/pull/121979#issuecomment-2162702826",
+        "id": 2162702826,
+        "author": "k8s-ci-robot",
+        "created_at": "2024-06-12T10:52:17Z",
+        "updated_at": "2024-06-12T10:52:17Z",
+        "path": null,
+        "line": null,
+        "in_reply_to_id": null,
+        "body": "[APPROVALNOTIFIER] This PR is **NOT APPROVED**\n\nThis pull-request has been approved by: *<a href=\"https://github.com/kubernetes/kubernetes/pull/121979#\" title=\"Author self-approved\">linxiulei</a>*\n**Once this PR has been reviewed and has the lgtm label**, please ask for approval from [wojtek-t](https://github.com/wojtek-t). For more information see [the Kubernetes Code Review Process](https://git.k8s.io/community/contributors/guide/owners.md#the-code-review-process).\n\nThe full list of commands accepted by this bot can be found [here](https://go.k8s.io/bot-commands?repo=kubernetes%2Fkubernetes).\n\n<details open>\nNeeds approval from an approver in each of these files:\n\n- **[cmd/kube-apiserver/OWNERS](https://github.com/kubernetes/kubernetes/blob/master/cmd/kube-apiserver/OWNERS)**\n- **[pkg/controlplane/OWNERS](https://github.com/kubernetes/kubernetes/blob/master/pkg/controlplane/OWNERS)**\n- **[plugin/pkg/admission/OWNERS](https://github.com/kubernetes/kubernetes/blob/master/plugin/pkg/admission/OWNERS)**\n- **[staging/src/k8s.io/apiserver/OWNERS](https://github.com/kubernetes/kubernetes/blob/master/staging/src/k8s.io/apiserver/OWNERS)**\n\nApprovers can indicate their approval by writing `/approve` in a comment\nApprovers can cancel approval by writing `/approve cancel` in a comment\n</details>\n<!-- META={\"approvers\":[\"wojtek-t\"]} -->"
+      },
+      {
+        "url": "https://github.com/kubernetes/kubernetes/pull/121979#issuecomment-2163168896",
+        "id": 2163168896,
+        "author": "liggitt",
+        "created_at": "2024-06-12T14:31:38Z",
+        "updated_at": "2024-06-12T14:31:38Z",
+        "path": null,
+        "line": null,
+        "in_reply_to_id": null,
+        "body": "> Would that be sufficient to detect client modification with tests? @liggitt\r\n\r\nNo. That testing is best effort and things have escaped it before.\r\n\r\nI'm not in favor of a completely separate code path for admission fetching objects."
+      },
+      {
+        "url": "https://github.com/kubernetes/kubernetes/pull/121979#issuecomment-2163458725",
+        "id": 2163458725,
+        "author": "wojtek-t",
+        "created_at": "2024-06-12T16:27:53Z",
+        "updated_at": "2024-06-12T16:27:53Z",
+        "path": null,
+        "line": null,
+        "in_reply_to_id": null,
+        "body": "> No. That testing is best effort and things have escaped it before.\r\n> I'm not in favor of a completely separate code path for admission fetching objects.\r\n\r\n+1\r\nand it's not just mutations - by this change you're ignoring the whole chain of handlers in kube-apiserver and even if we proof that for now it's fine, it will be very subtle and easy to break in the future\r\n\r\nso I'm also -1 on this change"
+      },
+      {
+        "url": "https://github.com/kubernetes/kubernetes/pull/121979#issuecomment-2195187542",
+        "id": 2195187542,
+        "author": "jpbetz",
+        "created_at": "2024-06-27T16:39:18Z",
+        "updated_at": "2024-06-27T16:39:18Z",
+        "path": null,
+        "line": null,
+        "in_reply_to_id": null,
+        "body": "/triage accepted"
+      }
+    ],
+    "pr142304": [
+      {
+        "url": "https://github.com/kubernetes/kubernetes/pull/142304#issuecomment-5774589419",
+        "id": 5774589419,
+        "author": "kubernetes-prow[bot]",
+        "created_at": "2026-09-22T10:02:16Z",
+        "updated_at": "2026-09-22T10:02:16Z",
+        "path": null,
+        "line": null,
+        "in_reply_to_id": null,
+        "body": "This issue is currently awaiting triage.\n\nIf a SIG or subproject determines this is a relevant issue, they will accept it by applying the `triage/accepted` label and provide further guidance.\n\nThe `triage/accepted` label can be added by org members by writing `/triage accepted` in a comment.\n\n\n<details>\n\nInstructions for interacting with me using PR comments are available [here](https://git.k8s.io/community/contributors/guide/pull-requests.md).  If you have questions or suggestions related to my behavior, please file an issue against the [kubernetes-sigs/prow](https://github.com/kubernetes-sigs/prow/issues/new?title=Prow%20issue:) repository.\n</details>"
+      },
+      {
+        "url": "https://github.com/kubernetes/kubernetes/pull/142304#issuecomment-5774594784",
+        "id": 5774594784,
+        "author": "kubernetes-prow[bot]",
+        "created_at": "2026-09-22T10:02:42Z",
+        "updated_at": "2026-09-22T10:02:42Z",
+        "path": null,
+        "line": null,
+        "in_reply_to_id": null,
+        "body": "[APPROVALNOTIFIER] This PR is **NOT APPROVED**\n\nThis pull-request has been approved by: *<a href=\"https://github.com/kubernetes/kubernetes/pull/142304#\" title=\"Author self-approved\">serathius</a>*\n**Once this PR has been reviewed and has the lgtm label**, please assign [jpbetz](https://github.com/jpbetz) for approval. For more information see [the Code Review Process](https://git.k8s.io/community/contributors/guide/owners.md#the-code-review-process).\n\nThe full list of commands accepted by this bot can be found [here](https://go.k8s.io/bot-commands?repo=kubernetes%2Fkubernetes).\n\n<details open>\nNeeds approval from an approver in each of these files:\n\n- **[pkg/controlplane/OWNERS](https://github.com/kubernetes/kubernetes/blob/master/pkg/controlplane/OWNERS)**\n- **[pkg/kubeapiserver/OWNERS](https://github.com/kubernetes/kubernetes/blob/master/pkg/kubeapiserver/OWNERS)**\n- **[pkg/registry/OWNERS](https://github.com/kubernetes/kubernetes/blob/master/pkg/registry/OWNERS)**\n\nApprovers can indicate their approval by writing `/approve` in a comment\nApprovers can cancel approval by writing `/approve cancel` in a comment\n</details>\n<!-- META={\"approvers\":[\"jpbetz\"]} -->"
+      },
+      {
+        "url": "https://github.com/kubernetes/kubernetes/pull/142304#issuecomment-5815792741",
+        "id": 5815792741,
+        "author": "kvnloo",
+        "created_at": "2026-09-24T14:13:13Z",
+        "updated_at": "2026-09-24T14:13:13Z",
+        "path": null,
+        "line": null,
+        "in_reply_to_id": null,
+        "body": "Thanks @serathius, could we preserve `labels.Nothing()` semantics at the lister boundary here?\n\nAt `5b10e94`, `labels.Nothing().Empty()` is `false`, but its `String()` is `\"\"`. `ListWithContext` therefore sends an empty label selector to the direct client, losing the distinction between matching nothing and matching everything.\n\nThe existing `cache.ListAll` and `ListAllByNamespace` already short-circuit with `labels.MatchesNothing(selector)`. Would mirroring that guard here, with a test for both the all-namespace and namespaced Pod listers, be appropriate? The test could assert an empty result and no backend call, with `labels.Everything()` as a positive control.\n\nThis is source-traced; I haven't run the Kubernetes tests or reproduced a cluster-level failure.\n\nAI-assisted review and draft patch."
+      },
+      {
+        "url": "https://github.com/kubernetes/kubernetes/pull/142304#issuecomment-5834204168",
+        "id": 5834204168,
+        "author": "wojtek-t",
+        "created_at": "2026-09-25T14:37:07Z",
+        "updated_at": "2026-09-25T14:37:07Z",
+        "path": null,
+        "line": null,
+        "in_reply_to_id": null,
+        "body": "/assign @liggitt \r\n\r\n@liggitt - I'm happy to make a deep-dive review, but I remember an attempt of that in the past that you shot down. So I would like to hear your opinion first.\r\n[Personally I'm not huge fan of it, but the numbers Marek showed offline imho justify this.]"
+      },
+      {
+        "url": "https://github.com/kubernetes/kubernetes/pull/142304#issuecomment-5837320572",
+        "id": 5837320572,
+        "author": "kvnloo",
+        "created_at": "2026-09-25T18:17:50Z",
+        "updated_at": "2026-09-25T18:17:50Z",
+        "path": null,
+        "line": null,
+        "in_reply_to_id": null,
+        "body": "Could this be structured more like `Cacher`: same read semantics, different backing source?\r\n\r\n`WatchList` used a consistency detector against the old path during rollout, but ideally we wouldn’t need two implementations of filtering/conversion/defaulting to keep in sync."
+      },
+      {
+        "url": "https://github.com/kubernetes/kubernetes/pull/142304#discussion_r4136352033",
+        "id": 4136352033,
+        "author": "liggitt",
+        "created_at": "2026-09-29T17:21:58Z",
+        "updated_at": "2026-09-29T17:21:58Z",
+        "path": "pkg/kubeapiserver/direct/client.go",
+        "line": 111,
+        "in_reply_to_id": null,
+        "body": "is this counting on the SetGroupVersionKind call not mutating the input object?\n\nwhen a list object is passed in, what happens to the GroupVersionKind of the individual objects? do those get cleared or populated or left untouched?"
+      },
+      {
+        "url": "https://github.com/kubernetes/kubernetes/pull/142304#pullrequestreview-5356069883",
+        "id": 5356069883,
+        "author": "liggitt",
+        "created_at": "2026-09-29T17:21:58Z",
+        "updated_at": null,
+        "path": null,
+        "line": null,
+        "in_reply_to_id": null,
+        "body": ""
+      },
+      {
+        "url": "https://github.com/kubernetes/kubernetes/pull/142304#discussion_r4136353699",
+        "id": 4136353699,
+        "author": "liggitt",
+        "created_at": "2026-09-29T17:22:09Z",
+        "updated_at": "2026-09-29T17:22:10Z",
+        "path": "pkg/controlplane/apiserver/config.go",
+        "line": 178,
+        "in_reply_to_id": null,
+        "body": "If we do this, I definitely want the ability to disable it independently if needed. I guess that looks like a gate around this block?\n"
+      },
+      {
+        "url": "https://github.com/kubernetes/kubernetes/pull/142304#pullrequestreview-5356071867",
+        "id": 5356071867,
+        "author": "liggitt",
+        "created_at": "2026-09-29T17:22:09Z",
+        "updated_at": null,
+        "path": null,
+        "line": null,
+        "in_reply_to_id": null,
+        "body": ""
+      },
+      {
+        "url": "https://github.com/kubernetes/kubernetes/pull/142304#discussion_r4136361297",
+        "id": 4136361297,
+        "author": "liggitt",
+        "created_at": "2026-09-29T17:23:01Z",
+        "updated_at": "2026-09-29T17:23:01Z",
+        "path": "pkg/kubeapiserver/direct/client.go",
+        "line": 33,
+        "in_reply_to_id": null,
+        "body": "I've lost track of how informers attempt to list ... do they make requests with resourceVersion=0 now?"
+      },
+      {
+        "url": "https://github.com/kubernetes/kubernetes/pull/142304#pullrequestreview-5356080587",
+        "id": 5356080587,
+        "author": "liggitt",
+        "created_at": "2026-09-29T17:23:01Z",
+        "updated_at": null,
+        "path": null,
+        "line": null,
+        "in_reply_to_id": null,
+        "body": ""
+      },
+      {
+        "url": "https://github.com/kubernetes/kubernetes/pull/142304#discussion_r4136377755",
+        "id": 4136377755,
+        "author": "liggitt",
+        "created_at": "2026-09-29T17:24:57Z",
+        "updated_at": "2026-09-29T17:24:57Z",
+        "path": "pkg/kubeapiserver/direct/client.go",
+        "line": 92,
+        "in_reply_to_id": null,
+        "body": "The context passed in here will not have gone through our standard filter chain, so will be missing namespace, requestinfo, audit info, user info, etc?"
+      },
+      {
+        "url": "https://github.com/kubernetes/kubernetes/pull/142304#pullrequestreview-5356100702",
+        "id": 5356100702,
+        "author": "liggitt",
+        "created_at": "2026-09-29T17:24:57Z",
+        "updated_at": null,
+        "path": null,
+        "line": null,
+        "in_reply_to_id": null,
+        "body": ""
+      },
+      {
+        "url": "https://github.com/kubernetes/kubernetes/pull/142304#issuecomment-5895359669",
+        "id": 5895359669,
+        "author": "liggitt",
+        "created_at": "2026-09-29T17:33:47Z",
+        "updated_at": "2026-09-29T17:40:27Z",
+        "path": null,
+        "line": null,
+        "in_reply_to_id": null,
+        "body": "> /assign @liggitt\r\n> \r\n> @liggitt - I'm happy to make a deep-dive review, but I remember an attempt of that in the past that you shot down. So I would like to hear your opinion first. [Personally I'm not huge fan of it, but the numbers Marek showed offline imho justify this.]\r\n\r\nhttps://github.com/kubernetes/kubernetes/pull/121979 was the previous attempt / discussion.\r\n\r\nI'm also iffy on this, for basically the same reasons. The risks I see here:\r\n\r\n1. We'd now be missing ~everything injected into context by the normal filter chain (especially audit / authn / authz) which storage should be able to rely on\r\n2. Risk of mismatch in how requestinfo is constructed\r\n3. Risk of clients mutating the retrieved objects (either directly or via surprising mutations like [reserialization](https://github.com/kubernetes/kubernetes/issues/82497)). This was already a risk, but now the blast radius is changing objects held by the watch cache and returned to all API clients.\r\n\r\nedit: I can believe the performance benefits are significant, but it's hard to reason about a second parallel path to getting these objects that doesn't have 100% fidelity (with the context / filters), and with a big blast radius if something unexpected is done with the returned objects.\r\n\r\nedit 2: I also think demonstrating how the informer use would be eliminated is important to do before we merge anything in this direction ... if we can't do that, this doesn't actually buy us much, right?"
+      },
+      {
+        "url": "https://github.com/kubernetes/kubernetes/pull/142304#discussion_r4166202027",
+        "id": 4166202027,
+        "author": "serathius",
+        "created_at": "2026-10-02T13:34:14Z",
+        "updated_at": "2026-10-02T13:34:14Z",
+        "path": "pkg/controlplane/apiserver/config.go",
+        "line": 178,
+        "in_reply_to_id": 4136353699,
+        "body": "Feature gate seems sensible"
+      },
+      {
+        "url": "https://github.com/kubernetes/kubernetes/pull/142304#pullrequestreview-5392409657",
+        "id": 5392409657,
+        "author": "serathius",
+        "created_at": "2026-10-02T13:34:14Z",
+        "updated_at": null,
+        "path": null,
+        "line": null,
+        "in_reply_to_id": null,
+        "body": ""
+      }
+    ],
+    "issue142223": {
+      "url": "https://github.com/kubernetes/kubernetes/issues/142223",
+      "title": "API Server Write Throughput: Address Allocation Ceiling and Degraded State Bottlenecks",
+      "body": "### What would you like to be added?\n\nBased on recent experiments with API server write throughput, we propose a multi-pronged effort to address severe allocation bottlenecks.\n\n**1. Optimize the \"Happy Path\"**\n* **Reduce PATCH Allocations:** Significantly reduce allocations for the PATCH path . Specifically, target `managedFields` patching and SSA tracking, which currently account for over half of allocations. Tracked in https://github.com/kubernetes/kubernetes/issues/142228\n* **Storage Bytes Passthrough**: Provide safeguards allowing us to safely pass through objects serialized in etcd to clients. Tracked as part of KEP https://github.com/kubernetes/enhancements/pull/6407\n\n**2. Optimize the \"Bad Path\" (Degraded States)**\n* **Resilient Watch Propagation:** Implement https://github.com/kubernetes/enhancements/issues/6268 to prevent watch breaking due to temporary CPU/network blips by allowing unsynchronized watchers to reread from cached objects.\n* **Direct Watch Cache Reads for Informers:** Replace API server admission informers with Listers that read directly from the watch cache. This removes a heavy source of allocations while halving the memory needed by the API server. https://github.com/kubernetes/kubernetes/pull/142304\n* **Serve All Gets from Cache:** Ensure all Gets are served from the cache (including Gets triggered by TXN conflicts). This makes load on etcd and allocations much more predictable by removing a costly fallback. Tracked as part of KEP https://github.com/kubernetes/enhancements/pull/6407\n\nWhile most of these improvements are optimizations, \"Serve all Gets from cache\" may require a KEP update. The main risk is lock contention; however, thanks to the major rewrites of the watch cache in 1.37, we have removed almost all copying from under the lock and now rely on immutable btree snapshots to efficiently scale reads. \n\nWould like to get feedback on what is KEP worthy.\n\nImplementing all those improvements allowed us reduce the allocation factor of API server from 100-180x to stable 50x and achieve over 4k QPS stable QPS on 30KB pods using single c4-standard-144 machine running kind cluster. Around that point we stopped seeing improvements from reducing allocations. Next stop: watch cache.\n\n### Why is this needed?\n\n\nFollowing the SIG Scalability proposals to introduce Resource Size as a new dimension (https://github.com/kubernetes/kubernetes/issues/134375) and establish a realistic \"Pod Shape\" (https://github.com/kubernetes/kubernetes/issues/138415), we have updated the list benchmark https://testgrid.k8s.io/sig-scalability-benchmarks#gce-benchmark-list and introduced new write throughput benchmarks https://testgrid.k8s.io/sig-scalability-benchmarks#gce-benchmark-write-throughput using this new pod shape. \n\nWhile investigating the bottlenecks in the write throughput benchmark (with help from @Jefftree), we identified the primary limiting factor: **Allocations**. \n\n#### 1. The Allocation Ceiling\n**The API server allocates over 1MB of memory to apply a trivial patch on a 10KB pod object. This is a >100x allocation factor on the *happy path*** (which includes storing it in etcd, observing on watch, storing in the watch cache, and propagating to 10-20 watchers).\n\nDuring our investigation, we discovered that the Go runtime hits a hard ceiling around 6GB/s of memory allocations on a `c4-highmem-144` machine. At this ceiling, CAS operations during the GC sweep phase start burning >50% of the CPU, fully saturating the node. We are in contact with the Go team to reproduce this behavior. In the meantime, tuning the garbage collector (`GOGC=400`) provided some relief, allowing us to hit allocation rates above 11GB/s, but a fundamental fix in the API server is still necessary.\n\n#### 2. Sticky Degradation on Disruptions\nThe >100x allocation factor only accounts for the happy path. On any short disruption (e.g., watch breaks, transaction conflicts), the API server enters a degraded state:\n* Watch breaking prevents the watch cache serialization cache from working\n* Built into API server admission policy informer can quickly start relisting\n* Conflicting TXNs cause the API server to fetch objects directly from etcd and decode them\n\nIn each these scenarios, **allocations easily double, turning a short disruption into a persistent, sticky degradation.** \n\nHitting this allocation ceiling causes a sticky degradation that requires lowering the throughput by a factor of 2x-3x before the API server can recover. Consequently, improving QPS is only sustainable if the increase is gradual (<10% at a time) and at a steady state. Any burst immediately pushes the API server into a degraded state. \n\nOnly by systematically addressing these degradation factors can we achieve a robust state where the API server can instantly jump to max QPS and reliably recover from bursts.\n\n/sig scalability \n/sig api-machinery\n/cc @Jefftree @p0lyn0mial @wojtek-t @liggitt\n",
+      "updated_at": "2026-09-22T10:08:57Z",
+      "comments": [
+        {
+          "url": "https://github.com/kubernetes/kubernetes/issues/142223#issuecomment-5731112556",
+          "id": 5731112556,
+          "author": "kubernetes-prow[bot]",
+          "created_at": "2026-09-18T14:02:58Z",
+          "body": "This issue is currently awaiting triage.\n\nIf a SIG or subproject determines this is a relevant issue, they will accept it by applying the `triage/accepted` label and provide further guidance.\n\nThe `triage/accepted` label can be added by org members by writing `/triage accepted` in a comment.\n\n\n<details>\n\nInstructions for interacting with me using PR comments are available [here](https://git.k8s.io/community/contributors/guide/pull-requests.md).  If you have questions or suggestions related to my behavior, please file an issue against the [kubernetes-sigs/prow](https://github.com/kubernetes-sigs/prow/issues/new?title=Prow%20issue:) repository.\n</details>"
+        },
+        {
+          "url": "https://github.com/kubernetes/kubernetes/issues/142223#issuecomment-5733116613",
+          "id": 5733116613,
+          "author": "suii2210",
+          "created_at": "2026-09-18T16:38:49Z",
+          "body": "hey @serathius \nI was thinking of starting with the PATCH allocation part, especially around managedFields patching / SSA tracking, since this seems like a relatively focused area and is identified as a major source of allocations. Before I start digging into the implementation, I wanted to check whether you or someone else is already actively working on this part, and whether you would recommend this as a good piece to take up."
+        },
+        {
+          "url": "https://github.com/kubernetes/kubernetes/issues/142223#issuecomment-5739694719",
+          "id": 5739694719,
+          "author": "serathius",
+          "created_at": "2026-09-19T05:35:56Z",
+          "body": "@suii2210 yes it's tracked in https://github.com/kubernetes/kubernetes/issues/142228"
+        },
+        {
+          "url": "https://github.com/kubernetes/kubernetes/issues/142223#issuecomment-5750625865",
+          "id": 5750625865,
+          "author": "kvnloo",
+          "created_at": "2026-09-20T15:07:30Z",
+          "body": "One measurement gap here seems worth pinning down before optimizing the individual degraded-state paths: recovery dynamics after a burst.\n\nThe issue notes that:\n\n- a short disruption can push allocations much higher,\n- recovery may require dropping throughput by 2-3x, and\n- a gradual ramp can remain stable where a sudden jump to the same QPS does not.\n\nThat means steady-state max QPS alone may not characterize the system very well.\n\nWould it make sense to add an A/B/A-style scalability experiment?\n\nFor example:\n\nA1: run at ~60-70% of known sustainable write QPS until stable\nB: briefly burst above the allocation ceiling\nA2: return to exactly the same QPS as A1\n\nThen compare A1 vs A2 and record something like:\n\n- time to return within 10% of the pre-burst allocation/latency baseline\n- peak allocation amplification\n- excess-allocation or excess-latency area under the curve during recovery\n- GC CPU / frequency\n- APF queueing and any relist / watch-break / txn-conflict signals\n\nIf A1 and A2 differ materially under identical input load, that gives us a direct measure of the hysteresis described here.\n\nThis also seems like it could provide a common evaluation surface for #142228 and the degraded-state fixes listed above, rather than giving each optimization its own success metric. If the experiment becomes useful, kubernetes/perf-tests#4205 also looks like a natural place to make the resulting cross-run recovery data easier to compare.\n\nClusterLoader2 already has phased/stepped load primitives, so if this direction is useful I'd be interested in starting with the smallest experimental perf-tests scenario rather than changing production code first."
+        },
+        {
+          "url": "https://github.com/kubernetes/kubernetes/issues/142223#issuecomment-5757035119",
+          "id": 5757035119,
+          "author": "wojtek-t",
+          "created_at": "2026-09-21T07:37:26Z",
+          "body": "Thanks a lot for writing that down. I'm overall supportive except from potentially this point:\n\n> Direct Watch Cache Reads for Informers: Replace API server admission informers with Listers that read directly from the watch cache. This removes a heavy source of allocations while halving the memory needed by the API server.\n\nThis has a potential to mess up what is currently clearly layered in kube-apiserver.\nI acknowledge the potential impact from it, but I think we should first loop at the POC to make a decision if it will not make the system visibly more error-prone and harder to maintain.\n\n@liggitt - for your thoughts on ^^"
+        },
+        {
+          "url": "https://github.com/kubernetes/kubernetes/issues/142223#issuecomment-5757420919",
+          "id": 5757420919,
+          "author": "serathius",
+          "created_at": "2026-09-21T08:14:04Z",
+          "body": "> This has a potential to mess up what is currently clearly layered in kube-apiserver.\nI acknowledge the potential impact from it, but I think we should first loop at the POC to make a decision if it will not make the system visibly more error-prone and harder to maintain.\n\nDefinitely, let me create a PoC. "
+        },
+        {
+          "url": "https://github.com/kubernetes/kubernetes/issues/142223#issuecomment-5760412883",
+          "id": 5760412883,
+          "author": "serathius",
+          "created_at": "2026-09-21T12:22:45Z",
+          "body": "Discussed it with @liggitt and @wojtek-t. There are part of this proposal that we would like to track so I will create a umbrella KEP for that."
+        },
+        {
+          "url": "https://github.com/kubernetes/kubernetes/issues/142223#issuecomment-5774675945",
+          "id": 5774675945,
+          "author": "serathius",
+          "created_at": "2026-09-22T10:08:51Z",
+          "body": "Prepared the PoC that implements pod lister interface by directly calling watch cache in transparent way for admission. https://github.com/kubernetes/kubernetes/pull/142304"
+        }
+      ]
+    }
+  },
+  "retrieved_at": "2026-10-02T18:32:14Z"
+}
