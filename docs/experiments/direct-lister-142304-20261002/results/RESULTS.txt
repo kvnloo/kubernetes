@@ -1,0 +1,85 @@
+Six component experiments for Kubernetes PR 142304
+
+Measured source: 1f0afa8df5d7813706d0ca9fa64d0cb7857017ea
+Upstream implementation: 5b10e94f39c7c5fdf4b07bf550525f9bdc2d07ed
+Existing downstream difference: labels.MatchesNothing short-circuit only.
+Preregistration: 41201cbc7a25a7512f454517fab0e1781ec4d4e7
+Execution amendment: EXECUTION_AMENDMENT_R2.json, committed before measurements.
+
+Disposition: KEEP_BOUNDED for the component facts below. Broad claims about
+production safety, complete HTTP/storage equivalence, net memory savings and
+whole-system performance remain unsupported.
+
+1. Copy isolation and GVK
+   Get, PodList and generic List preserved the entire source fixture and
+   independently returned objects after nested maps/slices, managedFields,
+   owner-reference pointer and GVK mutations. The unsafe control exposed aliasing.
+   Outer returned Pod/List GVK was cleared. List items retained their input GVK,
+   including the deliberately populated synthetic case. This does not establish
+   that a live watch cache contains populated item GVK.
+
+2. Concrete context route
+   Direct ListPods(ctx, namespace) preserved caller deadline and private sentinel,
+   and observed cancellation/deadline errors. The actual PSA PodListerFromInformer
+   adapter reached recording Storage without those properties for active,
+   cancelled and expired caller contexts. Source inspection confirms PSA installs
+   this adapter. The original informer API was also contextless: this is method
+   reachability and a storage-call contract observation, not an authentication
+   regression or HTTP-filter-chain test.
+
+3. Informer transformation parity
+   Actual fake-client informers with/without the production managedFields trim
+   distinguished the transform. Direct Get/List retained one managedFields entry;
+   trimmed informer output had none. Every other field compared exactly. This is
+   a concrete difference in returned objects, separate from conversion safety.
+
+4. Informer lifecycle
+   Lister-only: 0 started/synced informers, 0 client List/Watch requests, direct
+   Get/List count 1/1. With an event consumer: 1 synced Pod informer, 1 client
+   List and Watch, direct Get/List still 1/1. Standard factory control served its
+   cache with direct count 0/0. Source still registers the node-authorizer Pod
+   event handler. No retained-heap or full-apiserver measurement was performed.
+
+5. Selector parity
+   88 typed/generic selector/namespace cases agreed with independent client-go
+   indexer results on the downstream guard. Nothing made zero backend calls.
+   The deliberately lossy Nothing->String->Parse control produced 6 false
+   positives. Nil is excluded from the shared parity contract.
+
+6. Warm read costs
+   12 workloads x 10 alternating AB/BA pairs = 240 records on the local host.
+   All fixtures passed the explicitly managedFields-only normalized comparison.
+   Median allocated bytes per operation (cached vs direct synthetic):
+     Get, no managedFields:            16 vs 4,464
+     List 100, no managedFields:    4,216 vs 281,368
+     List 100, 32,748 bytes/Pod:    4,216 vs 3,570,168
+   These are mechanism costs. The fake Storage omits real cache lookup,
+   synchronization, networking and etcd. For nonempty managedFields the raw
+   returned values differ, so those arms are not semantically identical without
+   the declared mask. Timing samples and descriptive paired bootstrap intervals
+   are retained in r2-local/summary.json; do not interpret them as net benefit.
+
+Verification
+   Ten required root tests and all expected subcases passed (131 total named
+   run/pass events including parents). Six experiment roots passed again in a
+   fresh process (111 named events). Independent review checked source/binary
+   hashes, exact subcase inventory, all benchmark records and separately
+   recomputed three benchmark cells. See INDEPENDENT_REVIEW.json.
+
+Attempt accounting
+   The first hosted attempt stopped before compilation because gofmt -d returned
+   status 1 on formatting differences. Its calibration, diff and manifest are
+   retained under r1-hosted. Formatting alone was corrected. Before measuring,
+   the r2 amendment permitted the local Linux host after hosted scheduling delay.
+   Initial local compiler setup used an incorrect checksum-document URL, rejected
+   that response, then verified the archive against the official Go JSON index.
+   The local compile-only shakedown primed the build cache; its cold compilation
+   and provisioning time were not measured by the final runner. Do not present
+   the runner's elapsed time as total experiment/setup time. There is no end-to-
+   end latency claim. Local and hosted measurements are never pooled.
+
+Next evidence level
+   Keep the same oracles for real Pod REST-store/watch-cache fixtures, then test
+   controlled error/freshness cases. A separate factorial system experiment must
+   vary lister strategy and presence of event consumers before claiming net
+   resource savings. These follow-ups are NOT_RUN.

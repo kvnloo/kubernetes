@@ -1,0 +1,12 @@
+{
+  "checks": {
+    "incomplete_benchmark_rejected": true,
+    "known_good_benchmark_accepted": true,
+    "known_good_test_log_accepted": true,
+    "missing_required_test_rejected": true,
+    "missing_unsafe_control_rejected": true,
+    "wrong_iteration_count_rejected": true,
+    "zero_test_green_rejected": true
+  },
+  "status": "CALIBRATION_PASSED"
+}

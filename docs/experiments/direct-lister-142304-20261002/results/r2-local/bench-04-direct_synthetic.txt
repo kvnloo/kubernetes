@@ -1,0 +1,17 @@
+goos: linux
+goarch: amd64
+pkg: k8s.io/kubernetes/pkg/kubeapiserver/direct
+cpu: INTEL(R) XEON(R) PLATINUM 8573C
+BenchmarkDirectListerReadCost/op=get/n=1/managed_fields_bytes=0/path=direct_synthetic         	     100	      2319 ns/op	    4464 B/op	      18 allocs/op
+BenchmarkDirectListerReadCost/op=get/n=1/managed_fields_bytes=4082/path=direct_synthetic      	     100	      4275 ns/op	    8680 B/op	      21 allocs/op
+BenchmarkDirectListerReadCost/op=get/n=1/managed_fields_bytes=32748/path=direct_synthetic     	     100	     28790 ns/op	   37352 B/op	      21 allocs/op
+BenchmarkDirectListerReadCost/op=get/n=100/managed_fields_bytes=0/path=direct_synthetic       	     100	     11600 ns/op	    4464 B/op	      18 allocs/op
+BenchmarkDirectListerReadCost/op=get/n=100/managed_fields_bytes=4082/path=direct_synthetic    	     100	      3342 ns/op	    8680 B/op	      21 allocs/op
+BenchmarkDirectListerReadCost/op=get/n=100/managed_fields_bytes=32748/path=direct_synthetic   	     100	      6335 ns/op	   37352 B/op	      21 allocs/op
+BenchmarkDirectListerReadCost/op=list/n=1/managed_fields_bytes=0/path=direct_synthetic        	     100	      2663 ns/op	    3688 B/op	      26 allocs/op
+BenchmarkDirectListerReadCost/op=list/n=1/managed_fields_bytes=4082/path=direct_synthetic     	     100	      3524 ns/op	    7904 B/op	      29 allocs/op
+BenchmarkDirectListerReadCost/op=list/n=1/managed_fields_bytes=32748/path=direct_synthetic    	     100	     25105 ns/op	   36576 B/op	      29 allocs/op
+BenchmarkDirectListerReadCost/op=list/n=100/managed_fields_bytes=0/path=direct_synthetic      	     100	    287438 ns/op	  281368 B/op	     825 allocs/op
+BenchmarkDirectListerReadCost/op=list/n=100/managed_fields_bytes=4082/path=direct_synthetic   	     100	    443735 ns/op	  702968 B/op	    1125 allocs/op
+BenchmarkDirectListerReadCost/op=list/n=100/managed_fields_bytes=32748/path=direct_synthetic  	     100	   1207182 ns/op	 3570168 B/op	    1125 allocs/op
+PASS

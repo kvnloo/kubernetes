@@ -1,0 +1,9 @@
+I found a concrete transformation difference while testing the two lister paths: `BuildGenericConfig` installs `WithTransform(trim)` to remove managedFields from informer objects, but the direct lister reads/converts Storage objects without that transform.
+
+In a component test using actual informers with and without that trim, direct Get/List retained managedFields while the trimmed informer returned none; all other fixture fields compared exactly. This is separate from the mutation concern: the copy-isolation tests passed.
+
+Should the direct path preserve the existing transformed-object contract here? It also affects copy costs. In a synthetic 100-Pod List fixture, allocated bytes per direct read rose from 281,368 without managedFields to 3,570,168 with 32,748 managed-fields bytes per Pod; the cached lister allocated 4,216 bytes in both cases. This is a bounded component benchmark, not an apiserver performance result, and the nonempty-field arms have the stated output difference.
+
+Preregistration, controls, raw measurements and independent verification: https://github.com/kvnloo/kubernetes/tree/experiment/direct-lister-contract-142304-20261002/docs/experiments/direct-lister-142304-20261002
+
+AI-assisted experiment and analysis.

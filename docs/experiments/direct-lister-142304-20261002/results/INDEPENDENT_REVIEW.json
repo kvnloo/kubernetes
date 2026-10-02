@@ -1,0 +1,210 @@
+{
+  "status": "INDEPENDENT_REVIEW_PASSED_BOUNDED",
+  "review_method": "Verifier independently re-executed; source/binary/prereg hashes checked; raw JSONL full test/subtest inventory checked; three benchmark cells independently parsed and recomputed without importing shared verifier. No benchmarks or Go tests rerun.",
+  "source_sha": "1f0afa8df5d7813706d0ca9fa64d0cb7857017ea",
+  "source_base": "b7af3931105444bf5f0c31fca8ee012a779906f9",
+  "toolchain": "go version go1.27.0 linux/amd64",
+  "evidence_path": "/workspace/k8s-local/src/evidence",
+  "prereg_sha256": "51ed6f2f949cd227d03076b92129c37517f4160ee67a8c1f7d008c6e67012b39",
+  "binary_sha256": "0a9bdb21bf15f9352e16015a864a07132cfc7c79679221188d23fff74e085446",
+  "manifest_sha256": "3c7aa7fbdd33387d3d846f3ff179d5fadff29248a30f5c23f9a5b4ecee61d4f5",
+  "source_hash_matches": {
+    "pkg/kubeapiserver/direct/client.go": true,
+    "pkg/kubeapiserver/direct/client_conversion_benchmark_test.go": true,
+    "pkg/kubeapiserver/direct/client_mutation_test.go": true,
+    "pkg/kubeapiserver/direct/context_route_test.go": true,
+    "pkg/kubeapiserver/direct/conversion_contract_test.go": true,
+    "pkg/kubeapiserver/direct/factory.go": true,
+    "pkg/kubeapiserver/direct/lifecycle_contract_test.go": true,
+    "pkg/kubeapiserver/direct/lister.go": true,
+    "pkg/kubeapiserver/direct/lister_nothing_test.go": true,
+    "pkg/kubeapiserver/direct/read_cost_benchmark_test.go": true,
+    "pkg/kubeapiserver/direct/selector_contract_test.go": true,
+    "docs/experiments/direct-lister-142304-20261002/run_experiments.py": true,
+    "docs/experiments/direct-lister-142304-20261002/verify_artifacts.py": true,
+    "docs/experiments/direct-lister-142304-20261002/PREREG.json": true
+  },
+  "registered_amendment": "EXECUTION_AMENDMENT_R2.json permits separate local Linux amd64 execution; do not pool timing with hosted replication.",
+  "verifier_rerun": {
+    "exit_code": 0,
+    "status": "VERIFIED_BOUNDED_EVIDENCE",
+    "correctness_tests": 10,
+    "replication_tests": 6,
+    "benchmark_records_per_arm": 120
+  },
+  "raw_test_inventory": {
+    "correctness": {
+      "all_named_test_and_subtest_passes": 131,
+      "top_level_tests": 10,
+      "counts_including_top_level": {
+        "TestStorageClientReturnedObjectsAreIsolated": 3,
+        "TestUnsafeConversionAliasesSource": 1,
+        "TestExperimentContextRoutes": 8,
+        "TestExperimentConversionGVKIsolation": 7,
+        "TestExperimentGenericListIsolation": 1,
+        "TestExperimentManagedFieldsTransformBoundary": 1,
+        "TestExperimentInformerLifecycle": 4,
+        "TestPodListerSelectors": 9,
+        "TestDirectListerReadCostFixtureParity": 7,
+        "TestExperimentSelectorParity": 90
+      },
+      "selector_matrix_cases": 88,
+      "selector_calibration_cases": 1,
+      "gvk_leaf_cases": 4,
+      "context_routes": 7,
+      "lifecycle_arms": 3,
+      "failed_or_skipped": 0,
+      "sha256": "34eac2793276ac5f50993f96918db7b336d39c0860211a1663243485232004e1"
+    },
+    "replication": {
+      "all_named_test_and_subtest_passes": 111,
+      "top_level_tests": 6,
+      "counts_including_top_level": {
+        "TestExperimentContextRoutes": 8,
+        "TestExperimentConversionGVKIsolation": 7,
+        "TestExperimentGenericListIsolation": 1,
+        "TestExperimentManagedFieldsTransformBoundary": 1,
+        "TestExperimentInformerLifecycle": 4,
+        "TestExperimentSelectorParity": 90
+      },
+      "selector_matrix_cases": 88,
+      "selector_calibration_cases": 1,
+      "gvk_leaf_cases": 4,
+      "context_routes": 7,
+      "lifecycle_arms": 3,
+      "failed_or_skipped": 0,
+      "sha256": "3b08b4fa6400aedcd67908bb84a328b0d9d208d0f7eb7debd652b1870b7187a2"
+    }
+  },
+  "independently_recomputed_cells": [
+    {
+      "operation": "get",
+      "pod_count": 1,
+      "managed_fields_bytes": 0,
+      "cached_median": {
+        "ns/op": 159.45,
+        "B/op": 16.0,
+        "allocs/op": 1.0
+      },
+      "direct_median": {
+        "ns/op": 2354.5,
+        "B/op": 4464.0,
+        "allocs/op": 18.0
+      },
+      "paired_delta_median": {
+        "ns/op": 2195.8,
+        "B/op": 4448.0,
+        "allocs/op": 17.0
+      },
+      "paired_time_delta_bootstrap_95_percent_ns_per_op": [
+        1932.3,
+        2458.8
+      ],
+      "paired_time_delta_samples": [
+        1932.3,
+        1807.3,
+        2300.3,
+        10405.4,
+        2169.2,
+        1918.5,
+        2542.7,
+        2222.4,
+        2458.8,
+        2107.8
+      ],
+      "matches_published_summary": true
+    },
+    {
+      "operation": "list",
+      "pod_count": 100,
+      "managed_fields_bytes": 0,
+      "cached_median": {
+        "ns/op": 3696.5,
+        "B/op": 4216.0,
+        "allocs/op": 11.0
+      },
+      "direct_median": {
+        "ns/op": 263427.0,
+        "B/op": 281368.0,
+        "allocs/op": 825.0
+      },
+      "paired_delta_median": {
+        "ns/op": 259334.5,
+        "B/op": 277152.0,
+        "allocs/op": 814.0
+      },
+      "paired_time_delta_bootstrap_95_percent_ns_per_op": [
+        244513.5,
+        320694.0
+      ],
+      "paired_time_delta_samples": [
+        233798.0,
+        245262.0,
+        250665.0,
+        359150.0,
+        283776.0,
+        282238.0,
+        554768.0,
+        264838.0,
+        238362.0,
+        253831.0
+      ],
+      "matches_published_summary": true
+    },
+    {
+      "operation": "list",
+      "pod_count": 100,
+      "managed_fields_bytes": 32748,
+      "cached_median": {
+        "ns/op": 3716.5,
+        "B/op": 4216.0,
+        "allocs/op": 11.0
+      },
+      "direct_median": {
+        "ns/op": 1140225.5,
+        "B/op": 3570168.0,
+        "allocs/op": 1125.0
+      },
+      "paired_delta_median": {
+        "ns/op": 1136208.5,
+        "B/op": 3565952.0,
+        "allocs/op": 1114.0
+      },
+      "paired_time_delta_bootstrap_95_percent_ns_per_op": [
+        1078403.0,
+        1243100.5
+      ],
+      "paired_time_delta_samples": [
+        1123444.0,
+        1028743.0,
+        1119489.0,
+        1056183.0,
+        1204152.0,
+        1224465.0,
+        2510313.0,
+        1282049.0,
+        1078403.0,
+        1148973.0
+      ],
+      "matches_published_summary": true
+    }
+  ],
+  "observed_component_findings": [
+    "Get/List conversion left source and independently returned fixtures unchanged, including source/second immutable snapshots.",
+    "Synthetic populated PodList item GVK survived conversion while outer GVK cleared; empty-item case remained empty.",
+    "Direct context-aware route preserved deadline/sentinel and returned cancellation/expiry errors in the recording-storage experiment; imported PSA adapter discarded caller context.",
+    "Actual fake-client informer with production-equivalent trim returned no managedFields; direct Get/List retained one entry; every unmasked field matched.",
+    "Direct lister-only factory started no informer. Adding an event consumer started list/watch and retained an informer cache while lister reads still used direct storage.",
+    "88 typed/generic selector matrix cases passed; calibration detected six false-positive objects after Nothing string roundtrip."
+  ],
+  "claim_limits": [
+    "Synthetic Storage, fake client and finite benign fixtures; no integrated live watch-cache experiment.",
+    "Populated list-item GVK is a synthetic boundary case, not evidence that live watch-cache input carries it.",
+    "Context experiment exercises imported adapter but not full admission request processing or HTTP filter chain.",
+    "Informer lifecycle tests establish component behavior, not elimination of all live informer consumers or net retained-memory savings.",
+    "Costs are warmed read operations with a synthetic storage stub: no etcd/cache lookup/network/contention costs and no whole-system speedup claim.",
+    "Ten paired process repetitions with 100 timed operations per cell on one local host. Bootstrap intervals describe this bounded run; do not pool hosts or treat as production generalization.",
+    "The first hosted attempt failed before compilation due to formatting and remains retained; no expanded experiment result was measured in that attempt."
+  ],
+  "pending": "Hosted r2 cross-host replication 37044953930 was in progress when review requested; this review attests only local evidence."
+}

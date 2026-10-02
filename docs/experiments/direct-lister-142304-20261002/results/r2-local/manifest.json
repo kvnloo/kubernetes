@@ -1,0 +1,473 @@
+{
+  "source_sha": "1f0afa8df5d7813706d0ca9fa64d0cb7857017ea",
+  "source_base": "b7af3931105444bf5f0c31fca8ee012a779906f9",
+  "prereg_sha256": "51ed6f2f949cd227d03076b92129c37517f4160ee67a8c1f7d008c6e67012b39",
+  "go_version": "go version go1.27.0 linux/amd64",
+  "platform": {
+    "platform": "Linux-6.18.44-x86_64-with-glibc2.41",
+    "processor": "",
+    "cpu_count": 5,
+    "cpuinfo": "processor\t: 0\nvendor_id\t: GenuineIntel\ncpu family\t: 6\nmodel\t\t: 207\nmodel name\t: INTEL(R) XEON(R) PLATINUM 8573C\nstepping\t: 2\nmicrocode\t: 0x1\ncpu MHz\t\t: 2300.000\ncache size\t: 266240 KB\nphysical id\t: 0\nsiblings\t: 5\ncore id\t\t: 0\ncpu cores\t: 5\napicid\t\t: 0\ninitial apicid\t: 0\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 28\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid tsc_known_freq pni pclmulqdq ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch cpuid_fault fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx_vnni avx512_bf16 arat avx512vbmi umip waitpkg avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid cldemote movdiri movdir64b fsrm serialize tsxldtrk avx512_fp16 arch_capabilities\nbugs\t\t: spectre_v1 spectre_v2 spec_store_bypass swapgs retbleed bhi spectre_v2_user its\nbogomips\t: 4600.00\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 46 bits physical, 57 bits virtual\npower management:"
+  },
+  "run_id": null,
+  "run_attempt": null,
+  "commands": [
+    {
+      "label": "verifier calibration",
+      "argv": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "/workspace/k8s-local/src/docs/experiments/direct-lister-142304-20261002/verify_artifacts.py",
+        "--self-test"
+      ],
+      "start_offset_seconds": 0.010151204000067082,
+      "stdout_file": "calibration.json",
+      "returncode": 0,
+      "elapsed_seconds": 0.06401815299977898
+    },
+    {
+      "label": "format characterization",
+      "argv": [
+        "gofmt",
+        "-d",
+        "/workspace/k8s-local/src/pkg/kubeapiserver/direct/conversion_contract_test.go",
+        "/workspace/k8s-local/src/pkg/kubeapiserver/direct/lifecycle_contract_test.go",
+        "/workspace/k8s-local/src/pkg/kubeapiserver/direct/selector_contract_test.go",
+        "/workspace/k8s-local/src/pkg/kubeapiserver/direct/context_route_test.go"
+      ],
+      "start_offset_seconds": 0.07464261099994474,
+      "stdout_file": "format.diff",
+      "returncode": 0,
+      "elapsed_seconds": 0.007677092000449193
+    },
+    {
+      "label": "build pinned test binary",
+      "argv": [
+        "go",
+        "test",
+        "-p=2",
+        "-c",
+        "-o",
+        "/workspace/k8s-local/src/evidence/direct.test",
+        "./pkg/kubeapiserver/direct"
+      ],
+      "start_offset_seconds": 0.08260250399871438,
+      "stdout_file": "build.log",
+      "returncode": 0,
+      "elapsed_seconds": 2.376793458000975
+    },
+    {
+      "label": "correctness with controls",
+      "argv": [
+        "go",
+        "tool",
+        "test2json",
+        "-t",
+        "-p",
+        "k8s.io/kubernetes/pkg/kubeapiserver/direct",
+        "/workspace/k8s-local/src/evidence/direct.test",
+        "-test.v=test2json",
+        "-test.count=1",
+        "-test.timeout=60s",
+        "-test.run=^(TestStorageClientReturnedObjectsAreIsolated|TestUnsafeConversionAliasesSource|TestPodListerSelectors|TestExperimentConversionGVKIsolation|TestExperimentGenericListIsolation|TestExperimentContextRoutes|TestExperimentManagedFieldsTransformBoundary|TestExperimentInformerLifecycle|TestExperimentSelectorParity|TestDirectListerReadCostFixtureParity)$"
+      ],
+      "start_offset_seconds": 2.591435590000401,
+      "stdout_file": "correctness.jsonl",
+      "returncode": 0,
+      "elapsed_seconds": 0.9756508029986435
+    },
+    {
+      "label": "fresh-process replication",
+      "argv": [
+        "go",
+        "tool",
+        "test2json",
+        "-t",
+        "-p",
+        "k8s.io/kubernetes/pkg/kubeapiserver/direct",
+        "/workspace/k8s-local/src/evidence/direct.test",
+        "-test.v=test2json",
+        "-test.count=1",
+        "-test.timeout=60s",
+        "-test.run=^TestExperiment"
+      ],
+      "start_offset_seconds": 3.5675045419993694,
+      "stdout_file": "replication.jsonl",
+      "returncode": 0,
+      "elapsed_seconds": 0.31508671200026583
+    },
+    {
+      "label": "pair 00 cached",
+      "argv": [
+        "/workspace/k8s-local/src/evidence/direct.test",
+        "-test.run=^$",
+        "-test.bench=^BenchmarkDirectListerReadCost$/op=.*/n=.*/managed_fields_bytes=.*/path=cached$",
+        "-test.benchmem",
+        "-test.benchtime=100x",
+        "-test.cpu=1",
+        "-test.count=1",
+        "-test.timeout=60s"
+      ],
+      "start_offset_seconds": 3.883060365000347,
+      "stdout_file": "bench-00-cached.txt",
+      "returncode": 0,
+      "elapsed_seconds": 0.16491334599959373
+    },
+    {
+      "label": "pair 00 direct_synthetic",
+      "argv": [
+        "/workspace/k8s-local/src/evidence/direct.test",
+        "-test.run=^$",
+        "-test.bench=^BenchmarkDirectListerReadCost$/op=.*/n=.*/managed_fields_bytes=.*/path=direct_synthetic$",
+        "-test.benchmem",
+        "-test.benchtime=100x",
+        "-test.cpu=1",
+        "-test.count=1",
+        "-test.timeout=60s"
+      ],
+      "start_offset_seconds": 4.048900780999247,
+      "stdout_file": "bench-00-direct_synthetic.txt",
+      "returncode": 0,
+      "elapsed_seconds": 0.315066745999502
+    },
+    {
+      "label": "pair 01 direct_synthetic",
+      "argv": [
+        "/workspace/k8s-local/src/evidence/direct.test",
+        "-test.run=^$",
+        "-test.bench=^BenchmarkDirectListerReadCost$/op=.*/n=.*/managed_fields_bytes=.*/path=direct_synthetic$",
+        "-test.benchmem",
+        "-test.benchtime=100x",
+        "-test.cpu=1",
+        "-test.count=1",
+        "-test.timeout=60s"
+      ],
+      "start_offset_seconds": 4.364510776998941,
+      "stdout_file": "bench-01-direct_synthetic.txt",
+      "returncode": 0,
+      "elapsed_seconds": 0.31472208100058197
+    },
+    {
+      "label": "pair 01 cached",
+      "argv": [
+        "/workspace/k8s-local/src/evidence/direct.test",
+        "-test.run=^$",
+        "-test.bench=^BenchmarkDirectListerReadCost$/op=.*/n=.*/managed_fields_bytes=.*/path=cached$",
+        "-test.benchmem",
+        "-test.benchtime=100x",
+        "-test.cpu=1",
+        "-test.count=1",
+        "-test.timeout=60s"
+      ],
+      "start_offset_seconds": 4.680080738999095,
+      "stdout_file": "bench-01-cached.txt",
+      "returncode": 0,
+      "elapsed_seconds": 0.16473835699980555
+    },
+    {
+      "label": "pair 02 cached",
+      "argv": [
+        "/workspace/k8s-local/src/evidence/direct.test",
+        "-test.run=^$",
+        "-test.bench=^BenchmarkDirectListerReadCost$/op=.*/n=.*/managed_fields_bytes=.*/path=cached$",
+        "-test.benchmem",
+        "-test.benchtime=100x",
+        "-test.cpu=1",
+        "-test.count=1",
+        "-test.timeout=60s"
+      ],
+      "start_offset_seconds": 4.845365470999241,
+      "stdout_file": "bench-02-cached.txt",
+      "returncode": 0,
+      "elapsed_seconds": 0.16524048100109212
+    },
+    {
+      "label": "pair 02 direct_synthetic",
+      "argv": [
+        "/workspace/k8s-local/src/evidence/direct.test",
+        "-test.run=^$",
+        "-test.bench=^BenchmarkDirectListerReadCost$/op=.*/n=.*/managed_fields_bytes=.*/path=direct_synthetic$",
+        "-test.benchmem",
+        "-test.benchtime=100x",
+        "-test.cpu=1",
+        "-test.count=1",
+        "-test.timeout=60s"
+      ],
+      "start_offset_seconds": 5.01124265999897,
+      "stdout_file": "bench-02-direct_synthetic.txt",
+      "returncode": 0,
+      "elapsed_seconds": 0.3151039430013043
+    },
+    {
+      "label": "pair 03 direct_synthetic",
+      "argv": [
+        "/workspace/k8s-local/src/evidence/direct.test",
+        "-test.run=^$",
+        "-test.bench=^BenchmarkDirectListerReadCost$/op=.*/n=.*/managed_fields_bytes=.*/path=direct_synthetic$",
+        "-test.benchmem",
+        "-test.benchtime=100x",
+        "-test.cpu=1",
+        "-test.count=1",
+        "-test.timeout=60s"
+      ],
+      "start_offset_seconds": 5.3269283390000055,
+      "stdout_file": "bench-03-direct_synthetic.txt",
+      "returncode": 0,
+      "elapsed_seconds": 0.36501868999948783
+    },
+    {
+      "label": "pair 03 cached",
+      "argv": [
+        "/workspace/k8s-local/src/evidence/direct.test",
+        "-test.run=^$",
+        "-test.bench=^BenchmarkDirectListerReadCost$/op=.*/n=.*/managed_fields_bytes=.*/path=cached$",
+        "-test.benchmem",
+        "-test.benchtime=100x",
+        "-test.cpu=1",
+        "-test.count=1",
+        "-test.timeout=60s"
+      ],
+      "start_offset_seconds": 5.6924164470001415,
+      "stdout_file": "bench-03-cached.txt",
+      "returncode": 0,
+      "elapsed_seconds": 0.16456357700008084
+    },
+    {
+      "label": "pair 04 cached",
+      "argv": [
+        "/workspace/k8s-local/src/evidence/direct.test",
+        "-test.run=^$",
+        "-test.bench=^BenchmarkDirectListerReadCost$/op=.*/n=.*/managed_fields_bytes=.*/path=cached$",
+        "-test.benchmem",
+        "-test.benchtime=100x",
+        "-test.cpu=1",
+        "-test.count=1",
+        "-test.timeout=60s"
+      ],
+      "start_offset_seconds": 5.857634478999898,
+      "stdout_file": "bench-04-cached.txt",
+      "returncode": 0,
+      "elapsed_seconds": 0.1645823239996389
+    },
+    {
+      "label": "pair 04 direct_synthetic",
+      "argv": [
+        "/workspace/k8s-local/src/evidence/direct.test",
+        "-test.run=^$",
+        "-test.bench=^BenchmarkDirectListerReadCost$/op=.*/n=.*/managed_fields_bytes=.*/path=direct_synthetic$",
+        "-test.benchmem",
+        "-test.benchtime=100x",
+        "-test.cpu=1",
+        "-test.count=1",
+        "-test.timeout=60s"
+      ],
+      "start_offset_seconds": 6.0229967960003705,
+      "stdout_file": "bench-04-direct_synthetic.txt",
+      "returncode": 0,
+      "elapsed_seconds": 0.3651323579997552
+    },
+    {
+      "label": "pair 05 direct_synthetic",
+      "argv": [
+        "/workspace/k8s-local/src/evidence/direct.test",
+        "-test.run=^$",
+        "-test.bench=^BenchmarkDirectListerReadCost$/op=.*/n=.*/managed_fields_bytes=.*/path=direct_synthetic$",
+        "-test.benchmem",
+        "-test.benchtime=100x",
+        "-test.cpu=1",
+        "-test.count=1",
+        "-test.timeout=60s"
+      ],
+      "start_offset_seconds": 6.388932713998656,
+      "stdout_file": "bench-05-direct_synthetic.txt",
+      "returncode": 0,
+      "elapsed_seconds": 0.365603510001165
+    },
+    {
+      "label": "pair 05 cached",
+      "argv": [
+        "/workspace/k8s-local/src/evidence/direct.test",
+        "-test.run=^$",
+        "-test.bench=^BenchmarkDirectListerReadCost$/op=.*/n=.*/managed_fields_bytes=.*/path=cached$",
+        "-test.benchmem",
+        "-test.benchtime=100x",
+        "-test.cpu=1",
+        "-test.count=1",
+        "-test.timeout=60s"
+      ],
+      "start_offset_seconds": 6.755219569999099,
+      "stdout_file": "bench-05-cached.txt",
+      "returncode": 0,
+      "elapsed_seconds": 0.16465361500013387
+    },
+    {
+      "label": "pair 06 cached",
+      "argv": [
+        "/workspace/k8s-local/src/evidence/direct.test",
+        "-test.run=^$",
+        "-test.bench=^BenchmarkDirectListerReadCost$/op=.*/n=.*/managed_fields_bytes=.*/path=cached$",
+        "-test.benchmem",
+        "-test.benchtime=100x",
+        "-test.cpu=1",
+        "-test.count=1",
+        "-test.timeout=60s"
+      ],
+      "start_offset_seconds": 6.920443159999195,
+      "stdout_file": "bench-06-cached.txt",
+      "returncode": 0,
+      "elapsed_seconds": 0.16450237100070808
+    },
+    {
+      "label": "pair 06 direct_synthetic",
+      "argv": [
+        "/workspace/k8s-local/src/evidence/direct.test",
+        "-test.run=^$",
+        "-test.bench=^BenchmarkDirectListerReadCost$/op=.*/n=.*/managed_fields_bytes=.*/path=direct_synthetic$",
+        "-test.benchmem",
+        "-test.benchtime=100x",
+        "-test.cpu=1",
+        "-test.count=1",
+        "-test.timeout=60s"
+      ],
+      "start_offset_seconds": 7.085490120000031,
+      "stdout_file": "bench-06-direct_synthetic.txt",
+      "returncode": 0,
+      "elapsed_seconds": 0.6756013969988999
+    },
+    {
+      "label": "pair 07 direct_synthetic",
+      "argv": [
+        "/workspace/k8s-local/src/evidence/direct.test",
+        "-test.run=^$",
+        "-test.bench=^BenchmarkDirectListerReadCost$/op=.*/n=.*/managed_fields_bytes=.*/path=direct_synthetic$",
+        "-test.benchmem",
+        "-test.benchtime=100x",
+        "-test.cpu=1",
+        "-test.count=1",
+        "-test.timeout=60s"
+      ],
+      "start_offset_seconds": 7.761639336000371,
+      "stdout_file": "bench-07-direct_synthetic.txt",
+      "returncode": 0,
+      "elapsed_seconds": 0.41674006299945177
+    },
+    {
+      "label": "pair 07 cached",
+      "argv": [
+        "/workspace/k8s-local/src/evidence/direct.test",
+        "-test.run=^$",
+        "-test.bench=^BenchmarkDirectListerReadCost$/op=.*/n=.*/managed_fields_bytes=.*/path=cached$",
+        "-test.benchmem",
+        "-test.benchtime=100x",
+        "-test.cpu=1",
+        "-test.count=1",
+        "-test.timeout=60s"
+      ],
+      "start_offset_seconds": 8.17895868800042,
+      "stdout_file": "bench-07-cached.txt",
+      "returncode": 0,
+      "elapsed_seconds": 0.2650868189994071
+    },
+    {
+      "label": "pair 08 cached",
+      "argv": [
+        "/workspace/k8s-local/src/evidence/direct.test",
+        "-test.run=^$",
+        "-test.bench=^BenchmarkDirectListerReadCost$/op=.*/n=.*/managed_fields_bytes=.*/path=cached$",
+        "-test.benchmem",
+        "-test.benchtime=100x",
+        "-test.cpu=1",
+        "-test.count=1",
+        "-test.timeout=60s"
+      ],
+      "start_offset_seconds": 8.444694239000455,
+      "stdout_file": "bench-08-cached.txt",
+      "returncode": 0,
+      "elapsed_seconds": 0.21477341199897637
+    },
+    {
+      "label": "pair 08 direct_synthetic",
+      "argv": [
+        "/workspace/k8s-local/src/evidence/direct.test",
+        "-test.run=^$",
+        "-test.bench=^BenchmarkDirectListerReadCost$/op=.*/n=.*/managed_fields_bytes=.*/path=direct_synthetic$",
+        "-test.benchmem",
+        "-test.benchtime=100x",
+        "-test.cpu=1",
+        "-test.count=1",
+        "-test.timeout=60s"
+      ],
+      "start_offset_seconds": 8.660078011000223,
+      "stdout_file": "bench-08-direct_synthetic.txt",
+      "returncode": 0,
+      "elapsed_seconds": 0.32154011499915214
+    },
+    {
+      "label": "pair 09 direct_synthetic",
+      "argv": [
+        "/workspace/k8s-local/src/evidence/direct.test",
+        "-test.run=^$",
+        "-test.bench=^BenchmarkDirectListerReadCost$/op=.*/n=.*/managed_fields_bytes=.*/path=direct_synthetic$",
+        "-test.benchmem",
+        "-test.benchtime=100x",
+        "-test.cpu=1",
+        "-test.count=1",
+        "-test.timeout=60s"
+      ],
+      "start_offset_seconds": 8.982440568999664,
+      "stdout_file": "bench-09-direct_synthetic.txt",
+      "returncode": 0,
+      "elapsed_seconds": 0.36495382000066456
+    },
+    {
+      "label": "pair 09 cached",
+      "argv": [
+        "/workspace/k8s-local/src/evidence/direct.test",
+        "-test.run=^$",
+        "-test.bench=^BenchmarkDirectListerReadCost$/op=.*/n=.*/managed_fields_bytes=.*/path=cached$",
+        "-test.benchmem",
+        "-test.benchtime=100x",
+        "-test.cpu=1",
+        "-test.count=1",
+        "-test.timeout=60s"
+      ],
+      "start_offset_seconds": 9.348003809998772,
+      "stdout_file": "bench-09-cached.txt",
+      "returncode": 0,
+      "elapsed_seconds": 0.16434209500039287
+    },
+    {
+      "label": "independent evidence verification",
+      "argv": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "/workspace/k8s-local/src/docs/experiments/direct-lister-142304-20261002/verify_artifacts.py",
+        "/workspace/k8s-local/src/evidence",
+        "/workspace/k8s-local/src/docs/experiments/direct-lister-142304-20261002/PREREG.json"
+      ],
+      "start_offset_seconds": 9.513482227999702,
+      "stdout_file": "verification.log",
+      "returncode": 0,
+      "elapsed_seconds": 0.3148270149995369
+    }
+  ],
+  "source_hashes": {
+    "pkg/kubeapiserver/direct/client.go": "672fddb618a1b0a72014887471213aec12ebd24f69d8185c6958c48f93131e01",
+    "pkg/kubeapiserver/direct/client_conversion_benchmark_test.go": "6d1c41bf04f6e5a6f3aeba2e6835fba4af66604249527c07136919fb41e84946",
+    "pkg/kubeapiserver/direct/client_mutation_test.go": "a47cf23a77105a0686241f0f36ad257f5381fcd8c48635a2d5e15dd02b6db919",
+    "pkg/kubeapiserver/direct/context_route_test.go": "488b7e192f2856a474c6fd2e26572cfe2ff52714199caecae8bde330001619dd",
+    "pkg/kubeapiserver/direct/conversion_contract_test.go": "d24111a3d60a92b8d89faea9f80f613827af49ddd9e4c60312c7b902ffeef8eb",
+    "pkg/kubeapiserver/direct/factory.go": "9e2d543a4d707820de63527527dace905962ed581162e2b6ca4dde27c2de0b29",
+    "pkg/kubeapiserver/direct/lifecycle_contract_test.go": "b427c47d6b0f87dea8c1d4b42d210261bae9658d6133ee25230bc885f694ae3b",
+    "pkg/kubeapiserver/direct/lister.go": "aaf6c39b3be82d4307e22bb372e1005fa372220c58d91edd25820f1f02a15461",
+    "pkg/kubeapiserver/direct/lister_nothing_test.go": "e3f67fcd18090988f07b60bd3cbf9f36b386fbb180822c8f9e01176577ac104a",
+    "pkg/kubeapiserver/direct/read_cost_benchmark_test.go": "7e5493c131a799e8741f2eff182436b84a22173cfcbd94c9363fb39a9c146596",
+    "pkg/kubeapiserver/direct/selector_contract_test.go": "06912b4dd4ccec095df870bbe170003e46a5b147f98f7a6e71c6d43f468d8699",
+    "docs/experiments/direct-lister-142304-20261002/run_experiments.py": "155c49e6f04555ad4f49f150abd176e00aed06f3fa00855c29835f51a52930f2",
+    "docs/experiments/direct-lister-142304-20261002/verify_artifacts.py": "7f523568e0d8a17cd624e12917c8dcef68a085bc3e9fa22fd475a05f78538edb",
+    "docs/experiments/direct-lister-142304-20261002/PREREG.json": "51ed6f2f949cd227d03076b92129c37517f4160ee67a8c1f7d008c6e67012b39"
+  },
+  "status": "verified",
+  "elapsed_seconds": 9.828952984998978,
+  "named_command_seconds": 9.670932352999444,
+  "residual_seconds": 0.1580206319995341,
+  "binary_sha256": "0a9bdb21bf15f9352e16015a864a07132cfc7c79679221188d23fff74e085446"
+}

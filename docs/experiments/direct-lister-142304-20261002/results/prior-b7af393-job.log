@@ -1,0 +1,326 @@
+﻿2026-10-02T15:40:07.6473149Z Current runner version: '2.337.0'
+2026-10-02T15:40:07.6531816Z ##[group]Runner Image Provisioner
+2026-10-02T15:40:07.6532832Z Hosted Compute Agent
+2026-10-02T15:40:07.6533463Z Version: 20260901.588
+2026-10-02T15:40:07.6544587Z Commit: f88ec8081b781fac6c440065ac7ff9e710ce3d0b
+2026-10-02T15:40:07.6545444Z Build Date: 2026-09-01T19:56:44Z
+2026-10-02T15:40:07.6546122Z Worker ID: {234683f1-c4ae-4476-9853-7f41ab2c05f6}
+2026-10-02T15:40:07.6546834Z Azure Region: northcentralus
+2026-10-02T15:40:07.6547499Z ##[endgroup]
+2026-10-02T15:40:07.6549194Z ##[group]VM Image
+2026-10-02T15:40:07.6549828Z - OS: Linux (x64)
+2026-10-02T15:40:07.6550400Z - Source: Docker
+2026-10-02T15:40:07.6550940Z - Name: ubuntu:24.04
+2026-10-02T15:40:07.6551550Z - Version: 20260925.9.1
+2026-10-02T15:40:07.6553379Z ##[endgroup]
+2026-10-02T15:40:07.6565100Z ##[group]GITHUB_TOKEN Permissions
+2026-10-02T15:40:07.6567434Z Contents: read
+2026-10-02T15:40:07.6568095Z Metadata: read
+2026-10-02T15:40:07.6568647Z ##[endgroup]
+2026-10-02T15:40:07.6571463Z Secret source: Actions
+2026-10-02T15:40:07.6572508Z Cache mode: write
+2026-10-02T15:40:07.6573294Z Prepare workflow directory
+2026-10-02T15:40:07.8027892Z Prepare all required actions
+2026-10-02T15:40:07.8274343Z Getting action download info
+2026-10-02T15:40:08.2305907Z Download action repository 'actions/checkout@v5' (SHA:fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09)
+2026-10-02T15:40:08.5661621Z Download action repository 'actions/setup-go@v6' (SHA:924ae3a1cded613372ab5595356fb5720e22ba16)
+2026-10-02T15:40:09.1012579Z Complete job name: mutation
+2026-10-02T15:40:09.1963378Z ##[group]Run actions/checkout@v5
+2026-10-02T15:40:09.1964675Z with:
+2026-10-02T15:40:09.1965141Z   repository: kvnloo/kubernetes
+2026-10-02T15:40:09.1969706Z   token: ***
+2026-10-02T15:40:09.1970161Z   ssh-strict: true
+2026-10-02T15:40:09.1970617Z   ssh-user: git
+2026-10-02T15:40:09.1971064Z   persist-credentials: true
+2026-10-02T15:40:09.1971559Z   clean: true
+2026-10-02T15:40:09.1972011Z   sparse-checkout-cone-mode: true
+2026-10-02T15:40:09.1972566Z   fetch-depth: 1
+2026-10-02T15:40:09.1973003Z   fetch-tags: false
+2026-10-02T15:40:09.1973448Z   show-progress: true
+2026-10-02T15:40:09.1974149Z   lfs: false
+2026-10-02T15:40:09.1974570Z   submodules: false
+2026-10-02T15:40:09.1975021Z   set-safe-directory: true
+2026-10-02T15:40:09.1975541Z   allow-unsafe-pr-checkout: false
+2026-10-02T15:40:09.1976378Z ##[endgroup]
+2026-10-02T15:40:09.5570722Z Syncing repository: kvnloo/kubernetes
+2026-10-02T15:40:09.5572686Z ##[group]Getting Git version info
+2026-10-02T15:40:09.5573526Z Working directory is '/home/runner/work/kubernetes/kubernetes'
+2026-10-02T15:40:09.5597846Z [command]/usr/bin/git version
+2026-10-02T15:40:09.5805200Z git version 2.55.0
+2026-10-02T15:40:09.5807148Z ##[endgroup]
+2026-10-02T15:40:09.5898437Z Temporarily overriding HOME='/home/runner/work/_temp/5f2b3244-fefa-43e4-b7a1-45baf4d11cdc' before making global git config changes
+2026-10-02T15:40:09.5901248Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-02T15:40:09.5920338Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/kubernetes/kubernetes
+2026-10-02T15:40:09.6047085Z Deleting the contents of '/home/runner/work/kubernetes/kubernetes'
+2026-10-02T15:40:09.6048340Z ##[group]Initializing the repository
+2026-10-02T15:40:09.6049067Z [command]/usr/bin/git init /home/runner/work/kubernetes/kubernetes
+2026-10-02T15:40:09.6277813Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-02T15:40:09.6283625Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-02T15:40:09.6288221Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-02T15:40:09.6291871Z hint: call:
+2026-10-02T15:40:09.6295653Z hint:
+2026-10-02T15:40:09.6300220Z hint: 	git config --global init.defaultBranch <name>
+2026-10-02T15:40:09.6304589Z hint:
+2026-10-02T15:40:09.6309215Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-02T15:40:09.6314218Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-02T15:40:09.6317367Z hint:
+2026-10-02T15:40:09.6319012Z hint: 	git branch -m <name>
+2026-10-02T15:40:09.6320791Z hint:
+2026-10-02T15:40:09.6322670Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-02T15:40:09.6349642Z Initialized empty Git repository in /home/runner/work/kubernetes/kubernetes/.git/
+2026-10-02T15:40:09.6370860Z [command]/usr/bin/git remote add origin https://github.com/kvnloo/kubernetes
+2026-10-02T15:40:09.6503019Z ##[endgroup]
+2026-10-02T15:40:09.6504318Z ##[group]Disabling automatic garbage collection
+2026-10-02T15:40:09.6509029Z [command]/usr/bin/git config --local gc.auto 0
+2026-10-02T15:40:09.7466350Z ##[endgroup]
+2026-10-02T15:40:09.7467321Z ##[group]Setting up auth
+2026-10-02T15:40:09.7468326Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-02T15:40:09.7471347Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-02T15:40:09.7567927Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-02T15:40:09.7602377Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-02T15:40:10.5012519Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-02T15:40:10.5014967Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-02T15:40:10.5016913Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-02T15:40:10.5019610Z ##[endgroup]
+2026-10-02T15:40:10.5020344Z ##[group]Fetching the repository
+2026-10-02T15:40:10.5021916Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +b7af3931105444bf5f0c31fca8ee012a779906f9:refs/remotes/origin/review/direct-lister-mutation-142304
+2026-10-02T15:40:20.7976662Z From https://github.com/kvnloo/kubernetes
+2026-10-02T15:40:20.7978592Z  * [new ref]           b7af3931105444bf5f0c31fca8ee012a779906f9 -> origin/review/direct-lister-mutation-142304
+2026-10-02T15:40:20.7997734Z ##[endgroup]
+2026-10-02T15:40:20.7998999Z ##[group]Determining the checkout info
+2026-10-02T15:40:20.8000280Z ##[endgroup]
+2026-10-02T15:40:20.8008227Z [command]/usr/bin/git sparse-checkout disable
+2026-10-02T15:40:20.8129265Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-02T15:40:20.8185844Z ##[group]Checking out the ref
+2026-10-02T15:40:20.8192483Z [command]/usr/bin/git checkout --progress --force -B review/direct-lister-mutation-142304 refs/remotes/origin/review/direct-lister-mutation-142304
+2026-10-02T15:40:21.9320154Z Updating files:  11% (3642/31386)
+2026-10-02T15:40:21.9728018Z Updating files:  12% (3767/31386)
+2026-10-02T15:40:22.0399201Z Updating files:  13% (4081/31386)
+2026-10-02T15:40:22.0872921Z Updating files:  14% (4395/31386)
+2026-10-02T15:40:22.1698027Z Updating files:  15% (4708/31386)
+2026-10-02T15:40:22.2258206Z Updating files:  16% (5022/31386)
+2026-10-02T15:40:22.2956182Z Updating files:  17% (5336/31386)
+2026-10-02T15:40:22.3447622Z Updating files:  18% (5650/31386)
+2026-10-02T15:40:22.3647102Z Updating files:  19% (5964/31386)
+2026-10-02T15:40:22.3773054Z Updating files:  20% (6278/31386)
+2026-10-02T15:40:22.3918650Z Updating files:  21% (6592/31386)
+2026-10-02T15:40:22.4094695Z Updating files:  22% (6905/31386)
+2026-10-02T15:40:22.4301072Z Updating files:  23% (7219/31386)
+2026-10-02T15:40:22.4421648Z Updating files:  24% (7533/31386)
+2026-10-02T15:40:22.4569247Z Updating files:  25% (7847/31386)
+2026-10-02T15:40:22.4693569Z Updating files:  26% (8161/31386)
+2026-10-02T15:40:22.4847251Z Updating files:  27% (8475/31386)
+2026-10-02T15:40:22.5356564Z Updating files:  28% (8789/31386)
+2026-10-02T15:40:22.5780067Z Updating files:  29% (9102/31386)
+2026-10-02T15:40:22.6231166Z Updating files:  30% (9416/31386)
+2026-10-02T15:40:22.6656469Z Updating files:  31% (9730/31386)
+2026-10-02T15:40:22.7300705Z Updating files:  32% (10044/31386)
+2026-10-02T15:40:22.7762827Z Updating files:  33% (10358/31386)
+2026-10-02T15:40:22.8448545Z Updating files:  34% (10672/31386)
+2026-10-02T15:40:22.9008704Z Updating files:  35% (10986/31386)
+2026-10-02T15:40:22.9063277Z Updating files:  35% (11259/31386)
+2026-10-02T15:40:22.9470563Z Updating files:  36% (11299/31386)
+2026-10-02T15:40:22.9766214Z Updating files:  37% (11613/31386)
+2026-10-02T15:40:22.9961695Z Updating files:  38% (11927/31386)
+2026-10-02T15:40:23.0434629Z Updating files:  39% (12241/31386)
+2026-10-02T15:40:23.0647629Z Updating files:  40% (12555/31386)
+2026-10-02T15:40:23.1022583Z Updating files:  41% (12869/31386)
+2026-10-02T15:40:23.1453330Z Updating files:  42% (13183/31386)
+2026-10-02T15:40:23.1818648Z Updating files:  43% (13496/31386)
+2026-10-02T15:40:23.2288029Z Updating files:  44% (13810/31386)
+2026-10-02T15:40:23.2582469Z Updating files:  45% (14124/31386)
+2026-10-02T15:40:23.2817252Z Updating files:  46% (14438/31386)
+2026-10-02T15:40:23.3075029Z Updating files:  47% (14752/31386)
+2026-10-02T15:40:23.3650538Z Updating files:  48% (15066/31386)
+2026-10-02T15:40:23.4097765Z Updating files:  49% (15380/31386)
+2026-10-02T15:40:23.4378864Z Updating files:  50% (15693/31386)
+2026-10-02T15:40:23.4721875Z Updating files:  51% (16007/31386)
+2026-10-02T15:40:23.5279890Z Updating files:  52% (16321/31386)
+2026-10-02T15:40:23.5621075Z Updating files:  53% (16635/31386)
+2026-10-02T15:40:23.5797339Z Updating files:  54% (16949/31386)
+2026-10-02T15:40:23.5897530Z Updating files:  55% (17263/31386)
+2026-10-02T15:40:23.6010504Z Updating files:  56% (17577/31386)
+2026-10-02T15:40:23.6193161Z Updating files:  57% (17891/31386)
+2026-10-02T15:40:23.6291961Z Updating files:  58% (18204/31386)
+2026-10-02T15:40:23.6392714Z Updating files:  59% (18518/31386)
+2026-10-02T15:40:23.6487944Z Updating files:  60% (18832/31386)
+2026-10-02T15:40:23.6591564Z Updating files:  61% (19146/31386)
+2026-10-02T15:40:23.6689875Z Updating files:  62% (19460/31386)
+2026-10-02T15:40:23.6789931Z Updating files:  63% (19774/31386)
+2026-10-02T15:40:23.6889381Z Updating files:  64% (20088/31386)
+2026-10-02T15:40:23.7007250Z Updating files:  65% (20401/31386)
+2026-10-02T15:40:23.7107187Z Updating files:  66% (20715/31386)
+2026-10-02T15:40:23.7300454Z Updating files:  67% (21029/31386)
+2026-10-02T15:40:23.7454914Z Updating files:  68% (21343/31386)
+2026-10-02T15:40:23.7597801Z Updating files:  69% (21657/31386)
+2026-10-02T15:40:23.7848150Z Updating files:  70% (21971/31386)
+2026-10-02T15:40:23.8188821Z Updating files:  71% (22285/31386)
+2026-10-02T15:40:23.8458392Z Updating files:  72% (22598/31386)
+2026-10-02T15:40:23.8707498Z Updating files:  73% (22912/31386)
+2026-10-02T15:40:23.8965705Z Updating files:  74% (23226/31386)
+2026-10-02T15:40:23.9005293Z Updating files:  75% (23540/31386)
+2026-10-02T15:40:23.9077708Z Updating files:  75% (23638/31386)
+2026-10-02T15:40:23.9249973Z Updating files:  76% (23854/31386)
+2026-10-02T15:40:23.9346468Z Updating files:  77% (24168/31386)
+2026-10-02T15:40:23.9446291Z Updating files:  78% (24482/31386)
+2026-10-02T15:40:23.9587433Z Updating files:  79% (24795/31386)
+2026-10-02T15:40:23.9796011Z Updating files:  80% (25109/31386)
+2026-10-02T15:40:24.0098366Z Updating files:  81% (25423/31386)
+2026-10-02T15:40:24.0688053Z Updating files:  82% (25737/31386)
+2026-10-02T15:40:24.1039455Z Updating files:  83% (26051/31386)
+2026-10-02T15:40:24.1352159Z Updating files:  84% (26365/31386)
+2026-10-02T15:40:24.1634519Z Updating files:  85% (26679/31386)
+2026-10-02T15:40:24.1886039Z Updating files:  86% (26992/31386)
+2026-10-02T15:40:24.2197945Z Updating files:  87% (27306/31386)
+2026-10-02T15:40:24.2397539Z Updating files:  88% (27620/31386)
+2026-10-02T15:40:24.2582228Z Updating files:  89% (27934/31386)
+2026-10-02T15:40:24.2788991Z Updating files:  90% (28248/31386)
+2026-10-02T15:40:24.3077835Z Updating files:  91% (28562/31386)
+2026-10-02T15:40:24.3419650Z Updating files:  92% (28876/31386)
+2026-10-02T15:40:24.3637535Z Updating files:  93% (29189/31386)
+2026-10-02T15:40:24.3867984Z Updating files:  94% (29503/31386)
+2026-10-02T15:40:24.4224963Z Updating files:  95% (29817/31386)
+2026-10-02T15:40:24.4941172Z Updating files:  96% (30131/31386)
+2026-10-02T15:40:24.5344856Z Updating files:  97% (30445/31386)
+2026-10-02T15:40:24.5546917Z Updating files:  98% (30759/31386)
+2026-10-02T15:40:24.5870489Z Updating files:  99% (31073/31386)
+2026-10-02T15:40:24.5874601Z Updating files: 100% (31386/31386)
+2026-10-02T15:40:24.5876022Z Updating files: 100% (31386/31386), done.
+2026-10-02T15:40:24.6366347Z Switched to a new branch 'review/direct-lister-mutation-142304'
+2026-10-02T15:40:24.6375991Z branch 'review/direct-lister-mutation-142304' set up to track 'origin/review/direct-lister-mutation-142304'.
+2026-10-02T15:40:24.6454433Z ##[endgroup]
+2026-10-02T15:40:24.6492948Z [command]/usr/bin/git log -1 --format=%H
+2026-10-02T15:40:24.6511719Z b7af3931105444bf5f0c31fca8ee012a779906f9
+2026-10-02T15:40:24.6852091Z ##[group]Run actions/setup-go@v6
+2026-10-02T15:40:24.6852447Z with:
+2026-10-02T15:40:24.6852718Z   go-version-file: go.mod
+2026-10-02T15:40:24.6853008Z   cache: false
+2026-10-02T15:40:24.6853261Z   check-latest: false
+2026-10-02T15:40:24.6856321Z   token: ***
+2026-10-02T15:40:24.6856584Z ##[endgroup]
+2026-10-02T15:40:24.8602658Z Setup go version spec 1.27.0
+2026-10-02T15:40:24.8645337Z Attempting to download 1.27.0...
+2026-10-02T15:40:25.4979131Z matching 1.27.0...
+2026-10-02T15:40:25.5044654Z Acquiring 1.27.0 from https://github.com/actions/go-versions/releases/download/1.27.0-32325163857/go-1.27.0-linux-x64.tar.gz
+2026-10-02T15:40:26.2005917Z Extracting Go...
+2026-10-02T15:40:26.2142396Z [command]/usr/bin/tar xz --warning=no-unknown-keyword --overwrite -C /home/runner/work/_temp/c343525c-e45d-4fd3-b507-829c93a96526 -f /home/runner/work/_temp/3b405758-a93f-4366-a3ce-b8fb4a33948d
+2026-10-02T15:40:29.5566646Z Successfully extracted go to /home/runner/work/_temp/c343525c-e45d-4fd3-b507-829c93a96526
+2026-10-02T15:40:29.5567588Z Adding to the cache ...
+2026-10-02T15:40:42.6774185Z Successfully cached go to /opt/hostedtoolcache/go/1.27.0/x64
+2026-10-02T15:40:42.6835221Z Added go to the path
+2026-10-02T15:40:42.6835927Z Successfully set up Go version 1.27.0
+2026-10-02T15:40:42.7017148Z go version go1.27.0 linux/amd64
+2026-10-02T15:40:42.7017483Z 
+2026-10-02T15:40:42.7017967Z ##[group]go env
+2026-10-02T15:40:42.9155849Z AR='ar'
+2026-10-02T15:40:42.9156410Z CC='gcc'
+2026-10-02T15:40:42.9157353Z CGO_CFLAGS='-O2 -g'
+2026-10-02T15:40:42.9157710Z CGO_CPPFLAGS=''
+2026-10-02T15:40:42.9158075Z CGO_CXXFLAGS='-O2 -g'
+2026-10-02T15:40:42.9234951Z CGO_ENABLED='1'
+2026-10-02T15:40:42.9235339Z CGO_FFLAGS='-O2 -g'
+2026-10-02T15:40:42.9235641Z CGO_LDFLAGS='-O2 -g'
+2026-10-02T15:40:42.9235893Z CXX='g++'
+2026-10-02T15:40:42.9236218Z GCCGO='gccgo'
+2026-10-02T15:40:42.9236448Z GO111MODULE=''
+2026-10-02T15:40:42.9236699Z GOAMD64='v1'
+2026-10-02T15:40:42.9236921Z GOARCH='amd64'
+2026-10-02T15:40:42.9237185Z GOAUTH='netrc'
+2026-10-02T15:40:42.9237422Z GOBIN='/home/runner/go/bin'
+2026-10-02T15:40:42.9237723Z GOCACHE='/home/runner/.cache/go-build'
+2026-10-02T15:40:42.9238516Z GOCACHEPROG=''
+2026-10-02T15:40:42.9238742Z GODEBUG=''
+2026-10-02T15:40:42.9239307Z GOENV='/home/runner/.config/go/env'
+2026-10-02T15:40:42.9250871Z GOEXE=''
+2026-10-02T15:40:42.9251150Z GOEXPERIMENT=''
+2026-10-02T15:40:42.9251425Z GOFIPS140='off'
+2026-10-02T15:40:42.9251700Z GOFLAGS=''
+2026-10-02T15:40:42.9252543Z GOGCCFLAGS='-fPIC -m64 -pthread -Wl,--no-gc-sections -fmessage-length=0 -ffile-prefix-map=/tmp/go-build1774982062=/tmp/go-build -gno-record-gcc-switches'
+2026-10-02T15:40:42.9253220Z GOHOSTARCH='amd64'
+2026-10-02T15:40:42.9253450Z GOHOSTOS='linux'
+2026-10-02T15:40:42.9253890Z GOINSECURE=''
+2026-10-02T15:40:42.9254237Z GOMOD='/home/runner/work/kubernetes/kubernetes/go.mod'
+2026-10-02T15:40:42.9255179Z GOMODCACHE='/home/runner/go/pkg/mod'
+2026-10-02T15:40:42.9255452Z GONOPROXY=''
+2026-10-02T15:40:42.9255661Z GONOSUMDB=''
+2026-10-02T15:40:42.9255872Z GOOS='linux'
+2026-10-02T15:40:42.9256090Z GOPACKAGESDRIVER=''
+2026-10-02T15:40:42.9256332Z GOPATH='/home/runner/go'
+2026-10-02T15:40:42.9256578Z GOPRIVATE=''
+2026-10-02T15:40:42.9256897Z GOPROXY='https://proxy.golang.org,direct'
+2026-10-02T15:40:42.9257239Z GOROOT='/opt/hostedtoolcache/go/1.27.0/x64'
+2026-10-02T15:40:42.9257547Z GOSUMDB='sum.golang.org'
+2026-10-02T15:40:42.9257794Z GOTELEMETRY='local'
+2026-10-02T15:40:42.9258074Z GOTELEMETRYDIR='/home/runner/.config/go/telemetry'
+2026-10-02T15:40:42.9258385Z GOTMPDIR=''
+2026-10-02T15:40:42.9258603Z GOTOOLCHAIN='local'
+2026-10-02T15:40:42.9258953Z GOTOOLDIR='/opt/hostedtoolcache/go/1.27.0/x64/pkg/tool/linux_amd64'
+2026-10-02T15:40:42.9259321Z GOVCS=''
+2026-10-02T15:40:42.9259541Z GOVERSION='go1.27.0'
+2026-10-02T15:40:42.9259852Z GOWORK='/home/runner/work/kubernetes/kubernetes/go.work'
+2026-10-02T15:40:42.9260244Z PKG_CONFIG='pkg-config'
+2026-10-02T15:40:42.9260396Z 
+2026-10-02T15:40:42.9260905Z ##[endgroup]
+2026-10-02T15:40:42.9463134Z ##[group]Run go test ./pkg/kubeapiserver/direct -run 'Test(StorageClientReturnedObjectsAreIsolated|UnsafeConversionAliasesSource)$' -count=1 -v
+2026-10-02T15:40:42.9465296Z [36;1mgo test ./pkg/kubeapiserver/direct -run 'Test(StorageClientReturnedObjectsAreIsolated|UnsafeConversionAliasesSource)$' -count=1 -v[0m
+2026-10-02T15:40:42.9477467Z shell: /usr/bin/bash -e {0}
+2026-10-02T15:40:42.9477766Z env:
+2026-10-02T15:40:42.9478000Z   GOTOOLCHAIN: local
+2026-10-02T15:40:42.9480834Z ##[endgroup]
+2026-10-02T15:46:11.1053592Z === RUN   TestStorageClientReturnedObjectsAreIsolated
+2026-10-02T15:46:11.1078447Z === RUN   TestStorageClientReturnedObjectsAreIsolated/get
+2026-10-02T15:46:11.1087100Z === RUN   TestStorageClientReturnedObjectsAreIsolated/list
+2026-10-02T15:46:11.1188010Z --- PASS: TestStorageClientReturnedObjectsAreIsolated (0.00s)
+2026-10-02T15:46:11.1281903Z     --- PASS: TestStorageClientReturnedObjectsAreIsolated/get (0.00s)
+2026-10-02T15:46:11.1283572Z     --- PASS: TestStorageClientReturnedObjectsAreIsolated/list (0.00s)
+2026-10-02T15:46:11.1285567Z === RUN   TestUnsafeConversionAliasesSource
+2026-10-02T15:46:11.1285949Z --- PASS: TestUnsafeConversionAliasesSource (0.00s)
+2026-10-02T15:46:11.1286271Z PASS
+2026-10-02T15:46:11.1286554Z ok  	k8s.io/kubernetes/pkg/kubeapiserver/direct	0.032s
+2026-10-02T15:46:11.4247260Z ##[group]Run go test ./pkg/kubeapiserver/direct -run '^$' -bench 'BenchmarkPod.*ConversionCopyBoundary' -benchmem -count=3
+2026-10-02T15:46:11.4248111Z [36;1mgo test ./pkg/kubeapiserver/direct -run '^$' -bench 'BenchmarkPod.*ConversionCopyBoundary' -benchmem -count=3[0m
+2026-10-02T15:46:11.4256217Z shell: /usr/bin/bash -e {0}
+2026-10-02T15:46:11.4256474Z env:
+2026-10-02T15:46:11.4256679Z   GOTOOLCHAIN: local
+2026-10-02T15:46:11.4256912Z ##[endgroup]
+2026-10-02T15:46:15.8851991Z goos: linux
+2026-10-02T15:46:15.8891951Z goarch: amd64
+2026-10-02T15:46:15.8894814Z pkg: k8s.io/kubernetes/pkg/kubeapiserver/direct
+2026-10-02T15:46:15.8897436Z cpu: AMD EPYC 9V74 80-Core Processor                
+2026-10-02T15:46:17.3707625Z BenchmarkPodConversionCopyBoundary/current-safe-ConvertToVersion         	  185997	      7580 ns/op	    5072 B/op	      13 allocs/op
+2026-10-02T15:46:18.4903305Z BenchmarkPodConversionCopyBoundary/current-safe-ConvertToVersion         	  194734	      5400 ns/op	    5072 B/op	      13 allocs/op
+2026-10-02T15:46:19.7257054Z BenchmarkPodConversionCopyBoundary/current-safe-ConvertToVersion         	  198976	      5876 ns/op	    5072 B/op	      13 allocs/op
+2026-10-02T15:46:21.0773405Z BenchmarkPodConversionCopyBoundary/safe-DeepCopy-plus-UnsafeConvertToVersion         	  248282	      5207 ns/op	    5072 B/op	      13 allocs/op
+2026-10-02T15:46:22.2987385Z BenchmarkPodConversionCopyBoundary/safe-DeepCopy-plus-UnsafeConvertToVersion         	  198498	      5817 ns/op	    5072 B/op	      13 allocs/op
+2026-10-02T15:46:23.7388288Z BenchmarkPodConversionCopyBoundary/safe-DeepCopy-plus-UnsafeConvertToVersion         	  255219	      5360 ns/op	    5072 B/op	      13 allocs/op
+2026-10-02T15:46:25.3387828Z BenchmarkPodConversionCopyBoundary/unsafe-no-copy                                    	  915544	      1724 ns/op	    1344 B/op	       4 allocs/op
+2026-10-02T15:46:26.5570075Z BenchmarkPodConversionCopyBoundary/unsafe-no-copy                                    	  856704	      1398 ns/op	    1344 B/op	       4 allocs/op
+2026-10-02T15:46:27.8064839Z BenchmarkPodConversionCopyBoundary/unsafe-no-copy                                    	  874044	      1407 ns/op	    1344 B/op	       4 allocs/op
+2026-10-02T15:46:29.1021215Z BenchmarkPodListConversionCopyBoundary/current-safe-ConvertToVersion                 	    3817	    329518 ns/op	  305792 B/op	     806 allocs/op
+2026-10-02T15:46:31.1873232Z BenchmarkPodListConversionCopyBoundary/current-safe-ConvertToVersion                 	    3896	    282865 ns/op	  305792 B/op	     806 allocs/op
+2026-10-02T15:46:33.3886823Z BenchmarkPodListConversionCopyBoundary/current-safe-ConvertToVersion                 	    4159	    298993 ns/op	  305792 B/op	     806 allocs/op
+2026-10-02T15:46:35.4768886Z BenchmarkPodListConversionCopyBoundary/safe-DeepCopy-plus-UnsafeConvertToVersion     	    3985	    276164 ns/op	  305792 B/op	     806 allocs/op
+2026-10-02T15:46:36.8672458Z BenchmarkPodListConversionCopyBoundary/safe-DeepCopy-plus-UnsafeConvertToVersion     	    4662	    291386 ns/op	  305792 B/op	     806 allocs/op
+2026-10-02T15:46:38.3962284Z BenchmarkPodListConversionCopyBoundary/safe-DeepCopy-plus-UnsafeConvertToVersion     	    4551	    328647 ns/op	  305792 B/op	     806 allocs/op
+2026-10-02T15:46:41.2438772Z BenchmarkPodListConversionCopyBoundary/unsafe-no-copy                                	 2145165	       536.7 ns/op	     192 B/op	       4 allocs/op
+2026-10-02T15:46:42.9023840Z BenchmarkPodListConversionCopyBoundary/unsafe-no-copy                                	 2245699	       494.5 ns/op	     192 B/op	       4 allocs/op
+2026-10-02T15:46:44.5741454Z BenchmarkPodListConversionCopyBoundary/unsafe-no-copy                                	 2383131	       496.8 ns/op	     192 B/op	       4 allocs/op
+2026-10-02T15:46:44.5744730Z PASS
+2026-10-02T15:46:44.5775178Z ok  	k8s.io/kubernetes/pkg/kubeapiserver/direct	28.730s
+2026-10-02T15:46:44.6271273Z Post job cleanup.
+2026-10-02T15:46:44.7894356Z Post job cleanup.
+2026-10-02T15:46:44.9023478Z [command]/usr/bin/git version
+2026-10-02T15:46:44.9070082Z git version 2.55.0
+2026-10-02T15:46:44.9228904Z Temporarily overriding HOME='/home/runner/work/_temp/587c65a8-cd3e-4365-85e5-d00cbfcd903b' before making global git config changes
+2026-10-02T15:46:44.9232257Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-02T15:46:44.9244112Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/kubernetes/kubernetes
+2026-10-02T15:46:44.9319017Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-02T15:46:44.9383527Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-02T15:46:44.9643472Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-02T15:46:44.9670070Z http.https://github.com/.extraheader
+2026-10-02T15:46:44.9691628Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-10-02T15:46:44.9731558Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-02T15:46:44.9994399Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-02T15:46:45.0035622Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-02T15:46:45.0509919Z Cleaning up orphan processes
+

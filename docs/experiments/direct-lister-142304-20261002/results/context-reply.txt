@@ -1,0 +1,9 @@
+I tested the concrete PSA adapter route alongside a direct call to the new `ListPods(ctx, ...)` method.
+
+Direct calls preserved the caller's deadline/private sentinel and returned cancellation or deadline errors from a recording Storage. Passing the same lister through `PodListerFromInformer` reached Storage without those context properties, including for cancelled/expired callers. `updateDelegate()` currently installs that adapter, so this consumer does not reach the new context-aware method.
+
+The original informer lister API is also contextless. This is a wiring/contract observation, not evidence that informer reads previously carried the triggering request's context. The test exercises the real adapter and direct lister with recording Storage; it does not exercise the HTTP filter chain or a full admission request.
+
+Pinned experiment and raw evidence: https://github.com/kvnloo/kubernetes/tree/experiment/direct-lister-contract-142304-20261002/docs/experiments/direct-lister-142304-20261002
+
+AI-assisted experiment and analysis.

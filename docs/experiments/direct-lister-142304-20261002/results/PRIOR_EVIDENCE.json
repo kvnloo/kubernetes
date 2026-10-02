@@ -1,0 +1,146 @@
+{
+  "source_sha": "b7af3931105444bf5f0c31fca8ee012a779906f9",
+  "run_id": 37028173140,
+  "job_id": 110908007066,
+  "raw_sha256": "29f6127eddcf310306c7aed3dca40794ff34d73fec11d166def5a2b671a8245a",
+  "verified_named_tests": [
+    "TestStorageClientReturnedObjectsAreIsolated",
+    "TestStorageClientReturnedObjectsAreIsolated/get",
+    "TestStorageClientReturnedObjectsAreIsolated/list",
+    "TestUnsafeConversionAliasesSource"
+  ],
+  "benchmarks": [
+    {
+      "name": "BenchmarkPodConversionCopyBoundary/current-safe-ConvertToVersion",
+      "iterations": 185997,
+      "ns_per_op": 7580.0,
+      "bytes_per_op": 5072,
+      "allocations_per_op": 13
+    },
+    {
+      "name": "BenchmarkPodConversionCopyBoundary/current-safe-ConvertToVersion",
+      "iterations": 194734,
+      "ns_per_op": 5400.0,
+      "bytes_per_op": 5072,
+      "allocations_per_op": 13
+    },
+    {
+      "name": "BenchmarkPodConversionCopyBoundary/current-safe-ConvertToVersion",
+      "iterations": 198976,
+      "ns_per_op": 5876.0,
+      "bytes_per_op": 5072,
+      "allocations_per_op": 13
+    },
+    {
+      "name": "BenchmarkPodConversionCopyBoundary/safe-DeepCopy-plus-UnsafeConvertToVersion",
+      "iterations": 248282,
+      "ns_per_op": 5207.0,
+      "bytes_per_op": 5072,
+      "allocations_per_op": 13
+    },
+    {
+      "name": "BenchmarkPodConversionCopyBoundary/safe-DeepCopy-plus-UnsafeConvertToVersion",
+      "iterations": 198498,
+      "ns_per_op": 5817.0,
+      "bytes_per_op": 5072,
+      "allocations_per_op": 13
+    },
+    {
+      "name": "BenchmarkPodConversionCopyBoundary/safe-DeepCopy-plus-UnsafeConvertToVersion",
+      "iterations": 255219,
+      "ns_per_op": 5360.0,
+      "bytes_per_op": 5072,
+      "allocations_per_op": 13
+    },
+    {
+      "name": "BenchmarkPodConversionCopyBoundary/unsafe-no-copy",
+      "iterations": 915544,
+      "ns_per_op": 1724.0,
+      "bytes_per_op": 1344,
+      "allocations_per_op": 4
+    },
+    {
+      "name": "BenchmarkPodConversionCopyBoundary/unsafe-no-copy",
+      "iterations": 856704,
+      "ns_per_op": 1398.0,
+      "bytes_per_op": 1344,
+      "allocations_per_op": 4
+    },
+    {
+      "name": "BenchmarkPodConversionCopyBoundary/unsafe-no-copy",
+      "iterations": 874044,
+      "ns_per_op": 1407.0,
+      "bytes_per_op": 1344,
+      "allocations_per_op": 4
+    },
+    {
+      "name": "BenchmarkPodListConversionCopyBoundary/current-safe-ConvertToVersion",
+      "iterations": 3817,
+      "ns_per_op": 329518.0,
+      "bytes_per_op": 305792,
+      "allocations_per_op": 806
+    },
+    {
+      "name": "BenchmarkPodListConversionCopyBoundary/current-safe-ConvertToVersion",
+      "iterations": 3896,
+      "ns_per_op": 282865.0,
+      "bytes_per_op": 305792,
+      "allocations_per_op": 806
+    },
+    {
+      "name": "BenchmarkPodListConversionCopyBoundary/current-safe-ConvertToVersion",
+      "iterations": 4159,
+      "ns_per_op": 298993.0,
+      "bytes_per_op": 305792,
+      "allocations_per_op": 806
+    },
+    {
+      "name": "BenchmarkPodListConversionCopyBoundary/safe-DeepCopy-plus-UnsafeConvertToVersion",
+      "iterations": 3985,
+      "ns_per_op": 276164.0,
+      "bytes_per_op": 305792,
+      "allocations_per_op": 806
+    },
+    {
+      "name": "BenchmarkPodListConversionCopyBoundary/safe-DeepCopy-plus-UnsafeConvertToVersion",
+      "iterations": 4662,
+      "ns_per_op": 291386.0,
+      "bytes_per_op": 305792,
+      "allocations_per_op": 806
+    },
+    {
+      "name": "BenchmarkPodListConversionCopyBoundary/safe-DeepCopy-plus-UnsafeConvertToVersion",
+      "iterations": 4551,
+      "ns_per_op": 328647.0,
+      "bytes_per_op": 305792,
+      "allocations_per_op": 806
+    },
+    {
+      "name": "BenchmarkPodListConversionCopyBoundary/unsafe-no-copy",
+      "iterations": 2145165,
+      "ns_per_op": 536.7,
+      "bytes_per_op": 192,
+      "allocations_per_op": 4
+    },
+    {
+      "name": "BenchmarkPodListConversionCopyBoundary/unsafe-no-copy",
+      "iterations": 2245699,
+      "ns_per_op": 494.5,
+      "bytes_per_op": 192,
+      "allocations_per_op": 4
+    },
+    {
+      "name": "BenchmarkPodListConversionCopyBoundary/unsafe-no-copy",
+      "iterations": 2383131,
+      "ns_per_op": 496.8,
+      "bytes_per_op": 192,
+      "allocations_per_op": 4
+    }
+  ],
+  "limits": [
+    "prior experiment; distinct fixtures from new read-cost study",
+    "single runner and three sequential repetitions",
+    "synthetic storage; no live watch-cache or complete request path",
+    "unsafe arm is a negative control, not a proposed implementation"
+  ]
+}

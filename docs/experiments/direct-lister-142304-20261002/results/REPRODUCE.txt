@@ -1,0 +1,38 @@
+Source and harness replay
+
+Use Go 1.27.0 and Python 3. Do not modify generated Kubernetes dependencies.
+Checkout kvnloo/kubernetes at 1f0afa8df5d7813706d0ca9fa64d0cb7857017ea.
+From the repository root run:
+
+  GOMAXPROCS=2 python3 docs/experiments/direct-lister-142304-20261002/run_experiments.py
+
+The runner builds a pinned binary, records provenance, runs the controls and
+tests, repeats the experiment tests in a fresh process, records 10 AB/BA
+benchmark pairs for each of 12 workloads, then invokes the independent verifier.
+The evidence directory must be empty before starting a new attempt; keep earlier
+attempts in separate directories so the verifier does not mix records.
+
+Verify the existing local evidence archive without rebuilding:
+
+  python3 experiment/verify_artifacts.py local-evidence experiment/PREREG.json
+
+The archive contains the exact binary bound by the manifest. For a correctness
+replay on a compatible Linux amd64 host:
+
+  chmod +x local-evidence/direct.test
+  local-evidence/direct.test -test.v -test.run '^Test' -test.count=1 -test.timeout=60s
+
+Expected original evidence: 10 required root tests / 131 total named run-pass
+events; 6 replication roots / 111 named events; 240 complete benchmark records.
+Parent test groups are included in named-event counts; they are not 131
+independent experiments. The 88 selector matrix cells plus one deliberately
+lossy calibration are independently checked in INDEPENDENT_REVIEW.json.
+
+For raw text evidence published in GitHub, obtain the matching binary from the
+local archive or corresponding GitHub Actions artifact before running the full
+verifier; it checks the binary hash. Rebuilding can produce a different hash due
+to build paths/environment. Report that as a new execution, not the old binary.
+
+Never pool timings from different machines. Retain failed attempts and any
+source/environment changes. Read PREREG.json and EXECUTION_AMENDMENT_R2.json
+before interpreting the results.

@@ -1,0 +1,59 @@
+{
+  "upstream_head": "5b10e94f39c7c5fdf4b07bf550525f9bdc2d07ed",
+  "downstream_base": "b7af3931105444bf5f0c31fca8ee012a779906f9",
+  "prereg_commit": "41201cbc7a25a7512f454517fab0e1781ec4d4e7",
+  "initial_tested_head": "1b984e74596c1ff18ba506a4a57b47ef436b8079",
+  "initial_run": "https://github.com/kvnloo/kubernetes/actions/runs/37041656658",
+  "production_diff_from_upstream": "Only pre-existing 3-line labels.MatchesNothing guard in direct/lister.go. All other differences are tests, experiments, and workflows.",
+  "source_observations": [
+    {
+      "claim": "PSA installs PodListerFromInformer, whose ListPods ignores ctx and calls the contextless namespace lister",
+      "references": [
+        "plugin/pkg/admission/security/podsecurity/admission.go:147",
+        "staging/src/k8s.io/pod-security-admission/admission/pods.go:59"
+      ],
+      "interpretation": "The new direct context-aware ListPods method is not reached through this adapter. Existing informer API also lacked caller context; do not claim a regression from original request identity propagation."
+    },
+    {
+      "claim": "Node authorizer receives shared Pod informer and registers an event handler",
+      "references": [
+        "pkg/kubeapiserver/authorizer/config.go:110",
+        "plugin/pkg/auth/authorizer/node/graph_populator.go:102"
+      ],
+      "interpretation": "Stage 1 source still has a consumer of Informer(), so lister-only elimination is insufficient to establish total informer elimination."
+    },
+    {
+      "claim": "Existing informer factory trims managedFields; direct wrapper is installed afterwards",
+      "references": [
+        "pkg/controlplane/apiserver/config.go:166",
+        "pkg/controlplane/apiserver/config.go:178"
+      ],
+      "interpretation": "Transformation parity is separate from Scheme conversion parity."
+    }
+  ],
+  "comment_targets": [
+    "https://github.com/kubernetes/kubernetes/pull/142304#discussion_r4136377755",
+    "https://github.com/kubernetes/kubernetes/pull/142304#discussion_r4136352033",
+    "https://github.com/kubernetes/kubernetes/pull/142304#issuecomment-5895359669"
+  ],
+  "unmeasured_followups": [
+    {
+      "question": "Does component-level parity hold through the real Pod REST store and watch cache?",
+      "design": "Same fixture and versioned object set via existing cache-backed storage test infrastructure; compare normalized values and source snapshots using unchanged masks; preserve actual path receipts.",
+      "status": "NOT_RUN"
+    },
+    {
+      "question": "What net resources does migration save when real event consumers remain?",
+      "design": "Factorial lister strategy x event-consumer presence; fixed Pod population and update/read workload; measure retained heap, allocations, CPU, watcher count, and verified outcomes in separately randomized process trials.",
+      "status": "NOT_RUN"
+    },
+    {
+      "question": "Do error and freshness contracts remain acceptable?",
+      "design": "Benign absent/deleted/recreated fixture objects and controlled version transitions; compare error classes and object identity, synchronize snapshots by observed resourceVersion rather than timing sleeps; register allowable staleness before running.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "measured_head": "1f0afa8df5d7813706d0ca9fa64d0cb7857017ea",
+  "execution_amendment": "EXECUTION_AMENDMENT_R2.json",
+  "hosted_replication_run": "https://github.com/kvnloo/kubernetes/actions/runs/37044953930"
+}

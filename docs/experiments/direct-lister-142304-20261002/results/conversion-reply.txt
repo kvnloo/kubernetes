@@ -1,0 +1,9 @@
+I ran a small copy/GVK characterization against this conversion path. For Get, PodList, and generic List, mutating returned nested maps/slices, managedFields, owner-reference pointers, and GVK left both the whole source fixture and independent reads unchanged. The unsafe conversion control detected aliasing.
+
+For the GVK question specifically: the returned Pod or outer PodList GVK is cleared; PodList item GVK is retained from the input. Both empty and deliberately populated item GVK cases were tested. The populated case is synthetic, so this does not establish that live watch-cache objects have that value.
+
+This supports isolation at the tested Scheme/direct-client boundary, rather than establishing safety for every real-cache or serialization path.
+
+Pinned experiment and raw evidence: https://github.com/kvnloo/kubernetes/tree/experiment/direct-lister-contract-142304-20261002/docs/experiments/direct-lister-142304-20261002
+
+AI-assisted experiment and analysis.
