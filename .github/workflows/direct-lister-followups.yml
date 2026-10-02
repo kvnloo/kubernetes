@@ -1,0 +1,36 @@
+name: Direct lister six follow-up experiments
+
+on:
+  push:
+    branches:
+      - experiment/direct-lister-followups-142304-20261002
+    paths-ignore:
+      - 'docs/experiments/direct-lister-followups-142304-20261002/results/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  followups:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      GOMAXPROCS: '2'
+      GOTOOLCHAIN: local
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+          cache: false
+      - name: Run frozen six-experiment protocol
+        run: python3 docs/experiments/direct-lister-followups-142304-20261002/run_followups.py
+      - name: Preserve all attempts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: direct-lister-followups-${{ github.sha }}-${{ github.run_attempt }}
+          path: followup-evidence/
+          retention-days: 30
+          compression-level: 6

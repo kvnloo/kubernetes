@@ -1,0 +1,158 @@
+{
+  "id": "k8s-direct-lister-followups-142304-20261002-r1",
+  "status_at_freeze": "HARNESS_WRITTEN_NOT_COMPILED_NOT_RUN",
+  "source_parent": "101406c41e8128a7c82d818bc96f89e6fafcbc43",
+  "branch": "experiment/direct-lister-followups-142304-20261002",
+  "upstream_head": "5b10e94f39c7c5fdf4b07bf550525f9bdc2d07ed",
+  "toolchain": "go1.27.0",
+  "embedded_etcd": "vendored go.etcd.io/etcd/server/v3 v3.7.1, single-member test-owned loopback server; UnsafeNoFsync",
+  "scope": "N1/N6 real Pod REST+CacheDelegator+Cacher+JSON codec. N3 real production consumer initialization on fake client. N2 exact-output synthetic mechanism benchmark plus real-cache output gate. N4/N5 local HTTP production Pod GET/LIST/WATCH/UPDATE handlers and store/cache with embedded etcd and real client-go informer; whole measured process includes all these and excludes full control-plane filter chain. No general throughput claim.",
+  "construction": [
+    "No production files changed",
+    "Server read/update routes use production handlers, defaulting and field manager; embedded server listens only locally",
+    "WatchListClient=false fixed in all harnesses; N3 DRAExtendedResource=true",
+    "N6 owns held initial backend List instead of using a helper that waits ready"
+  ],
+  "correctness_roots": [
+    "TestFollowupCalibration",
+    "TestFollowupN1RealStorageParity",
+    "TestFollowupN2EqualOutputGate",
+    "TestFollowupN3ProductionConsumerWiring",
+    "TestFollowupN6StartupAndFallback"
+  ],
+  "hypotheses": {
+    "N1": "Exact same UID/RV HTTP/direct Pod values agree except declared outer GVK; informer/direct agree after managedFields trim. Omitted-codec fixture gains specific defaults. Cached source stays unchanged by returned result edits.",
+    "N2": "Equal-output trimmed and retained groups pass independently. Output trim after direct conversion does not remove managedFields copy allocation slope.",
+    "N3": "Cached wiring starts Pod informer; direct wiring without node graph does not; node graph keeps it. Other registered consumer prerequisites synchronize. PSA consumed adapter completes even with cancelled caller context.",
+    "N4": "Direct elimination can reduce update-only allocations only when no event consumer remains; residual-event arm may preserve informer work and add read cost. This is an allocation mechanism experiment, not system throughput validation.",
+    "N5": "Injected watch responses observed once only where informer exists; actual List and Watch receipts distinguish relist from resumed watch. A1/B/A2 identity/version and output checks pass.",
+    "N6": "Before registration Get errors. Held-not-ready cache Get delegates once to backend; unbounded RV0 List returns TooManyRequests. Ready Get uses cache; bounded update/delete/recreate identity barriers pass. Getter falls back once on benign read errors and zero times on successful lister reads."
+  },
+  "fixtures": {
+    "N1": [
+      "normal-0",
+      "normal-4096",
+      "omitted"
+    ],
+    "codec_omitted_raw": "v1 Pod JSON with UID codec-fixture, one pause container, omitted restartPolicy/dnsPolicy/schedulerName; injected directly at /followup/pods/ns/omitted and explicitly not labeled a supported HTTP write",
+    "N2": {
+      "populations": [
+        1,
+        100
+      ],
+      "managedFields_targets": [
+        0,
+        4096,
+        32768
+      ],
+      "actual_raw_bytes": [
+        0,
+        4082,
+        32748
+      ],
+      "operations": [
+        "get",
+        "list"
+      ],
+      "paths": [
+        "cached_trimmed",
+        "direct_trimmed",
+        "cached_retained",
+        "direct_retained"
+      ]
+    },
+    "N4N5": {
+      "population": 10,
+      "initial_managedFields": 0,
+      "image": "registry.k8s.io/pause:3.10, never executed",
+      "warmup": {
+        "updates": 1,
+        "reads": 20
+      },
+      "only_update": "Pod annotation sequence via HTTP PUT; field manager uses deduced type converter, record resulting metadata"
+    }
+  },
+  "oracles": {
+    "normalization": "Only outer Pod TypeMeta and, in explicitly declared comparisons, metadata.managedFields; never mask spec/status/defaults",
+    "N1": "Snapshot real Cacher.Get shallow-cache-owned nested fields plus unchanged subsequent reads; deliberately changed deep-copy snapshot must be detected",
+    "N3": "Exact List/Watch route counts per resource, actual production setters and node graph handler construction; no admission/authorization outcome tests",
+    "N4": "Strict full field equality before and after phase, per-read UID/RV/sequence equality, cache/informer RV barrier per update, exact HTTP update/read counts",
+    "N5": "Cancel active fixture watch then inject exactly one EOF or ERROR Status Expired response on next watch; verify one injected response, subsequent live watch and catch-up"
+  },
+  "execution": {
+    "correctness_timeout_seconds": 120,
+    "build_timeout_seconds": 1200,
+    "benchmark_blocks": 6,
+    "benchmark_benchtime": "100x",
+    "benchmark_cpu": 1,
+    "N4_blocks": 5,
+    "N4_strategies": [
+      "cached",
+      "direct"
+    ],
+    "N4_events": [
+      false,
+      true
+    ],
+    "N4_workloads": {
+      "read": {
+        "updates": 0,
+        "reads": 150
+      },
+      "update": {
+        "updates": 20,
+        "reads": 0
+      },
+      "mixed": {
+        "updates": 20,
+        "reads": 150
+      }
+    },
+    "N5_blocks": 3,
+    "N5_modes": [
+      "control",
+      "restart",
+      "expiry"
+    ],
+    "N5_A1": {
+      "updates": 0,
+      "reads": 200
+    },
+    "N5_B": {
+      "updates": 10,
+      "reads": 200
+    },
+    "N5_A2": {
+      "updates": 0,
+      "reads": 200
+    },
+    "order": "Each block visits all factorial cells; reverse complete order on odd blocks; N2 reverse four-arm order on odd blocks. Separate test binary process for every arm/cell. No parallel trials.",
+    "host_replication": "Run identical source/protocol locally and GitHub ubuntu-latest; compare allocation medians separately and exact structural invariants. Timings remain per-host."
+  },
+  "measurements": [
+    "Allocation bytes/objects over measured phase",
+    "getrusage process CPU",
+    "elapsed and catch-up ns",
+    "GC cycles/pause in phase",
+    "retained heap delta after prescribed single GC",
+    "HTTP response bytes, List/Watch/Update and storage Get counters",
+    "observed event updates and watch RVs",
+    "runner setup/build/execution/verification spans; preserve every launch"
+  ],
+  "decisions": {
+    "structural": "KEEP bounded factual claims only when required oracles/control pass; BLOCKED evaluator or missing intended route; REVISE semantic differences rather than hiding them",
+    "N2": "Median equal-output direct/cached bytes/op and retained/trimmed direct difference. No timing threshold; allocation effect must have same sign in at least 5 of 6 blocks to call robust on one host.",
+    "N4": "A reduction claim requires direct/cached allocation ratio <=0.90 in at least 4 of 5 same-block matched cells plus median <=0.90. Harmful allocation effect uses ratio >=1.10 in >=4/5 and median >=1.10. Otherwise inconclusive/REVISE. Never turn wall-time variance into throughput claim.",
+    "N5": "Structural recovery requires qualified perturbation counters and post-recovery equality. Report A2/A1 timing and within-10% as descriptive; no system hysteresis claim from short microphases. Allocation/GC peak/AUC not sampled continuously here and must remain NOT_MEASURED.",
+    "readiness": "Before synchronization outcomes registered by stage; after barrier require identity/version agreement. Ready short operations may complete on already cancelled context; record exact bounded return/error instead of requiring an artificial cancellation failure."
+  },
+  "limitations": [
+    "N3 initializes actual consumers but does not run complete admission chain or graph authorization decisions",
+    "N2 timings are synthetic mechanism timings",
+    "N4 process totals include embedded etcd and harness work; modest finite workload and GC noise can make allocation ratio inconclusive",
+    "N4 update/read phases are sequential fixed-count microphases, not steady QPS capacity",
+    "N5 only WatchListClient=false and one bounded protocol perturbation; no transport stress, continuous peak/AUC or APF hysteresis claim"
+  ],
+  "retain": "All raw stdout/test2json, benchmark logs, manifest, source hashes, amendments, setup failures and independent verifier output; binaries in Actions artifact.",
+  "freeze_rule": "Preregister source and protocol commit before measurements. Compile/calibration failure retained. Any changed assertions/fixtures/gates/runner must be committed as an amendment before new measures. Reruns never overwrite earlier attempt directories."
+}
