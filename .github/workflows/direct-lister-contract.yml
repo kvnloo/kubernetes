@@ -1,0 +1,35 @@
+name: Direct lister preregistered experiments
+
+on:
+  push:
+    branches:
+      - experiment/direct-lister-contract-142304-20261002
+    paths-ignore:
+      - 'docs/experiments/direct-lister-142304-20261002/results/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  contract:
+    runs-on: ubuntu-slim
+    timeout-minutes: 20
+    env:
+      GOMAXPROCS: '2'
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+          cache: false
+      - name: Run preregistered probes and paired benchmarks
+        run: python3 docs/experiments/direct-lister-142304-20261002/run_experiments.py
+      - name: Preserve all attempts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: direct-lister-${{ github.sha }}-${{ github.run_attempt }}
+          path: evidence/
+          retention-days: 30
+          compression-level: 6
