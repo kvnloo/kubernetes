@@ -25,6 +25,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
+	"k8s.io/kubernetes/pkg/api/legacyscheme"
 	core "k8s.io/kubernetes/pkg/apis/core"
 	_ "k8s.io/kubernetes/pkg/apis/core/install"
 )
@@ -66,6 +67,31 @@ func TestStorageClientReturnedObjectsAreIsolated(t *testing.T) {
 		mutateReturnedPod(&got.Items[0])
 		assertInternalPodUnchanged(t, &source.Items[0])
 	})
+}
+
+func TestUnsafeConversionAliasesSource(t *testing.T) {
+	source := mutationTestPod()
+
+	obj, err := legacyscheme.Scheme.UnsafeConvertToVersion(source, corev1.SchemeGroupVersion)
+	if err != nil {
+		t.Fatalf("UnsafeConvertToVersion() failed: %v", err)
+	}
+	got, ok := obj.(*corev1.Pod)
+	if !ok {
+		t.Fatalf("UnsafeConvertToVersion() returned %T, want *v1.Pod", obj)
+	}
+
+	mutateReturnedPod(got)
+
+	if got := source.Labels["label"]; got != "mutated" {
+		t.Errorf("negative control did not alias labels: got %q", got)
+	}
+	if got := source.Spec.NodeSelector["zone"]; got != "mutated" {
+		t.Errorf("negative control did not alias nodeSelector: got %q", got)
+	}
+	if got := source.Spec.Containers[0].Env[0].Value; got != "mutated" {
+		t.Errorf("negative control did not alias nested slice data: got %q", got)
+	}
 }
 
 func mutationTestClient(storage Storage) *storageClient {
