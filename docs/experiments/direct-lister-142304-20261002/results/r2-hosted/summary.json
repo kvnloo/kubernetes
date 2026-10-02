@@ -1,0 +1,984 @@
+{
+  "benchmark": {
+    "bootstrap_resamples": 10000,
+    "bootstrap_seed": 0,
+    "cell_results": [
+      {
+        "cached_medians": {
+          "B/op": 16.0,
+          "allocs/op": 1.0,
+          "ns/op": 158.8
+        },
+        "direct_synthetic_medians": {
+          "B/op": 4464.0,
+          "allocs/op": 18.0,
+          "ns/op": 2259.0
+        },
+        "managed_fields_bytes": 0,
+        "operation": "get",
+        "paired_direct_minus_cached_medians": {
+          "B/op": 4448.0,
+          "allocs/op": 17.0,
+          "ns/op": 2119.95
+        },
+        "paired_direct_minus_cached_samples": {
+          "B/op": [
+            4448.0,
+            4448.0,
+            4448.0,
+            4448.0,
+            4448.0,
+            4448.0,
+            4448.0,
+            4448.0,
+            4448.0,
+            4448.0
+          ],
+          "allocs/op": [
+            17.0,
+            17.0,
+            17.0,
+            17.0,
+            17.0,
+            17.0,
+            17.0,
+            17.0,
+            17.0,
+            17.0
+          ],
+          "ns/op": [
+            973.0,
+            2383.1,
+            3077.8,
+            2320.3,
+            4008.6,
+            8337.5,
+            1847.3,
+            1919.6,
+            1852.3,
+            1542.2
+          ]
+        },
+        "paired_time_delta_bootstrap_95_percent_ns_per_op": [
+          1697.25,
+          3164.45
+        ],
+        "pairs": 10,
+        "pod_count": 1
+      },
+      {
+        "cached_medians": {
+          "B/op": 16.0,
+          "allocs/op": 1.0,
+          "ns/op": 128.3
+        },
+        "direct_synthetic_medians": {
+          "B/op": 8680.0,
+          "allocs/op": 21.0,
+          "ns/op": 3485.5
+        },
+        "managed_fields_bytes": 4082,
+        "operation": "get",
+        "paired_direct_minus_cached_medians": {
+          "B/op": 8664.0,
+          "allocs/op": 20.0,
+          "ns/op": 3295.3500000000004
+        },
+        "paired_direct_minus_cached_samples": {
+          "B/op": [
+            8664.0,
+            8664.0,
+            8664.0,
+            8664.0,
+            8664.0,
+            8664.0,
+            8664.0,
+            8664.0,
+            8664.0,
+            8664.0
+          ],
+          "allocs/op": [
+            20.0,
+            20.0,
+            20.0,
+            20.0,
+            20.0,
+            20.0,
+            20.0,
+            20.0,
+            20.0,
+            20.0
+          ],
+          "ns/op": [
+            2515.0,
+            3262.8,
+            42405.2,
+            3418.1,
+            3032.1,
+            3407.3,
+            3302.4,
+            5872.3,
+            3288.3,
+            2739.0
+          ]
+        },
+        "paired_time_delta_bootstrap_95_percent_ns_per_op": [
+          3000.9,
+          4587.35
+        ],
+        "pairs": 10,
+        "pod_count": 1
+      },
+      {
+        "cached_medians": {
+          "B/op": 16.0,
+          "allocs/op": 1.0,
+          "ns/op": 132.5
+        },
+        "direct_synthetic_medians": {
+          "B/op": 37352.0,
+          "allocs/op": 21.0,
+          "ns/op": 32626.5
+        },
+        "managed_fields_bytes": 32748,
+        "operation": "get",
+        "paired_direct_minus_cached_medians": {
+          "B/op": 37336.0,
+          "allocs/op": 20.0,
+          "ns/op": 32496.949999999997
+        },
+        "paired_direct_minus_cached_samples": {
+          "B/op": [
+            37336.0,
+            37336.0,
+            37336.0,
+            37336.0,
+            37336.0,
+            37336.0,
+            37336.0,
+            37336.0,
+            37336.0,
+            37336.0
+          ],
+          "allocs/op": [
+            20.0,
+            20.0,
+            20.0,
+            20.0,
+            20.0,
+            20.0,
+            20.0,
+            20.0,
+            20.0,
+            20.0
+          ],
+          "ns/op": [
+            40190.2,
+            79532.7,
+            43048.3,
+            56420.8,
+            24803.7,
+            71070.8,
+            20194.5,
+            23277.2,
+            21902.8,
+            20301.2
+          ]
+        },
+        "paired_time_delta_bootstrap_95_percent_ns_per_op": [
+          21789.2,
+          57059.55
+        ],
+        "pairs": 10,
+        "pod_count": 1
+      },
+      {
+        "cached_medians": {
+          "B/op": 16.0,
+          "allocs/op": 1.0,
+          "ns/op": 173.8
+        },
+        "direct_synthetic_medians": {
+          "B/op": 4464.0,
+          "allocs/op": 18.0,
+          "ns/op": 1943.5
+        },
+        "managed_fields_bytes": 0,
+        "operation": "get",
+        "paired_direct_minus_cached_medians": {
+          "B/op": 4448.0,
+          "allocs/op": 17.0,
+          "ns/op": 1807.5
+        },
+        "paired_direct_minus_cached_samples": {
+          "B/op": [
+            4448.0,
+            4448.0,
+            4448.0,
+            4448.0,
+            4448.0,
+            4448.0,
+            4448.0,
+            4448.0,
+            4448.0,
+            4448.0
+          ],
+          "allocs/op": [
+            17.0,
+            17.0,
+            17.0,
+            17.0,
+            17.0,
+            17.0,
+            17.0,
+            17.0,
+            17.0,
+            17.0
+          ],
+          "ns/op": [
+            2243.2,
+            1900.9,
+            1871.2,
+            1848.2,
+            1690.0,
+            2728.5,
+            1766.8,
+            1563.1,
+            1653.4,
+            1624.2
+          ]
+        },
+        "paired_time_delta_bootstrap_95_percent_ns_per_op": [
+          1653.4,
+          2057.2
+        ],
+        "pairs": 10,
+        "pod_count": 100
+      },
+      {
+        "cached_medians": {
+          "B/op": 16.0,
+          "allocs/op": 1.0,
+          "ns/op": 140.95
+        },
+        "direct_synthetic_medians": {
+          "B/op": 8680.0,
+          "allocs/op": 21.0,
+          "ns/op": 2634.5
+        },
+        "managed_fields_bytes": 4082,
+        "operation": "get",
+        "paired_direct_minus_cached_medians": {
+          "B/op": 8664.0,
+          "allocs/op": 20.0,
+          "ns/op": 2488.1
+        },
+        "paired_direct_minus_cached_samples": {
+          "B/op": [
+            8664.0,
+            8664.0,
+            8664.0,
+            8664.0,
+            8664.0,
+            8664.0,
+            8664.0,
+            8664.0,
+            8664.0,
+            8664.0
+          ],
+          "allocs/op": [
+            20.0,
+            20.0,
+            20.0,
+            20.0,
+            20.0,
+            20.0,
+            20.0,
+            20.0,
+            20.0,
+            20.0
+          ],
+          "ns/op": [
+            2372.3,
+            41581.8,
+            2686.8,
+            2393.5,
+            2582.7,
+            2207.2,
+            4592.9,
+            2063.6,
+            2356.6,
+            3021.9
+          ]
+        },
+        "paired_time_delta_bootstrap_95_percent_ns_per_op": [
+          2289.75,
+          3639.85
+        ],
+        "pairs": 10,
+        "pod_count": 100
+      },
+      {
+        "cached_medians": {
+          "B/op": 16.0,
+          "allocs/op": 1.0,
+          "ns/op": 182.85
+        },
+        "direct_synthetic_medians": {
+          "B/op": 37352.0,
+          "allocs/op": 21.0,
+          "ns/op": 5647.0
+        },
+        "managed_fields_bytes": 32748,
+        "operation": "get",
+        "paired_direct_minus_cached_medians": {
+          "B/op": 37336.0,
+          "allocs/op": 20.0,
+          "ns/op": 5387.55
+        },
+        "paired_direct_minus_cached_samples": {
+          "B/op": [
+            37336.0,
+            37336.0,
+            37336.0,
+            37336.0,
+            37336.0,
+            37336.0,
+            37336.0,
+            37336.0,
+            37336.0,
+            37336.0
+          ],
+          "allocs/op": [
+            20.0,
+            20.0,
+            20.0,
+            20.0,
+            20.0,
+            20.0,
+            20.0,
+            20.0,
+            20.0,
+            20.0
+          ],
+          "ns/op": [
+            39489.0,
+            29740.3,
+            36245.5,
+            5083.6,
+            5691.5,
+            -1133.0,
+            4937.8,
+            4196.8,
+            10012.6,
+            5045.3
+          ]
+        },
+        "paired_time_delta_bootstrap_95_percent_ns_per_op": [
+          4621.05,
+          29740.3
+        ],
+        "pairs": 10,
+        "pod_count": 100
+      },
+      {
+        "cached_medians": {
+          "B/op": 280.0,
+          "allocs/op": 4.0,
+          "ns/op": 352.6
+        },
+        "direct_synthetic_medians": {
+          "B/op": 3688.0,
+          "allocs/op": 26.0,
+          "ns/op": 2466.0
+        },
+        "managed_fields_bytes": 0,
+        "operation": "list",
+        "paired_direct_minus_cached_medians": {
+          "B/op": 3408.0,
+          "allocs/op": 22.0,
+          "ns/op": 2129.25
+        },
+        "paired_direct_minus_cached_samples": {
+          "B/op": [
+            3408.0,
+            3409.0,
+            3408.0,
+            3408.0,
+            3408.0,
+            3408.0,
+            3408.0,
+            3408.0,
+            3408.0,
+            3408.0
+          ],
+          "allocs/op": [
+            22.0,
+            22.0,
+            22.0,
+            22.0,
+            22.0,
+            22.0,
+            22.0,
+            22.0,
+            22.0,
+            22.0
+          ],
+          "ns/op": [
+            2018.0,
+            2156.1,
+            2364.9,
+            2054.2,
+            3628.9,
+            2345.1,
+            2075.6,
+            1954.8,
+            2164.6,
+            2102.4
+          ]
+        },
+        "paired_time_delta_bootstrap_95_percent_ns_per_op": [
+          2046.8,
+          2345.1
+        ],
+        "pairs": 10,
+        "pod_count": 1
+      },
+      {
+        "cached_medians": {
+          "B/op": 280.0,
+          "allocs/op": 4.0,
+          "ns/op": 327.25
+        },
+        "direct_synthetic_medians": {
+          "B/op": 7904.0,
+          "allocs/op": 29.0,
+          "ns/op": 3887.0
+        },
+        "managed_fields_bytes": 4082,
+        "operation": "list",
+        "paired_direct_minus_cached_medians": {
+          "B/op": 7624.0,
+          "allocs/op": 25.0,
+          "ns/op": 3476.55
+        },
+        "paired_direct_minus_cached_samples": {
+          "B/op": [
+            7624.0,
+            7624.0,
+            7624.0,
+            7624.0,
+            7624.0,
+            7624.0,
+            7624.0,
+            7624.0,
+            7624.0,
+            7624.0
+          ],
+          "allocs/op": [
+            25.0,
+            25.0,
+            25.0,
+            25.0,
+            25.0,
+            25.0,
+            25.0,
+            25.0,
+            25.0,
+            25.0
+          ],
+          "ns/op": [
+            3380.5,
+            9273.3,
+            2602.6,
+            3575.1,
+            2088.0,
+            3072.0,
+            3273.6,
+            12452.4,
+            3572.6,
+            6028.7
+          ]
+        },
+        "paired_time_delta_bootstrap_95_percent_ns_per_op": [
+          2991.55,
+          6424.2
+        ],
+        "pairs": 10,
+        "pod_count": 1
+      },
+      {
+        "cached_medians": {
+          "B/op": 280.0,
+          "allocs/op": 4.0,
+          "ns/op": 376.5
+        },
+        "direct_synthetic_medians": {
+          "B/op": 36576.0,
+          "allocs/op": 29.0,
+          "ns/op": 25717.5
+        },
+        "managed_fields_bytes": 32748,
+        "operation": "list",
+        "paired_direct_minus_cached_medians": {
+          "B/op": 36296.0,
+          "allocs/op": 25.0,
+          "ns/op": 24935.4
+        },
+        "paired_direct_minus_cached_samples": {
+          "B/op": [
+            36296.0,
+            36296.0,
+            36296.0,
+            36296.0,
+            36296.0,
+            36296.0,
+            36296.0,
+            36296.0,
+            36296.0,
+            36296.0
+          ],
+          "allocs/op": [
+            25.0,
+            25.0,
+            25.0,
+            25.0,
+            25.0,
+            25.0,
+            25.0,
+            25.0,
+            25.0,
+            25.0
+          ],
+          "ns/op": [
+            24122.8,
+            29980.9,
+            23521.2,
+            23565.6,
+            30627.8,
+            24993.8,
+            24877.0,
+            25647.8,
+            30528.0,
+            24838.5
+          ]
+        },
+        "paired_time_delta_bootstrap_95_percent_ns_per_op": [
+          24122.8,
+          29980.9
+        ],
+        "pairs": 10,
+        "pod_count": 1
+      },
+      {
+        "cached_medians": {
+          "B/op": 4216.0,
+          "allocs/op": 11.0,
+          "ns/op": 5048.5
+        },
+        "direct_synthetic_medians": {
+          "B/op": 281368.0,
+          "allocs/op": 825.0,
+          "ns/op": 372706.5
+        },
+        "managed_fields_bytes": 0,
+        "operation": "list",
+        "paired_direct_minus_cached_medians": {
+          "B/op": 277152.0,
+          "allocs/op": 814.0,
+          "ns/op": 367735.0
+        },
+        "paired_direct_minus_cached_samples": {
+          "B/op": [
+            277152.0,
+            277152.0,
+            277152.0,
+            277152.0,
+            277152.0,
+            277152.0,
+            277152.0,
+            277152.0,
+            277152.0,
+            277152.0
+          ],
+          "allocs/op": [
+            814.0,
+            814.0,
+            814.0,
+            814.0,
+            814.0,
+            814.0,
+            814.0,
+            814.0,
+            814.0,
+            814.0
+          ],
+          "ns/op": [
+            253635.0,
+            434500.0,
+            468552.0,
+            283813.0,
+            628355.0,
+            240848.0,
+            430377.0,
+            266872.0,
+            371130.0,
+            364340.0
+          ]
+        },
+        "paired_time_delta_bootstrap_95_percent_ns_per_op": [
+          266872.0,
+          434500.0
+        ],
+        "pairs": 10,
+        "pod_count": 100
+      },
+      {
+        "cached_medians": {
+          "B/op": 4216.0,
+          "allocs/op": 11.0,
+          "ns/op": 4659.5
+        },
+        "direct_synthetic_medians": {
+          "B/op": 702968.0,
+          "allocs/op": 1125.0,
+          "ns/op": 654562.0
+        },
+        "managed_fields_bytes": 4082,
+        "operation": "list",
+        "paired_direct_minus_cached_medians": {
+          "B/op": 698752.0,
+          "allocs/op": 1114.0,
+          "ns/op": 649876.0
+        },
+        "paired_direct_minus_cached_samples": {
+          "B/op": [
+            698752.0,
+            698752.0,
+            698752.0,
+            698752.0,
+            698752.0,
+            698752.0,
+            698752.0,
+            698752.0,
+            698752.0,
+            698752.0
+          ],
+          "allocs/op": [
+            1114.0,
+            1114.0,
+            1114.0,
+            1114.0,
+            1114.0,
+            1114.0,
+            1114.0,
+            1114.0,
+            1114.0,
+            1114.0
+          ],
+          "ns/op": [
+            990457.0,
+            905408.0,
+            529868.0,
+            734713.0,
+            928761.0,
+            495346.0,
+            767830.0,
+            532532.0,
+            558010.0,
+            565039.0
+          ]
+        },
+        "paired_time_delta_bootstrap_95_percent_ns_per_op": [
+          532532.0,
+          905408.0
+        ],
+        "pairs": 10,
+        "pod_count": 100
+      },
+      {
+        "cached_medians": {
+          "B/op": 4216.0,
+          "allocs/op": 11.0,
+          "ns/op": 4076.0
+        },
+        "direct_synthetic_medians": {
+          "B/op": 3570168.0,
+          "allocs/op": 1125.0,
+          "ns/op": 1544814.0
+        },
+        "managed_fields_bytes": 32748,
+        "operation": "list",
+        "paired_direct_minus_cached_medians": {
+          "B/op": 3565952.0,
+          "allocs/op": 1114.0,
+          "ns/op": 1540850.5
+        },
+        "paired_direct_minus_cached_samples": {
+          "B/op": [
+            3565952.0,
+            3565952.0,
+            3565952.0,
+            3565951.0,
+            3565952.0,
+            3565951.0,
+            3565952.0,
+            3565952.0,
+            3565952.0,
+            3565952.0
+          ],
+          "allocs/op": [
+            1114.0,
+            1114.0,
+            1114.0,
+            1114.0,
+            1114.0,
+            1114.0,
+            1114.0,
+            1114.0,
+            1114.0,
+            1114.0
+          ],
+          "ns/op": [
+            2226372.0,
+            2855514.0,
+            1331471.0,
+            1861566.0,
+            2191397.0,
+            1264980.0,
+            1615328.0,
+            1441654.0,
+            1466373.0,
+            1418161.0
+          ]
+        },
+        "paired_time_delta_bootstrap_95_percent_ns_per_op": [
+          1386562.5,
+          2191397.0
+        ],
+        "pairs": 10,
+        "pod_count": 100
+      }
+    ],
+    "cells_per_arm": 12,
+    "cpu": 1,
+    "iterations_per_record": 100,
+    "pairs": 10,
+    "records_per_arm": 120
+  },
+  "binary_sha256": "5f82f9fd8066f985071402b93b66440af201936212998340a9f097da603ee6c9",
+  "command_elapsed_seconds": {
+    "build pinned test binary": 506.86474919899996,
+    "correctness with controls": 25.38656542500007,
+    "format characterization": 0.016600711000002377,
+    "fresh-process replication": 0.5766298549999647,
+    "independent evidence verification": 1.2687638490000381,
+    "pair 00 cached": 0.27797760099997504,
+    "pair 00 direct_synthetic": 0.6227488609999909,
+    "pair 01 cached": 0.38461637700004303,
+    "pair 01 direct_synthetic": 0.7507061399999202,
+    "pair 02 cached": 0.3289943199999925,
+    "pair 02 direct_synthetic": 0.5353788310000027,
+    "pair 03 cached": 0.1658485440000277,
+    "pair 03 direct_synthetic": 0.5231620370000201,
+    "pair 04 cached": 0.17026722100001734,
+    "pair 04 direct_synthetic": 0.5737974319999921,
+    "pair 05 cached": 0.16715560299996923,
+    "pair 05 direct_synthetic": 0.4157605920000833,
+    "pair 06 cached": 0.16904894399999648,
+    "pair 06 direct_synthetic": 0.4663192089999484,
+    "pair 07 cached": 0.165838076,
+    "pair 07 direct_synthetic": 0.37568023500000436,
+    "pair 08 cached": 0.16586097099991548,
+    "pair 08 direct_synthetic": 0.4174147940000239,
+    "pair 09 cached": 0.1694285349999518,
+    "pair 09 direct_synthetic": 0.42148830099995394,
+    "verifier calibration": 0.11482262199999838
+  },
+  "correctness": {
+    "all_test_runs": 131,
+    "package": "k8s.io/kubernetes/pkg/kubeapiserver/direct",
+    "required_passed": 10,
+    "required_tests": [
+      "TestStorageClientReturnedObjectsAreIsolated",
+      "TestUnsafeConversionAliasesSource",
+      "TestPodListerSelectors",
+      "TestExperimentConversionGVKIsolation",
+      "TestExperimentGenericListIsolation",
+      "TestExperimentContextRoutes",
+      "TestExperimentManagedFieldsTransformBoundary",
+      "TestExperimentInformerLifecycle",
+      "TestExperimentSelectorParity",
+      "TestDirectListerReadCostFixtureParity"
+    ]
+  },
+  "experiment_id": "k8s-direct-lister-contract-142304-20261002-r1",
+  "go_version": "go version go1.27.0 linux/amd64",
+  "managed_fields_parity": [
+    {
+      "cached_managed_fields_bytes": 0,
+      "direct_managed_fields_bytes": 0,
+      "managed_fields_bytes": 0,
+      "normalized_equal": true,
+      "operation": "get",
+      "pod_count": 1,
+      "raw_equal": true
+    },
+    {
+      "cached_managed_fields_bytes": 0,
+      "direct_managed_fields_bytes": 4082,
+      "managed_fields_bytes": 4082,
+      "normalized_equal": true,
+      "operation": "get",
+      "pod_count": 1,
+      "raw_equal": false
+    },
+    {
+      "cached_managed_fields_bytes": 0,
+      "direct_managed_fields_bytes": 32748,
+      "managed_fields_bytes": 32748,
+      "normalized_equal": true,
+      "operation": "get",
+      "pod_count": 1,
+      "raw_equal": false
+    },
+    {
+      "cached_managed_fields_bytes": 0,
+      "direct_managed_fields_bytes": 0,
+      "managed_fields_bytes": 0,
+      "normalized_equal": true,
+      "operation": "get",
+      "pod_count": 100,
+      "raw_equal": true
+    },
+    {
+      "cached_managed_fields_bytes": 0,
+      "direct_managed_fields_bytes": 4082,
+      "managed_fields_bytes": 4082,
+      "normalized_equal": true,
+      "operation": "get",
+      "pod_count": 100,
+      "raw_equal": false
+    },
+    {
+      "cached_managed_fields_bytes": 0,
+      "direct_managed_fields_bytes": 32748,
+      "managed_fields_bytes": 32748,
+      "normalized_equal": true,
+      "operation": "get",
+      "pod_count": 100,
+      "raw_equal": false
+    },
+    {
+      "cached_managed_fields_bytes": 0,
+      "direct_managed_fields_bytes": 0,
+      "managed_fields_bytes": 0,
+      "normalized_equal": true,
+      "operation": "list",
+      "pod_count": 1,
+      "raw_equal": true
+    },
+    {
+      "cached_managed_fields_bytes": 0,
+      "direct_managed_fields_bytes": 4082,
+      "managed_fields_bytes": 4082,
+      "normalized_equal": true,
+      "operation": "list",
+      "pod_count": 1,
+      "raw_equal": false
+    },
+    {
+      "cached_managed_fields_bytes": 0,
+      "direct_managed_fields_bytes": 32748,
+      "managed_fields_bytes": 32748,
+      "normalized_equal": true,
+      "operation": "list",
+      "pod_count": 1,
+      "raw_equal": false
+    },
+    {
+      "cached_managed_fields_bytes": 0,
+      "direct_managed_fields_bytes": 0,
+      "managed_fields_bytes": 0,
+      "normalized_equal": true,
+      "operation": "list",
+      "pod_count": 100,
+      "raw_equal": true
+    },
+    {
+      "cached_managed_fields_bytes": 0,
+      "direct_managed_fields_bytes": 408200,
+      "managed_fields_bytes": 4082,
+      "normalized_equal": true,
+      "operation": "list",
+      "pod_count": 100,
+      "raw_equal": false
+    },
+    {
+      "cached_managed_fields_bytes": 0,
+      "direct_managed_fields_bytes": 3274800,
+      "managed_fields_bytes": 32748,
+      "normalized_equal": true,
+      "operation": "list",
+      "pod_count": 100,
+      "raw_equal": false
+    }
+  ],
+  "platform": {
+    "cpu_count": 1,
+    "cpuinfo": "processor\t: 0\nvendor_id\t: AuthenticAMD\ncpu family\t: 25\nmodel\t\t: 1\nmodel name\t: AMD EPYC 7763 64-Core Processor\nstepping\t: 1\nmicrocode\t: 0xffffffff\ncpu MHz\t\t: 2445.430\ncache size\t: 512 KB\nphysical id\t: 0\nsiblings\t: 1\ncore id\t\t: 0\ncpu cores\t: 1\napicid\t\t: 0\ninitial apicid\t: 0\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 13\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl tsc_reliable nonstop_tsc cpuid extd_apicid tsc_known_freq pni pclmulqdq ssse3 fma cx16 pcid sse4_1 sse4_2 movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw topoext invpcid_single vmmcall fsgsbase bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves clzero xsaveerptr arat umip vaes vpclmulqdq rdpid fsrm\nbugs\t\t: sysret_ss_attrs null_seg spectre_v1 spectre_v2 spec_store_bypass srso tsa\nbogomips\t: 4890.86\nTLB size\t: 2560 4K pages\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 48 bits physical, 48 bits virtual\npower management:",
+    "platform": "Linux-6.1.146.1-microsoft-standard-x86_64-with-glibc2.39",
+    "processor": "x86_64"
+  },
+  "prereg_sha256": "51ed6f2f949cd227d03076b92129c37517f4160ee67a8c1f7d008c6e67012b39",
+  "replication": {
+    "all_test_runs": 111,
+    "package": "k8s.io/kubernetes/pkg/kubeapiserver/direct",
+    "required_passed": 6,
+    "required_tests": [
+      "TestExperimentConversionGVKIsolation",
+      "TestExperimentGenericListIsolation",
+      "TestExperimentContextRoutes",
+      "TestExperimentManagedFieldsTransformBoundary",
+      "TestExperimentInformerLifecycle",
+      "TestExperimentSelectorParity"
+    ]
+  },
+  "required_output_sha256": {
+    "bench-00-cached.txt": "6a0f1e68e313aae10f7ca2cdb37dfab2c0fe5950762ea1a414fdff0c1016e7d3",
+    "bench-00-direct_synthetic.txt": "83bb30902fe2a45658180de0dcf579a88a5f184c8f9f2c0b6eea6c3f33d1e054",
+    "bench-01-cached.txt": "fee433eb78203aa730ef1c74cf86ad49653e0da7ec474aca88a943ae8a8bee14",
+    "bench-01-direct_synthetic.txt": "5b87a2cc4a450038bc69bc736fc1d390d59b3a26e95e9d71e8f1b68ce3a62ed2",
+    "bench-02-cached.txt": "2851c9e9eb781eeabd483a9e09938367221c4f6c1d53918662089216a415ef5e",
+    "bench-02-direct_synthetic.txt": "746295808fa045623eef250dcced4687ef2b1c5c6138d64b029ee966bb4eb00a",
+    "bench-03-cached.txt": "33c1b680a1a09b5221b47cfe1b1661401731423dd54907b616f65e8d95808b4e",
+    "bench-03-direct_synthetic.txt": "12343bd8580047c4c095ba3ca3948fe3a5f083c2a7d77ec5d1a172b0355bbf3f",
+    "bench-04-cached.txt": "8c74c360b8e82d0cc4d37e3c7b513e4c43ef24406eb8a4d4774977aadcde66b1",
+    "bench-04-direct_synthetic.txt": "fa2f9b57e4f24d194c883323da7dc7e8240da75546ea589ce64f42c7800c6e73",
+    "bench-05-cached.txt": "7282f8454b55a76afc4d9141a6e8f150620fcfb06d73577c7f6052fe2c3386da",
+    "bench-05-direct_synthetic.txt": "f54a34304d62fa1dc433bb53a4ab7ef9eae80dd096e4f444010a9b4847767751",
+    "bench-06-cached.txt": "6f3fbd10b7748a4d8ebcbce04875363dcc34384fbdf01d353367727d96d8ab5a",
+    "bench-06-direct_synthetic.txt": "6a9906c6a056f2baf414a9eb518b4c5589bdc42595b9fc0a48032006e8aa0cb1",
+    "bench-07-cached.txt": "122d4edd19244922b57d54b76ff013338d2ed212135f38feb37b1bf4f732f2dd",
+    "bench-07-direct_synthetic.txt": "eb0b0fa84447b1063bdbaa90ca99717341bb48c7b84ceb9590cfd1b321cdbbbb",
+    "bench-08-cached.txt": "f0d297f801febaabfdeee0e6191f37cbe76e83acdbb498733b9bb6abcdad3492",
+    "bench-08-direct_synthetic.txt": "5bd2a09b62aa324ab4b26f5255b5c331a9a0f50d66cd5b542ffb6ddbbb9dc6c1",
+    "bench-09-cached.txt": "1bdb7757ff446767cee6a323fa5386513a49be2f546abb44dc2fcfecfcf3170d",
+    "bench-09-direct_synthetic.txt": "3d7b2ff5ad23fc0ad932db4c5dd2747a036863173099d74c2dadd39578bd876b",
+    "correctness.jsonl": "a75c743ef94532a6836a401658760e15f124f875ce1fd53dbefd1bf3f9661b5c",
+    "replication.jsonl": "b067786c28ba91d5402813e592f5ad752b17f82be4f39ee1d8912d416d9967c6"
+  },
+  "scope": "Component tests and warmed synthetic-storage costs only. No real watch-cache, production safety, or whole-system speedup claim. Source attribution follows the manifest and CI receipt; the verifier checks supplied binary and preregistration hashes.",
+  "source_base": "b7af3931105444bf5f0c31fca8ee012a779906f9",
+  "source_sha": "1f0afa8df5d7813706d0ca9fa64d0cb7857017ea",
+  "status": "VERIFIED_BOUNDED_EVIDENCE",
+  "verifier_calibration": {
+    "incomplete_benchmark_rejected": true,
+    "known_good_benchmark_accepted": true,
+    "known_good_test_log_accepted": true,
+    "missing_required_test_rejected": true,
+    "missing_unsafe_control_rejected": true,
+    "wrong_iteration_count_rejected": true,
+    "zero_test_green_rejected": true
+  }
+}

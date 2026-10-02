@@ -1,0 +1,1050 @@
+{
+  "status": "HOSTED_EVIDENCE_AND_BINARY_REPLAY_VERIFIED",
+  "source_sha": "1f0afa8df5d7813706d0ca9fa64d0cb7857017ea",
+  "source_base": "b7af3931105444bf5f0c31fca8ee012a779906f9",
+  "hosted_run_id": "37044953930",
+  "go_version": "go version go1.27.0 linux/amd64",
+  "hosted_binary_sha256": "5f82f9fd8066f985071402b93b66440af201936212998340a9f097da603ee6c9",
+  "local_binary_sha256": "0a9bdb21bf15f9352e16015a864a07132cfc7c79679221188d23fff74e085446",
+  "binary_hashes_equal": false,
+  "source_hashes_match_pinned_checkout": {
+    "pkg/kubeapiserver/direct/client.go": true,
+    "pkg/kubeapiserver/direct/client_conversion_benchmark_test.go": true,
+    "pkg/kubeapiserver/direct/client_mutation_test.go": true,
+    "pkg/kubeapiserver/direct/context_route_test.go": true,
+    "pkg/kubeapiserver/direct/conversion_contract_test.go": true,
+    "pkg/kubeapiserver/direct/factory.go": true,
+    "pkg/kubeapiserver/direct/lifecycle_contract_test.go": true,
+    "pkg/kubeapiserver/direct/lister.go": true,
+    "pkg/kubeapiserver/direct/lister_nothing_test.go": true,
+    "pkg/kubeapiserver/direct/read_cost_benchmark_test.go": true,
+    "pkg/kubeapiserver/direct/selector_contract_test.go": true,
+    "docs/experiments/direct-lister-142304-20261002/run_experiments.py": true,
+    "docs/experiments/direct-lister-142304-20261002/verify_artifacts.py": true,
+    "docs/experiments/direct-lister-142304-20261002/PREREG.json": true
+  },
+  "source_hashes_match_across_hosts": true,
+  "prereg_sha256": "51ed6f2f949cd227d03076b92129c37517f4160ee67a8c1f7d008c6e67012b39",
+  "replay_receipt": {
+    "argv": [
+      "/workspace/k8s-local/go/bin/go",
+      "tool",
+      "test2json",
+      "-t",
+      "-p",
+      "k8s.io/kubernetes/pkg/kubeapiserver/direct",
+      "/workspace/k8s-experiments/hosted-r2/direct.test",
+      "-test.v=test2json",
+      "-test.count=1",
+      "-test.timeout=60s",
+      "-test.run=^TestExperiment"
+    ],
+    "cwd": "/workspace/k8s-local/src",
+    "environment_overrides": {
+      "GOCACHE": "/workspace/k8s-local/replay-go-cache",
+      "GOTOOLCHAIN": "local"
+    },
+    "exit_code": 0,
+    "elapsed_seconds": 7.588208359999044,
+    "stdout_file": "hosted-binary-local-replay.jsonl",
+    "stdout_sha256": "576d1be07ab3d1e19acf4b766457d582e6a23c1b42f3afd5abe3d0e1b5b12005",
+    "binary_sha256": "5f82f9fd8066f985071402b93b66440af201936212998340a9f097da603ee6c9",
+    "go_tool": "go version go1.27.0 linux/amd64",
+    "benchmarks_executed": false
+  },
+  "launcher_retry": {
+    "attempt1": "Stopped before test2json/test execution because default GOCACHE was read-only. Preserved attempt1 launcher log and receipt.",
+    "attempt2": "Changed GOCACHE to workspace writable path and GOTOOLCHAIN=local. Binary, test selection and assertions unchanged."
+  },
+  "inventories": {
+    "hosted_correctness": {
+      "named_tests_and_subtests": 131,
+      "roots": 10,
+      "counts_including_root": {
+        "TestStorageClientReturnedObjectsAreIsolated": 3,
+        "TestUnsafeConversionAliasesSource": 1,
+        "TestExperimentContextRoutes": 8,
+        "TestExperimentConversionGVKIsolation": 7,
+        "TestExperimentGenericListIsolation": 1,
+        "TestExperimentManagedFieldsTransformBoundary": 1,
+        "TestExperimentInformerLifecycle": 4,
+        "TestPodListerSelectors": 9,
+        "TestDirectListerReadCostFixtureParity": 7,
+        "TestExperimentSelectorParity": 90
+      },
+      "pass_names": [
+        "TestDirectListerReadCostFixtureParity",
+        "TestDirectListerReadCostFixtureParity/n=1/managed_fields_target_bytes=0",
+        "TestDirectListerReadCostFixtureParity/n=1/managed_fields_target_bytes=32768",
+        "TestDirectListerReadCostFixtureParity/n=1/managed_fields_target_bytes=4096",
+        "TestDirectListerReadCostFixtureParity/n=100/managed_fields_target_bytes=0",
+        "TestDirectListerReadCostFixtureParity/n=100/managed_fields_target_bytes=32768",
+        "TestDirectListerReadCostFixtureParity/n=100/managed_fields_target_bytes=4096",
+        "TestExperimentContextRoutes",
+        "TestExperimentContextRoutes/active/direct-context-aware",
+        "TestExperimentContextRoutes/active/production-psa-adapter",
+        "TestExperimentContextRoutes/cancelled/direct-context-aware",
+        "TestExperimentContextRoutes/cancelled/production-psa-adapter",
+        "TestExperimentContextRoutes/contextless-get",
+        "TestExperimentContextRoutes/expired/direct-context-aware",
+        "TestExperimentContextRoutes/expired/production-psa-adapter",
+        "TestExperimentConversionGVKIsolation",
+        "TestExperimentConversionGVKIsolation/empty-item-gvk",
+        "TestExperimentConversionGVKIsolation/empty-item-gvk/get",
+        "TestExperimentConversionGVKIsolation/empty-item-gvk/list",
+        "TestExperimentConversionGVKIsolation/populated-item-gvk",
+        "TestExperimentConversionGVKIsolation/populated-item-gvk/get",
+        "TestExperimentConversionGVKIsolation/populated-item-gvk/list",
+        "TestExperimentGenericListIsolation",
+        "TestExperimentInformerLifecycle",
+        "TestExperimentInformerLifecycle/direct-lister-only",
+        "TestExperimentInformerLifecycle/direct-with-event-consumer",
+        "TestExperimentInformerLifecycle/standard-factory-control",
+        "TestExperimentManagedFieldsTransformBoundary",
+        "TestExperimentSelectorParity",
+        "TestExperimentSelectorParity/calibration-empty-string-loses-nothing",
+        "TestExperimentSelectorParity/generic/namespace=/!app",
+        "TestExperimentSelectorParity/generic/namespace=/app",
+        "TestExperimentSelectorParity/generic/namespace=/app!=web",
+        "TestExperimentSelectorParity/generic/namespace=/app=",
+        "TestExperimentSelectorParity/generic/namespace=/app=web",
+        "TestExperimentSelectorParity/generic/namespace=/app=web,app=db",
+        "TestExperimentSelectorParity/generic/namespace=/app=web,tier=frontend",
+        "TestExperimentSelectorParity/generic/namespace=/app_in_(web,db)",
+        "TestExperimentSelectorParity/generic/namespace=/app_notin_(web,db)",
+        "TestExperimentSelectorParity/generic/namespace=/everything",
+        "TestExperimentSelectorParity/generic/namespace=/nothing",
+        "TestExperimentSelectorParity/generic/namespace=absent/!app",
+        "TestExperimentSelectorParity/generic/namespace=absent/app",
+        "TestExperimentSelectorParity/generic/namespace=absent/app!=web",
+        "TestExperimentSelectorParity/generic/namespace=absent/app=",
+        "TestExperimentSelectorParity/generic/namespace=absent/app=web",
+        "TestExperimentSelectorParity/generic/namespace=absent/app=web,app=db",
+        "TestExperimentSelectorParity/generic/namespace=absent/app=web,tier=frontend",
+        "TestExperimentSelectorParity/generic/namespace=absent/app_in_(web,db)",
+        "TestExperimentSelectorParity/generic/namespace=absent/app_notin_(web,db)",
+        "TestExperimentSelectorParity/generic/namespace=absent/everything",
+        "TestExperimentSelectorParity/generic/namespace=absent/nothing",
+        "TestExperimentSelectorParity/generic/namespace=ns/!app",
+        "TestExperimentSelectorParity/generic/namespace=ns/app",
+        "TestExperimentSelectorParity/generic/namespace=ns/app!=web",
+        "TestExperimentSelectorParity/generic/namespace=ns/app=",
+        "TestExperimentSelectorParity/generic/namespace=ns/app=web",
+        "TestExperimentSelectorParity/generic/namespace=ns/app=web,app=db",
+        "TestExperimentSelectorParity/generic/namespace=ns/app=web,tier=frontend",
+        "TestExperimentSelectorParity/generic/namespace=ns/app_in_(web,db)",
+        "TestExperimentSelectorParity/generic/namespace=ns/app_notin_(web,db)",
+        "TestExperimentSelectorParity/generic/namespace=ns/everything",
+        "TestExperimentSelectorParity/generic/namespace=ns/nothing",
+        "TestExperimentSelectorParity/generic/namespace=other/!app",
+        "TestExperimentSelectorParity/generic/namespace=other/app",
+        "TestExperimentSelectorParity/generic/namespace=other/app!=web",
+        "TestExperimentSelectorParity/generic/namespace=other/app=",
+        "TestExperimentSelectorParity/generic/namespace=other/app=web",
+        "TestExperimentSelectorParity/generic/namespace=other/app=web,app=db",
+        "TestExperimentSelectorParity/generic/namespace=other/app=web,tier=frontend",
+        "TestExperimentSelectorParity/generic/namespace=other/app_in_(web,db)",
+        "TestExperimentSelectorParity/generic/namespace=other/app_notin_(web,db)",
+        "TestExperimentSelectorParity/generic/namespace=other/everything",
+        "TestExperimentSelectorParity/generic/namespace=other/nothing",
+        "TestExperimentSelectorParity/typed/namespace=/!app",
+        "TestExperimentSelectorParity/typed/namespace=/app",
+        "TestExperimentSelectorParity/typed/namespace=/app!=web",
+        "TestExperimentSelectorParity/typed/namespace=/app=",
+        "TestExperimentSelectorParity/typed/namespace=/app=web",
+        "TestExperimentSelectorParity/typed/namespace=/app=web,app=db",
+        "TestExperimentSelectorParity/typed/namespace=/app=web,tier=frontend",
+        "TestExperimentSelectorParity/typed/namespace=/app_in_(web,db)",
+        "TestExperimentSelectorParity/typed/namespace=/app_notin_(web,db)",
+        "TestExperimentSelectorParity/typed/namespace=/everything",
+        "TestExperimentSelectorParity/typed/namespace=/nothing",
+        "TestExperimentSelectorParity/typed/namespace=absent/!app",
+        "TestExperimentSelectorParity/typed/namespace=absent/app",
+        "TestExperimentSelectorParity/typed/namespace=absent/app!=web",
+        "TestExperimentSelectorParity/typed/namespace=absent/app=",
+        "TestExperimentSelectorParity/typed/namespace=absent/app=web",
+        "TestExperimentSelectorParity/typed/namespace=absent/app=web,app=db",
+        "TestExperimentSelectorParity/typed/namespace=absent/app=web,tier=frontend",
+        "TestExperimentSelectorParity/typed/namespace=absent/app_in_(web,db)",
+        "TestExperimentSelectorParity/typed/namespace=absent/app_notin_(web,db)",
+        "TestExperimentSelectorParity/typed/namespace=absent/everything",
+        "TestExperimentSelectorParity/typed/namespace=absent/nothing",
+        "TestExperimentSelectorParity/typed/namespace=ns/!app",
+        "TestExperimentSelectorParity/typed/namespace=ns/app",
+        "TestExperimentSelectorParity/typed/namespace=ns/app!=web",
+        "TestExperimentSelectorParity/typed/namespace=ns/app=",
+        "TestExperimentSelectorParity/typed/namespace=ns/app=web",
+        "TestExperimentSelectorParity/typed/namespace=ns/app=web,app=db",
+        "TestExperimentSelectorParity/typed/namespace=ns/app=web,tier=frontend",
+        "TestExperimentSelectorParity/typed/namespace=ns/app_in_(web,db)",
+        "TestExperimentSelectorParity/typed/namespace=ns/app_notin_(web,db)",
+        "TestExperimentSelectorParity/typed/namespace=ns/everything",
+        "TestExperimentSelectorParity/typed/namespace=ns/nothing",
+        "TestExperimentSelectorParity/typed/namespace=other/!app",
+        "TestExperimentSelectorParity/typed/namespace=other/app",
+        "TestExperimentSelectorParity/typed/namespace=other/app!=web",
+        "TestExperimentSelectorParity/typed/namespace=other/app=",
+        "TestExperimentSelectorParity/typed/namespace=other/app=web",
+        "TestExperimentSelectorParity/typed/namespace=other/app=web,app=db",
+        "TestExperimentSelectorParity/typed/namespace=other/app=web,tier=frontend",
+        "TestExperimentSelectorParity/typed/namespace=other/app_in_(web,db)",
+        "TestExperimentSelectorParity/typed/namespace=other/app_notin_(web,db)",
+        "TestExperimentSelectorParity/typed/namespace=other/everything",
+        "TestExperimentSelectorParity/typed/namespace=other/nothing",
+        "TestPodListerSelectors",
+        "TestPodListerSelectors/all_namespaces",
+        "TestPodListerSelectors/all_namespaces/everything",
+        "TestPodListerSelectors/all_namespaces/nil",
+        "TestPodListerSelectors/all_namespaces/nothing",
+        "TestPodListerSelectors/namespaced",
+        "TestPodListerSelectors/namespaced/everything",
+        "TestPodListerSelectors/namespaced/nil",
+        "TestPodListerSelectors/namespaced/nothing",
+        "TestStorageClientReturnedObjectsAreIsolated",
+        "TestStorageClientReturnedObjectsAreIsolated/get",
+        "TestStorageClientReturnedObjectsAreIsolated/list",
+        "TestUnsafeConversionAliasesSource"
+      ],
+      "structural_receipts": [
+        "route=direct-context-aware caller=active calls=1 deadline=true sentinel=true storage_error=<nil> returned_error=<nil>",
+        "route=production-psa-adapter caller=active calls=1 deadline=false sentinel=false storage_error=<nil> returned_error=<nil>",
+        "route=direct-context-aware caller=cancelled calls=1 deadline=true sentinel=true storage_error=context canceled returned_error=context canceled",
+        "route=production-psa-adapter caller=cancelled calls=1 deadline=false sentinel=false storage_error=<nil> returned_error=<nil>",
+        "route=direct-context-aware caller=expired calls=1 deadline=true sentinel=true storage_error=context deadline exceeded returned_error=context deadline exceeded",
+        "route=production-psa-adapter caller=expired calls=1 deadline=false sentinel=false storage_error=<nil> returned_error=<nil>",
+        "get source GVK=/, Kind=; output GVK empty; source and independent reads unchanged",
+        "list outer GVK empty; first item GVK retained as /, Kind=; source and independent reads unchanged",
+        "get source GVK=/v1, Kind=Pod; output GVK empty; source and independent reads unchanged",
+        "list outer GVK empty; first item GVK retained as /v1, Kind=Pod; source and independent reads unchanged",
+        "get managedFields entries: direct=1, informer=0; all unmasked fields equal",
+        "list managedFields entries: direct=1, informer=0; all unmasked fields equal",
+        "wrapped=true eventConsumer=false synced=0 client_list=0 client_watch=0 direct_get=1 direct_list=1 route=direct-storage",
+        "wrapped=true eventConsumer=true synced=1 client_list=1 client_watch=1 direct_get=1 direct_list=1 route=direct-storage",
+        "wrapped=false eventConsumer=true synced=1 client_list=1 client_watch=1 direct_get=0 direct_list=0 route=informer-cache",
+        "calibration detected 6 false-positive items from Nothing -> string -> Parse"
+      ],
+      "sha256": "a75c743ef94532a6836a401658760e15f124f875ce1fd53dbefd1bf3f9661b5c"
+    },
+    "hosted_replication": {
+      "named_tests_and_subtests": 111,
+      "roots": 6,
+      "counts_including_root": {
+        "TestExperimentContextRoutes": 8,
+        "TestExperimentConversionGVKIsolation": 7,
+        "TestExperimentGenericListIsolation": 1,
+        "TestExperimentManagedFieldsTransformBoundary": 1,
+        "TestExperimentInformerLifecycle": 4,
+        "TestExperimentSelectorParity": 90
+      },
+      "pass_names": [
+        "TestExperimentContextRoutes",
+        "TestExperimentContextRoutes/active/direct-context-aware",
+        "TestExperimentContextRoutes/active/production-psa-adapter",
+        "TestExperimentContextRoutes/cancelled/direct-context-aware",
+        "TestExperimentContextRoutes/cancelled/production-psa-adapter",
+        "TestExperimentContextRoutes/contextless-get",
+        "TestExperimentContextRoutes/expired/direct-context-aware",
+        "TestExperimentContextRoutes/expired/production-psa-adapter",
+        "TestExperimentConversionGVKIsolation",
+        "TestExperimentConversionGVKIsolation/empty-item-gvk",
+        "TestExperimentConversionGVKIsolation/empty-item-gvk/get",
+        "TestExperimentConversionGVKIsolation/empty-item-gvk/list",
+        "TestExperimentConversionGVKIsolation/populated-item-gvk",
+        "TestExperimentConversionGVKIsolation/populated-item-gvk/get",
+        "TestExperimentConversionGVKIsolation/populated-item-gvk/list",
+        "TestExperimentGenericListIsolation",
+        "TestExperimentInformerLifecycle",
+        "TestExperimentInformerLifecycle/direct-lister-only",
+        "TestExperimentInformerLifecycle/direct-with-event-consumer",
+        "TestExperimentInformerLifecycle/standard-factory-control",
+        "TestExperimentManagedFieldsTransformBoundary",
+        "TestExperimentSelectorParity",
+        "TestExperimentSelectorParity/calibration-empty-string-loses-nothing",
+        "TestExperimentSelectorParity/generic/namespace=/!app",
+        "TestExperimentSelectorParity/generic/namespace=/app",
+        "TestExperimentSelectorParity/generic/namespace=/app!=web",
+        "TestExperimentSelectorParity/generic/namespace=/app=",
+        "TestExperimentSelectorParity/generic/namespace=/app=web",
+        "TestExperimentSelectorParity/generic/namespace=/app=web,app=db",
+        "TestExperimentSelectorParity/generic/namespace=/app=web,tier=frontend",
+        "TestExperimentSelectorParity/generic/namespace=/app_in_(web,db)",
+        "TestExperimentSelectorParity/generic/namespace=/app_notin_(web,db)",
+        "TestExperimentSelectorParity/generic/namespace=/everything",
+        "TestExperimentSelectorParity/generic/namespace=/nothing",
+        "TestExperimentSelectorParity/generic/namespace=absent/!app",
+        "TestExperimentSelectorParity/generic/namespace=absent/app",
+        "TestExperimentSelectorParity/generic/namespace=absent/app!=web",
+        "TestExperimentSelectorParity/generic/namespace=absent/app=",
+        "TestExperimentSelectorParity/generic/namespace=absent/app=web",
+        "TestExperimentSelectorParity/generic/namespace=absent/app=web,app=db",
+        "TestExperimentSelectorParity/generic/namespace=absent/app=web,tier=frontend",
+        "TestExperimentSelectorParity/generic/namespace=absent/app_in_(web,db)",
+        "TestExperimentSelectorParity/generic/namespace=absent/app_notin_(web,db)",
+        "TestExperimentSelectorParity/generic/namespace=absent/everything",
+        "TestExperimentSelectorParity/generic/namespace=absent/nothing",
+        "TestExperimentSelectorParity/generic/namespace=ns/!app",
+        "TestExperimentSelectorParity/generic/namespace=ns/app",
+        "TestExperimentSelectorParity/generic/namespace=ns/app!=web",
+        "TestExperimentSelectorParity/generic/namespace=ns/app=",
+        "TestExperimentSelectorParity/generic/namespace=ns/app=web",
+        "TestExperimentSelectorParity/generic/namespace=ns/app=web,app=db",
+        "TestExperimentSelectorParity/generic/namespace=ns/app=web,tier=frontend",
+        "TestExperimentSelectorParity/generic/namespace=ns/app_in_(web,db)",
+        "TestExperimentSelectorParity/generic/namespace=ns/app_notin_(web,db)",
+        "TestExperimentSelectorParity/generic/namespace=ns/everything",
+        "TestExperimentSelectorParity/generic/namespace=ns/nothing",
+        "TestExperimentSelectorParity/generic/namespace=other/!app",
+        "TestExperimentSelectorParity/generic/namespace=other/app",
+        "TestExperimentSelectorParity/generic/namespace=other/app!=web",
+        "TestExperimentSelectorParity/generic/namespace=other/app=",
+        "TestExperimentSelectorParity/generic/namespace=other/app=web",
+        "TestExperimentSelectorParity/generic/namespace=other/app=web,app=db",
+        "TestExperimentSelectorParity/generic/namespace=other/app=web,tier=frontend",
+        "TestExperimentSelectorParity/generic/namespace=other/app_in_(web,db)",
+        "TestExperimentSelectorParity/generic/namespace=other/app_notin_(web,db)",
+        "TestExperimentSelectorParity/generic/namespace=other/everything",
+        "TestExperimentSelectorParity/generic/namespace=other/nothing",
+        "TestExperimentSelectorParity/typed/namespace=/!app",
+        "TestExperimentSelectorParity/typed/namespace=/app",
+        "TestExperimentSelectorParity/typed/namespace=/app!=web",
+        "TestExperimentSelectorParity/typed/namespace=/app=",
+        "TestExperimentSelectorParity/typed/namespace=/app=web",
+        "TestExperimentSelectorParity/typed/namespace=/app=web,app=db",
+        "TestExperimentSelectorParity/typed/namespace=/app=web,tier=frontend",
+        "TestExperimentSelectorParity/typed/namespace=/app_in_(web,db)",
+        "TestExperimentSelectorParity/typed/namespace=/app_notin_(web,db)",
+        "TestExperimentSelectorParity/typed/namespace=/everything",
+        "TestExperimentSelectorParity/typed/namespace=/nothing",
+        "TestExperimentSelectorParity/typed/namespace=absent/!app",
+        "TestExperimentSelectorParity/typed/namespace=absent/app",
+        "TestExperimentSelectorParity/typed/namespace=absent/app!=web",
+        "TestExperimentSelectorParity/typed/namespace=absent/app=",
+        "TestExperimentSelectorParity/typed/namespace=absent/app=web",
+        "TestExperimentSelectorParity/typed/namespace=absent/app=web,app=db",
+        "TestExperimentSelectorParity/typed/namespace=absent/app=web,tier=frontend",
+        "TestExperimentSelectorParity/typed/namespace=absent/app_in_(web,db)",
+        "TestExperimentSelectorParity/typed/namespace=absent/app_notin_(web,db)",
+        "TestExperimentSelectorParity/typed/namespace=absent/everything",
+        "TestExperimentSelectorParity/typed/namespace=absent/nothing",
+        "TestExperimentSelectorParity/typed/namespace=ns/!app",
+        "TestExperimentSelectorParity/typed/namespace=ns/app",
+        "TestExperimentSelectorParity/typed/namespace=ns/app!=web",
+        "TestExperimentSelectorParity/typed/namespace=ns/app=",
+        "TestExperimentSelectorParity/typed/namespace=ns/app=web",
+        "TestExperimentSelectorParity/typed/namespace=ns/app=web,app=db",
+        "TestExperimentSelectorParity/typed/namespace=ns/app=web,tier=frontend",
+        "TestExperimentSelectorParity/typed/namespace=ns/app_in_(web,db)",
+        "TestExperimentSelectorParity/typed/namespace=ns/app_notin_(web,db)",
+        "TestExperimentSelectorParity/typed/namespace=ns/everything",
+        "TestExperimentSelectorParity/typed/namespace=ns/nothing",
+        "TestExperimentSelectorParity/typed/namespace=other/!app",
+        "TestExperimentSelectorParity/typed/namespace=other/app",
+        "TestExperimentSelectorParity/typed/namespace=other/app!=web",
+        "TestExperimentSelectorParity/typed/namespace=other/app=",
+        "TestExperimentSelectorParity/typed/namespace=other/app=web",
+        "TestExperimentSelectorParity/typed/namespace=other/app=web,app=db",
+        "TestExperimentSelectorParity/typed/namespace=other/app=web,tier=frontend",
+        "TestExperimentSelectorParity/typed/namespace=other/app_in_(web,db)",
+        "TestExperimentSelectorParity/typed/namespace=other/app_notin_(web,db)",
+        "TestExperimentSelectorParity/typed/namespace=other/everything",
+        "TestExperimentSelectorParity/typed/namespace=other/nothing"
+      ],
+      "structural_receipts": [
+        "route=direct-context-aware caller=active calls=1 deadline=true sentinel=true storage_error=<nil> returned_error=<nil>",
+        "route=production-psa-adapter caller=active calls=1 deadline=false sentinel=false storage_error=<nil> returned_error=<nil>",
+        "route=direct-context-aware caller=cancelled calls=1 deadline=true sentinel=true storage_error=context canceled returned_error=context canceled",
+        "route=production-psa-adapter caller=cancelled calls=1 deadline=false sentinel=false storage_error=<nil> returned_error=<nil>",
+        "route=direct-context-aware caller=expired calls=1 deadline=true sentinel=true storage_error=context deadline exceeded returned_error=context deadline exceeded",
+        "route=production-psa-adapter caller=expired calls=1 deadline=false sentinel=false storage_error=<nil> returned_error=<nil>",
+        "get source GVK=/, Kind=; output GVK empty; source and independent reads unchanged",
+        "list outer GVK empty; first item GVK retained as /, Kind=; source and independent reads unchanged",
+        "get source GVK=/v1, Kind=Pod; output GVK empty; source and independent reads unchanged",
+        "list outer GVK empty; first item GVK retained as /v1, Kind=Pod; source and independent reads unchanged",
+        "get managedFields entries: direct=1, informer=0; all unmasked fields equal",
+        "list managedFields entries: direct=1, informer=0; all unmasked fields equal",
+        "wrapped=true eventConsumer=false synced=0 client_list=0 client_watch=0 direct_get=1 direct_list=1 route=direct-storage",
+        "wrapped=true eventConsumer=true synced=1 client_list=1 client_watch=1 direct_get=1 direct_list=1 route=direct-storage",
+        "wrapped=false eventConsumer=true synced=1 client_list=1 client_watch=1 direct_get=0 direct_list=0 route=informer-cache",
+        "calibration detected 6 false-positive items from Nothing -> string -> Parse"
+      ],
+      "sha256": "b067786c28ba91d5402813e592f5ad752b17f82be4f39ee1d8912d416d9967c6"
+    },
+    "downloaded_binary_replay": {
+      "named_tests_and_subtests": 111,
+      "roots": 6,
+      "counts_including_root": {
+        "TestExperimentContextRoutes": 8,
+        "TestExperimentConversionGVKIsolation": 7,
+        "TestExperimentGenericListIsolation": 1,
+        "TestExperimentManagedFieldsTransformBoundary": 1,
+        "TestExperimentInformerLifecycle": 4,
+        "TestExperimentSelectorParity": 90
+      },
+      "pass_names": [
+        "TestExperimentContextRoutes",
+        "TestExperimentContextRoutes/active/direct-context-aware",
+        "TestExperimentContextRoutes/active/production-psa-adapter",
+        "TestExperimentContextRoutes/cancelled/direct-context-aware",
+        "TestExperimentContextRoutes/cancelled/production-psa-adapter",
+        "TestExperimentContextRoutes/contextless-get",
+        "TestExperimentContextRoutes/expired/direct-context-aware",
+        "TestExperimentContextRoutes/expired/production-psa-adapter",
+        "TestExperimentConversionGVKIsolation",
+        "TestExperimentConversionGVKIsolation/empty-item-gvk",
+        "TestExperimentConversionGVKIsolation/empty-item-gvk/get",
+        "TestExperimentConversionGVKIsolation/empty-item-gvk/list",
+        "TestExperimentConversionGVKIsolation/populated-item-gvk",
+        "TestExperimentConversionGVKIsolation/populated-item-gvk/get",
+        "TestExperimentConversionGVKIsolation/populated-item-gvk/list",
+        "TestExperimentGenericListIsolation",
+        "TestExperimentInformerLifecycle",
+        "TestExperimentInformerLifecycle/direct-lister-only",
+        "TestExperimentInformerLifecycle/direct-with-event-consumer",
+        "TestExperimentInformerLifecycle/standard-factory-control",
+        "TestExperimentManagedFieldsTransformBoundary",
+        "TestExperimentSelectorParity",
+        "TestExperimentSelectorParity/calibration-empty-string-loses-nothing",
+        "TestExperimentSelectorParity/generic/namespace=/!app",
+        "TestExperimentSelectorParity/generic/namespace=/app",
+        "TestExperimentSelectorParity/generic/namespace=/app!=web",
+        "TestExperimentSelectorParity/generic/namespace=/app=",
+        "TestExperimentSelectorParity/generic/namespace=/app=web",
+        "TestExperimentSelectorParity/generic/namespace=/app=web,app=db",
+        "TestExperimentSelectorParity/generic/namespace=/app=web,tier=frontend",
+        "TestExperimentSelectorParity/generic/namespace=/app_in_(web,db)",
+        "TestExperimentSelectorParity/generic/namespace=/app_notin_(web,db)",
+        "TestExperimentSelectorParity/generic/namespace=/everything",
+        "TestExperimentSelectorParity/generic/namespace=/nothing",
+        "TestExperimentSelectorParity/generic/namespace=absent/!app",
+        "TestExperimentSelectorParity/generic/namespace=absent/app",
+        "TestExperimentSelectorParity/generic/namespace=absent/app!=web",
+        "TestExperimentSelectorParity/generic/namespace=absent/app=",
+        "TestExperimentSelectorParity/generic/namespace=absent/app=web",
+        "TestExperimentSelectorParity/generic/namespace=absent/app=web,app=db",
+        "TestExperimentSelectorParity/generic/namespace=absent/app=web,tier=frontend",
+        "TestExperimentSelectorParity/generic/namespace=absent/app_in_(web,db)",
+        "TestExperimentSelectorParity/generic/namespace=absent/app_notin_(web,db)",
+        "TestExperimentSelectorParity/generic/namespace=absent/everything",
+        "TestExperimentSelectorParity/generic/namespace=absent/nothing",
+        "TestExperimentSelectorParity/generic/namespace=ns/!app",
+        "TestExperimentSelectorParity/generic/namespace=ns/app",
+        "TestExperimentSelectorParity/generic/namespace=ns/app!=web",
+        "TestExperimentSelectorParity/generic/namespace=ns/app=",
+        "TestExperimentSelectorParity/generic/namespace=ns/app=web",
+        "TestExperimentSelectorParity/generic/namespace=ns/app=web,app=db",
+        "TestExperimentSelectorParity/generic/namespace=ns/app=web,tier=frontend",
+        "TestExperimentSelectorParity/generic/namespace=ns/app_in_(web,db)",
+        "TestExperimentSelectorParity/generic/namespace=ns/app_notin_(web,db)",
+        "TestExperimentSelectorParity/generic/namespace=ns/everything",
+        "TestExperimentSelectorParity/generic/namespace=ns/nothing",
+        "TestExperimentSelectorParity/generic/namespace=other/!app",
+        "TestExperimentSelectorParity/generic/namespace=other/app",
+        "TestExperimentSelectorParity/generic/namespace=other/app!=web",
+        "TestExperimentSelectorParity/generic/namespace=other/app=",
+        "TestExperimentSelectorParity/generic/namespace=other/app=web",
+        "TestExperimentSelectorParity/generic/namespace=other/app=web,app=db",
+        "TestExperimentSelectorParity/generic/namespace=other/app=web,tier=frontend",
+        "TestExperimentSelectorParity/generic/namespace=other/app_in_(web,db)",
+        "TestExperimentSelectorParity/generic/namespace=other/app_notin_(web,db)",
+        "TestExperimentSelectorParity/generic/namespace=other/everything",
+        "TestExperimentSelectorParity/generic/namespace=other/nothing",
+        "TestExperimentSelectorParity/typed/namespace=/!app",
+        "TestExperimentSelectorParity/typed/namespace=/app",
+        "TestExperimentSelectorParity/typed/namespace=/app!=web",
+        "TestExperimentSelectorParity/typed/namespace=/app=",
+        "TestExperimentSelectorParity/typed/namespace=/app=web",
+        "TestExperimentSelectorParity/typed/namespace=/app=web,app=db",
+        "TestExperimentSelectorParity/typed/namespace=/app=web,tier=frontend",
+        "TestExperimentSelectorParity/typed/namespace=/app_in_(web,db)",
+        "TestExperimentSelectorParity/typed/namespace=/app_notin_(web,db)",
+        "TestExperimentSelectorParity/typed/namespace=/everything",
+        "TestExperimentSelectorParity/typed/namespace=/nothing",
+        "TestExperimentSelectorParity/typed/namespace=absent/!app",
+        "TestExperimentSelectorParity/typed/namespace=absent/app",
+        "TestExperimentSelectorParity/typed/namespace=absent/app!=web",
+        "TestExperimentSelectorParity/typed/namespace=absent/app=",
+        "TestExperimentSelectorParity/typed/namespace=absent/app=web",
+        "TestExperimentSelectorParity/typed/namespace=absent/app=web,app=db",
+        "TestExperimentSelectorParity/typed/namespace=absent/app=web,tier=frontend",
+        "TestExperimentSelectorParity/typed/namespace=absent/app_in_(web,db)",
+        "TestExperimentSelectorParity/typed/namespace=absent/app_notin_(web,db)",
+        "TestExperimentSelectorParity/typed/namespace=absent/everything",
+        "TestExperimentSelectorParity/typed/namespace=absent/nothing",
+        "TestExperimentSelectorParity/typed/namespace=ns/!app",
+        "TestExperimentSelectorParity/typed/namespace=ns/app",
+        "TestExperimentSelectorParity/typed/namespace=ns/app!=web",
+        "TestExperimentSelectorParity/typed/namespace=ns/app=",
+        "TestExperimentSelectorParity/typed/namespace=ns/app=web",
+        "TestExperimentSelectorParity/typed/namespace=ns/app=web,app=db",
+        "TestExperimentSelectorParity/typed/namespace=ns/app=web,tier=frontend",
+        "TestExperimentSelectorParity/typed/namespace=ns/app_in_(web,db)",
+        "TestExperimentSelectorParity/typed/namespace=ns/app_notin_(web,db)",
+        "TestExperimentSelectorParity/typed/namespace=ns/everything",
+        "TestExperimentSelectorParity/typed/namespace=ns/nothing",
+        "TestExperimentSelectorParity/typed/namespace=other/!app",
+        "TestExperimentSelectorParity/typed/namespace=other/app",
+        "TestExperimentSelectorParity/typed/namespace=other/app!=web",
+        "TestExperimentSelectorParity/typed/namespace=other/app=",
+        "TestExperimentSelectorParity/typed/namespace=other/app=web",
+        "TestExperimentSelectorParity/typed/namespace=other/app=web,app=db",
+        "TestExperimentSelectorParity/typed/namespace=other/app=web,tier=frontend",
+        "TestExperimentSelectorParity/typed/namespace=other/app_in_(web,db)",
+        "TestExperimentSelectorParity/typed/namespace=other/app_notin_(web,db)",
+        "TestExperimentSelectorParity/typed/namespace=other/everything",
+        "TestExperimentSelectorParity/typed/namespace=other/nothing"
+      ],
+      "structural_receipts": [
+        "route=direct-context-aware caller=active calls=1 deadline=true sentinel=true storage_error=<nil> returned_error=<nil>",
+        "route=production-psa-adapter caller=active calls=1 deadline=false sentinel=false storage_error=<nil> returned_error=<nil>",
+        "route=direct-context-aware caller=cancelled calls=1 deadline=true sentinel=true storage_error=context canceled returned_error=context canceled",
+        "route=production-psa-adapter caller=cancelled calls=1 deadline=false sentinel=false storage_error=<nil> returned_error=<nil>",
+        "route=direct-context-aware caller=expired calls=1 deadline=true sentinel=true storage_error=context deadline exceeded returned_error=context deadline exceeded",
+        "route=production-psa-adapter caller=expired calls=1 deadline=false sentinel=false storage_error=<nil> returned_error=<nil>",
+        "get source GVK=/, Kind=; output GVK empty; source and independent reads unchanged",
+        "list outer GVK empty; first item GVK retained as /, Kind=; source and independent reads unchanged",
+        "get source GVK=/v1, Kind=Pod; output GVK empty; source and independent reads unchanged",
+        "list outer GVK empty; first item GVK retained as /v1, Kind=Pod; source and independent reads unchanged",
+        "get managedFields entries: direct=1, informer=0; all unmasked fields equal",
+        "list managedFields entries: direct=1, informer=0; all unmasked fields equal",
+        "wrapped=true eventConsumer=false synced=0 client_list=0 client_watch=0 direct_get=1 direct_list=1 route=direct-storage",
+        "wrapped=true eventConsumer=true synced=1 client_list=1 client_watch=1 direct_get=1 direct_list=1 route=direct-storage",
+        "wrapped=false eventConsumer=true synced=1 client_list=1 client_watch=1 direct_get=0 direct_list=0 route=informer-cache",
+        "calibration detected 6 false-positive items from Nothing -> string -> Parse"
+      ],
+      "sha256": "576d1be07ab3d1e19acf4b766457d582e6a23c1b42f3afd5abe3d0e1b5b12005"
+    },
+    "local_replication": {
+      "named_tests_and_subtests": 111,
+      "roots": 6,
+      "counts_including_root": {
+        "TestExperimentContextRoutes": 8,
+        "TestExperimentConversionGVKIsolation": 7,
+        "TestExperimentGenericListIsolation": 1,
+        "TestExperimentManagedFieldsTransformBoundary": 1,
+        "TestExperimentInformerLifecycle": 4,
+        "TestExperimentSelectorParity": 90
+      },
+      "pass_names": [
+        "TestExperimentContextRoutes",
+        "TestExperimentContextRoutes/active/direct-context-aware",
+        "TestExperimentContextRoutes/active/production-psa-adapter",
+        "TestExperimentContextRoutes/cancelled/direct-context-aware",
+        "TestExperimentContextRoutes/cancelled/production-psa-adapter",
+        "TestExperimentContextRoutes/contextless-get",
+        "TestExperimentContextRoutes/expired/direct-context-aware",
+        "TestExperimentContextRoutes/expired/production-psa-adapter",
+        "TestExperimentConversionGVKIsolation",
+        "TestExperimentConversionGVKIsolation/empty-item-gvk",
+        "TestExperimentConversionGVKIsolation/empty-item-gvk/get",
+        "TestExperimentConversionGVKIsolation/empty-item-gvk/list",
+        "TestExperimentConversionGVKIsolation/populated-item-gvk",
+        "TestExperimentConversionGVKIsolation/populated-item-gvk/get",
+        "TestExperimentConversionGVKIsolation/populated-item-gvk/list",
+        "TestExperimentGenericListIsolation",
+        "TestExperimentInformerLifecycle",
+        "TestExperimentInformerLifecycle/direct-lister-only",
+        "TestExperimentInformerLifecycle/direct-with-event-consumer",
+        "TestExperimentInformerLifecycle/standard-factory-control",
+        "TestExperimentManagedFieldsTransformBoundary",
+        "TestExperimentSelectorParity",
+        "TestExperimentSelectorParity/calibration-empty-string-loses-nothing",
+        "TestExperimentSelectorParity/generic/namespace=/!app",
+        "TestExperimentSelectorParity/generic/namespace=/app",
+        "TestExperimentSelectorParity/generic/namespace=/app!=web",
+        "TestExperimentSelectorParity/generic/namespace=/app=",
+        "TestExperimentSelectorParity/generic/namespace=/app=web",
+        "TestExperimentSelectorParity/generic/namespace=/app=web,app=db",
+        "TestExperimentSelectorParity/generic/namespace=/app=web,tier=frontend",
+        "TestExperimentSelectorParity/generic/namespace=/app_in_(web,db)",
+        "TestExperimentSelectorParity/generic/namespace=/app_notin_(web,db)",
+        "TestExperimentSelectorParity/generic/namespace=/everything",
+        "TestExperimentSelectorParity/generic/namespace=/nothing",
+        "TestExperimentSelectorParity/generic/namespace=absent/!app",
+        "TestExperimentSelectorParity/generic/namespace=absent/app",
+        "TestExperimentSelectorParity/generic/namespace=absent/app!=web",
+        "TestExperimentSelectorParity/generic/namespace=absent/app=",
+        "TestExperimentSelectorParity/generic/namespace=absent/app=web",
+        "TestExperimentSelectorParity/generic/namespace=absent/app=web,app=db",
+        "TestExperimentSelectorParity/generic/namespace=absent/app=web,tier=frontend",
+        "TestExperimentSelectorParity/generic/namespace=absent/app_in_(web,db)",
+        "TestExperimentSelectorParity/generic/namespace=absent/app_notin_(web,db)",
+        "TestExperimentSelectorParity/generic/namespace=absent/everything",
+        "TestExperimentSelectorParity/generic/namespace=absent/nothing",
+        "TestExperimentSelectorParity/generic/namespace=ns/!app",
+        "TestExperimentSelectorParity/generic/namespace=ns/app",
+        "TestExperimentSelectorParity/generic/namespace=ns/app!=web",
+        "TestExperimentSelectorParity/generic/namespace=ns/app=",
+        "TestExperimentSelectorParity/generic/namespace=ns/app=web",
+        "TestExperimentSelectorParity/generic/namespace=ns/app=web,app=db",
+        "TestExperimentSelectorParity/generic/namespace=ns/app=web,tier=frontend",
+        "TestExperimentSelectorParity/generic/namespace=ns/app_in_(web,db)",
+        "TestExperimentSelectorParity/generic/namespace=ns/app_notin_(web,db)",
+        "TestExperimentSelectorParity/generic/namespace=ns/everything",
+        "TestExperimentSelectorParity/generic/namespace=ns/nothing",
+        "TestExperimentSelectorParity/generic/namespace=other/!app",
+        "TestExperimentSelectorParity/generic/namespace=other/app",
+        "TestExperimentSelectorParity/generic/namespace=other/app!=web",
+        "TestExperimentSelectorParity/generic/namespace=other/app=",
+        "TestExperimentSelectorParity/generic/namespace=other/app=web",
+        "TestExperimentSelectorParity/generic/namespace=other/app=web,app=db",
+        "TestExperimentSelectorParity/generic/namespace=other/app=web,tier=frontend",
+        "TestExperimentSelectorParity/generic/namespace=other/app_in_(web,db)",
+        "TestExperimentSelectorParity/generic/namespace=other/app_notin_(web,db)",
+        "TestExperimentSelectorParity/generic/namespace=other/everything",
+        "TestExperimentSelectorParity/generic/namespace=other/nothing",
+        "TestExperimentSelectorParity/typed/namespace=/!app",
+        "TestExperimentSelectorParity/typed/namespace=/app",
+        "TestExperimentSelectorParity/typed/namespace=/app!=web",
+        "TestExperimentSelectorParity/typed/namespace=/app=",
+        "TestExperimentSelectorParity/typed/namespace=/app=web",
+        "TestExperimentSelectorParity/typed/namespace=/app=web,app=db",
+        "TestExperimentSelectorParity/typed/namespace=/app=web,tier=frontend",
+        "TestExperimentSelectorParity/typed/namespace=/app_in_(web,db)",
+        "TestExperimentSelectorParity/typed/namespace=/app_notin_(web,db)",
+        "TestExperimentSelectorParity/typed/namespace=/everything",
+        "TestExperimentSelectorParity/typed/namespace=/nothing",
+        "TestExperimentSelectorParity/typed/namespace=absent/!app",
+        "TestExperimentSelectorParity/typed/namespace=absent/app",
+        "TestExperimentSelectorParity/typed/namespace=absent/app!=web",
+        "TestExperimentSelectorParity/typed/namespace=absent/app=",
+        "TestExperimentSelectorParity/typed/namespace=absent/app=web",
+        "TestExperimentSelectorParity/typed/namespace=absent/app=web,app=db",
+        "TestExperimentSelectorParity/typed/namespace=absent/app=web,tier=frontend",
+        "TestExperimentSelectorParity/typed/namespace=absent/app_in_(web,db)",
+        "TestExperimentSelectorParity/typed/namespace=absent/app_notin_(web,db)",
+        "TestExperimentSelectorParity/typed/namespace=absent/everything",
+        "TestExperimentSelectorParity/typed/namespace=absent/nothing",
+        "TestExperimentSelectorParity/typed/namespace=ns/!app",
+        "TestExperimentSelectorParity/typed/namespace=ns/app",
+        "TestExperimentSelectorParity/typed/namespace=ns/app!=web",
+        "TestExperimentSelectorParity/typed/namespace=ns/app=",
+        "TestExperimentSelectorParity/typed/namespace=ns/app=web",
+        "TestExperimentSelectorParity/typed/namespace=ns/app=web,app=db",
+        "TestExperimentSelectorParity/typed/namespace=ns/app=web,tier=frontend",
+        "TestExperimentSelectorParity/typed/namespace=ns/app_in_(web,db)",
+        "TestExperimentSelectorParity/typed/namespace=ns/app_notin_(web,db)",
+        "TestExperimentSelectorParity/typed/namespace=ns/everything",
+        "TestExperimentSelectorParity/typed/namespace=ns/nothing",
+        "TestExperimentSelectorParity/typed/namespace=other/!app",
+        "TestExperimentSelectorParity/typed/namespace=other/app",
+        "TestExperimentSelectorParity/typed/namespace=other/app!=web",
+        "TestExperimentSelectorParity/typed/namespace=other/app=",
+        "TestExperimentSelectorParity/typed/namespace=other/app=web",
+        "TestExperimentSelectorParity/typed/namespace=other/app=web,app=db",
+        "TestExperimentSelectorParity/typed/namespace=other/app=web,tier=frontend",
+        "TestExperimentSelectorParity/typed/namespace=other/app_in_(web,db)",
+        "TestExperimentSelectorParity/typed/namespace=other/app_notin_(web,db)",
+        "TestExperimentSelectorParity/typed/namespace=other/everything",
+        "TestExperimentSelectorParity/typed/namespace=other/nothing"
+      ],
+      "structural_receipts": [
+        "route=direct-context-aware caller=active calls=1 deadline=true sentinel=true storage_error=<nil> returned_error=<nil>",
+        "route=production-psa-adapter caller=active calls=1 deadline=false sentinel=false storage_error=<nil> returned_error=<nil>",
+        "route=direct-context-aware caller=cancelled calls=1 deadline=true sentinel=true storage_error=context canceled returned_error=context canceled",
+        "route=production-psa-adapter caller=cancelled calls=1 deadline=false sentinel=false storage_error=<nil> returned_error=<nil>",
+        "route=direct-context-aware caller=expired calls=1 deadline=true sentinel=true storage_error=context deadline exceeded returned_error=context deadline exceeded",
+        "route=production-psa-adapter caller=expired calls=1 deadline=false sentinel=false storage_error=<nil> returned_error=<nil>",
+        "get source GVK=/, Kind=; output GVK empty; source and independent reads unchanged",
+        "list outer GVK empty; first item GVK retained as /, Kind=; source and independent reads unchanged",
+        "get source GVK=/v1, Kind=Pod; output GVK empty; source and independent reads unchanged",
+        "list outer GVK empty; first item GVK retained as /v1, Kind=Pod; source and independent reads unchanged",
+        "get managedFields entries: direct=1, informer=0; all unmasked fields equal",
+        "list managedFields entries: direct=1, informer=0; all unmasked fields equal",
+        "wrapped=true eventConsumer=false synced=0 client_list=0 client_watch=0 direct_get=1 direct_list=1 route=direct-storage",
+        "wrapped=true eventConsumer=true synced=1 client_list=1 client_watch=1 direct_get=1 direct_list=1 route=direct-storage",
+        "wrapped=false eventConsumer=true synced=1 client_list=1 client_watch=1 direct_get=0 direct_list=0 route=informer-cache",
+        "calibration detected 6 false-positive items from Nothing -> string -> Parse"
+      ],
+      "sha256": "3b08b4fa6400aedcd67908bb84a328b0d9d208d0f7eb7debd652b1870b7187a2"
+    }
+  },
+  "structural_receipts_exactly_equal_across_hosted_local_and_downloaded_binary_replay": true,
+  "allocation_comparisons_by_cell": [
+    {
+      "operation": "get",
+      "pod_count": 1,
+      "managed_fields_bytes": 0,
+      "cached": {
+        "hosted_allocation_medians": {
+          "B/op": 16.0,
+          "allocs/op": 1.0
+        },
+        "local_allocation_medians": {
+          "B/op": 16.0,
+          "allocs/op": 1.0
+        },
+        "equal": true,
+        "hosted_ns_per_op": 158.8,
+        "local_ns_per_op": 159.45
+      },
+      "direct_synthetic": {
+        "hosted_allocation_medians": {
+          "B/op": 4464.0,
+          "allocs/op": 18.0
+        },
+        "local_allocation_medians": {
+          "B/op": 4464.0,
+          "allocs/op": 18.0
+        },
+        "equal": true,
+        "hosted_ns_per_op": 2259.0,
+        "local_ns_per_op": 2354.5
+      }
+    },
+    {
+      "operation": "get",
+      "pod_count": 1,
+      "managed_fields_bytes": 4082,
+      "cached": {
+        "hosted_allocation_medians": {
+          "B/op": 16.0,
+          "allocs/op": 1.0
+        },
+        "local_allocation_medians": {
+          "B/op": 16.0,
+          "allocs/op": 1.0
+        },
+        "equal": true,
+        "hosted_ns_per_op": 128.3,
+        "local_ns_per_op": 150.8
+      },
+      "direct_synthetic": {
+        "hosted_allocation_medians": {
+          "B/op": 8680.0,
+          "allocs/op": 21.0
+        },
+        "local_allocation_medians": {
+          "B/op": 8680.0,
+          "allocs/op": 21.0
+        },
+        "equal": true,
+        "hosted_ns_per_op": 3485.5,
+        "local_ns_per_op": 4074.5
+      }
+    },
+    {
+      "operation": "get",
+      "pod_count": 1,
+      "managed_fields_bytes": 32748,
+      "cached": {
+        "hosted_allocation_medians": {
+          "B/op": 16.0,
+          "allocs/op": 1.0
+        },
+        "local_allocation_medians": {
+          "B/op": 16.0,
+          "allocs/op": 1.0
+        },
+        "equal": true,
+        "hosted_ns_per_op": 132.5,
+        "local_ns_per_op": 150.2
+      },
+      "direct_synthetic": {
+        "hosted_allocation_medians": {
+          "B/op": 37352.0,
+          "allocs/op": 21.0
+        },
+        "local_allocation_medians": {
+          "B/op": 37352.0,
+          "allocs/op": 21.0
+        },
+        "equal": true,
+        "hosted_ns_per_op": 32626.5,
+        "local_ns_per_op": 28412.0
+      }
+    },
+    {
+      "operation": "get",
+      "pod_count": 100,
+      "managed_fields_bytes": 0,
+      "cached": {
+        "hosted_allocation_medians": {
+          "B/op": 16.0,
+          "allocs/op": 1.0
+        },
+        "local_allocation_medians": {
+          "B/op": 16.0,
+          "allocs/op": 1.0
+        },
+        "equal": true,
+        "hosted_ns_per_op": 173.8,
+        "local_ns_per_op": 163.45
+      },
+      "direct_synthetic": {
+        "hosted_allocation_medians": {
+          "B/op": 4464.0,
+          "allocs/op": 18.0
+        },
+        "local_allocation_medians": {
+          "B/op": 4464.0,
+          "allocs/op": 18.0
+        },
+        "equal": true,
+        "hosted_ns_per_op": 1943.5,
+        "local_ns_per_op": 1980.5
+      }
+    },
+    {
+      "operation": "get",
+      "pod_count": 100,
+      "managed_fields_bytes": 4082,
+      "cached": {
+        "hosted_allocation_medians": {
+          "B/op": 16.0,
+          "allocs/op": 1.0
+        },
+        "local_allocation_medians": {
+          "B/op": 16.0,
+          "allocs/op": 1.0
+        },
+        "equal": true,
+        "hosted_ns_per_op": 140.95,
+        "local_ns_per_op": 154.7
+      },
+      "direct_synthetic": {
+        "hosted_allocation_medians": {
+          "B/op": 8680.0,
+          "allocs/op": 21.0
+        },
+        "local_allocation_medians": {
+          "B/op": 8680.0,
+          "allocs/op": 21.0
+        },
+        "equal": true,
+        "hosted_ns_per_op": 2634.5,
+        "local_ns_per_op": 2283.5
+      }
+    },
+    {
+      "operation": "get",
+      "pod_count": 100,
+      "managed_fields_bytes": 32748,
+      "cached": {
+        "hosted_allocation_medians": {
+          "B/op": 16.0,
+          "allocs/op": 1.0
+        },
+        "local_allocation_medians": {
+          "B/op": 16.0,
+          "allocs/op": 1.0
+        },
+        "equal": true,
+        "hosted_ns_per_op": 182.85,
+        "local_ns_per_op": 153.25
+      },
+      "direct_synthetic": {
+        "hosted_allocation_medians": {
+          "B/op": 37352.0,
+          "allocs/op": 21.0
+        },
+        "local_allocation_medians": {
+          "B/op": 37352.0,
+          "allocs/op": 21.0
+        },
+        "equal": true,
+        "hosted_ns_per_op": 5647.0,
+        "local_ns_per_op": 6130.0
+      }
+    },
+    {
+      "operation": "list",
+      "pod_count": 1,
+      "managed_fields_bytes": 0,
+      "cached": {
+        "hosted_allocation_medians": {
+          "B/op": 280.0,
+          "allocs/op": 4.0
+        },
+        "local_allocation_medians": {
+          "B/op": 280.0,
+          "allocs/op": 4.0
+        },
+        "equal": true,
+        "hosted_ns_per_op": 352.6,
+        "local_ns_per_op": 445.65
+      },
+      "direct_synthetic": {
+        "hosted_allocation_medians": {
+          "B/op": 3688.0,
+          "allocs/op": 26.0
+        },
+        "local_allocation_medians": {
+          "B/op": 3688.0,
+          "allocs/op": 26.0
+        },
+        "equal": true,
+        "hosted_ns_per_op": 2466.0,
+        "local_ns_per_op": 2436.5
+      }
+    },
+    {
+      "operation": "list",
+      "pod_count": 1,
+      "managed_fields_bytes": 4082,
+      "cached": {
+        "hosted_allocation_medians": {
+          "B/op": 280.0,
+          "allocs/op": 4.0
+        },
+        "local_allocation_medians": {
+          "B/op": 280.0,
+          "allocs/op": 4.0
+        },
+        "equal": true,
+        "hosted_ns_per_op": 327.25,
+        "local_ns_per_op": 342.25
+      },
+      "direct_synthetic": {
+        "hosted_allocation_medians": {
+          "B/op": 7904.0,
+          "allocs/op": 29.0
+        },
+        "local_allocation_medians": {
+          "B/op": 7904.0,
+          "allocs/op": 29.0
+        },
+        "equal": true,
+        "hosted_ns_per_op": 3887.0,
+        "local_ns_per_op": 3990.0
+      }
+    },
+    {
+      "operation": "list",
+      "pod_count": 1,
+      "managed_fields_bytes": 32748,
+      "cached": {
+        "hosted_allocation_medians": {
+          "B/op": 280.0,
+          "allocs/op": 4.0
+        },
+        "local_allocation_medians": {
+          "B/op": 280.0,
+          "allocs/op": 4.0
+        },
+        "equal": true,
+        "hosted_ns_per_op": 376.5,
+        "local_ns_per_op": 328.5
+      },
+      "direct_synthetic": {
+        "hosted_allocation_medians": {
+          "B/op": 36576.0,
+          "allocs/op": 29.0
+        },
+        "local_allocation_medians": {
+          "B/op": 36576.0,
+          "allocs/op": 29.0
+        },
+        "equal": true,
+        "hosted_ns_per_op": 25717.5,
+        "local_ns_per_op": 25032.5
+      }
+    },
+    {
+      "operation": "list",
+      "pod_count": 100,
+      "managed_fields_bytes": 0,
+      "cached": {
+        "hosted_allocation_medians": {
+          "B/op": 4216.0,
+          "allocs/op": 11.0
+        },
+        "local_allocation_medians": {
+          "B/op": 4216.0,
+          "allocs/op": 11.0
+        },
+        "equal": true,
+        "hosted_ns_per_op": 5048.5,
+        "local_ns_per_op": 3696.5
+      },
+      "direct_synthetic": {
+        "hosted_allocation_medians": {
+          "B/op": 281368.0,
+          "allocs/op": 825.0
+        },
+        "local_allocation_medians": {
+          "B/op": 281368.0,
+          "allocs/op": 825.0
+        },
+        "equal": true,
+        "hosted_ns_per_op": 372706.5,
+        "local_ns_per_op": 263427.0
+      }
+    },
+    {
+      "operation": "list",
+      "pod_count": 100,
+      "managed_fields_bytes": 4082,
+      "cached": {
+        "hosted_allocation_medians": {
+          "B/op": 4216.0,
+          "allocs/op": 11.0
+        },
+        "local_allocation_medians": {
+          "B/op": 4216.0,
+          "allocs/op": 11.0
+        },
+        "equal": true,
+        "hosted_ns_per_op": 4659.5,
+        "local_ns_per_op": 3111.0
+      },
+      "direct_synthetic": {
+        "hosted_allocation_medians": {
+          "B/op": 702968.0,
+          "allocs/op": 1125.0
+        },
+        "local_allocation_medians": {
+          "B/op": 702968.0,
+          "allocs/op": 1125.0
+        },
+        "equal": true,
+        "hosted_ns_per_op": 654562.0,
+        "local_ns_per_op": 481455.5
+      }
+    },
+    {
+      "operation": "list",
+      "pod_count": 100,
+      "managed_fields_bytes": 32748,
+      "cached": {
+        "hosted_allocation_medians": {
+          "B/op": 4216.0,
+          "allocs/op": 11.0
+        },
+        "local_allocation_medians": {
+          "B/op": 4216.0,
+          "allocs/op": 11.0
+        },
+        "equal": true,
+        "hosted_ns_per_op": 4076.0,
+        "local_ns_per_op": 3716.5
+      },
+      "direct_synthetic": {
+        "hosted_allocation_medians": {
+          "B/op": 3570168.0,
+          "allocs/op": 1125.0
+        },
+        "local_allocation_medians": {
+          "B/op": 3570168.0,
+          "allocs/op": 1125.0
+        },
+        "equal": true,
+        "hosted_ns_per_op": 1544814.0,
+        "local_ns_per_op": 1140225.5
+      }
+    }
+  ],
+  "all_allocation_medians_equal_across_hosts": true,
+  "limits": [
+    "No benchmark rerun was performed by this review. Hosted and local timing medians are kept separate and never pooled.",
+    "Downloaded hosted binary reran the six TestExperiment roots only: 111 named test/subtest passes.",
+    "Source and prereg hashes were checked against the exact local pinned checkout; binary verified against hosted manifest. ZIP digest verification is parent-agent provenance, not independently repeated here.",
+    "Agreement confirms component behavior for synthetic fixtures and imported adapter/informer code; it does not establish live watch-cache parity, production memory reduction, full request behavior or overall speedup."
+  ],
+  "independent_raw_allocation_crosscheck": {
+    "raw_benchmark_records_per_host": 240,
+    "arm_cells_per_host": 24,
+    "repetitions_per_arm_cell": 10,
+    "all_24_allocation_medians_equal_between_hosts": true,
+    "method": "Separate whitespace benchmark parser and statistics.median over raw bench files, without importing shared verifier or pooling timing samples."
+  }
+}

@@ -1,0 +1,473 @@
+{
+  "source_sha": "1f0afa8df5d7813706d0ca9fa64d0cb7857017ea",
+  "source_base": "b7af3931105444bf5f0c31fca8ee012a779906f9",
+  "prereg_sha256": "51ed6f2f949cd227d03076b92129c37517f4160ee67a8c1f7d008c6e67012b39",
+  "go_version": "go version go1.27.0 linux/amd64",
+  "platform": {
+    "platform": "Linux-6.1.146.1-microsoft-standard-x86_64-with-glibc2.39",
+    "processor": "x86_64",
+    "cpu_count": 1,
+    "cpuinfo": "processor\t: 0\nvendor_id\t: AuthenticAMD\ncpu family\t: 25\nmodel\t\t: 1\nmodel name\t: AMD EPYC 7763 64-Core Processor\nstepping\t: 1\nmicrocode\t: 0xffffffff\ncpu MHz\t\t: 2445.430\ncache size\t: 512 KB\nphysical id\t: 0\nsiblings\t: 1\ncore id\t\t: 0\ncpu cores\t: 1\napicid\t\t: 0\ninitial apicid\t: 0\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 13\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl tsc_reliable nonstop_tsc cpuid extd_apicid tsc_known_freq pni pclmulqdq ssse3 fma cx16 pcid sse4_1 sse4_2 movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw topoext invpcid_single vmmcall fsgsbase bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves clzero xsaveerptr arat umip vaes vpclmulqdq rdpid fsrm\nbugs\t\t: sysret_ss_attrs null_seg spectre_v1 spectre_v2 spec_store_bypass srso tsa\nbogomips\t: 4890.86\nTLB size\t: 2560 4K pages\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 48 bits physical, 48 bits virtual\npower management:"
+  },
+  "run_id": "37044953930",
+  "run_attempt": "1",
+  "commands": [
+    {
+      "label": "verifier calibration",
+      "argv": [
+        "/usr/bin/python3",
+        "/home/runner/work/kubernetes/kubernetes/docs/experiments/direct-lister-142304-20261002/verify_artifacts.py",
+        "--self-test"
+      ],
+      "start_offset_seconds": 0.015852776000002677,
+      "stdout_file": "calibration.json",
+      "returncode": 0,
+      "elapsed_seconds": 0.11482262199999838
+    },
+    {
+      "label": "format characterization",
+      "argv": [
+        "gofmt",
+        "-d",
+        "/home/runner/work/kubernetes/kubernetes/pkg/kubeapiserver/direct/conversion_contract_test.go",
+        "/home/runner/work/kubernetes/kubernetes/pkg/kubeapiserver/direct/lifecycle_contract_test.go",
+        "/home/runner/work/kubernetes/kubernetes/pkg/kubeapiserver/direct/selector_contract_test.go",
+        "/home/runner/work/kubernetes/kubernetes/pkg/kubeapiserver/direct/context_route_test.go"
+      ],
+      "start_offset_seconds": 0.13144295600000078,
+      "stdout_file": "format.diff",
+      "returncode": 0,
+      "elapsed_seconds": 0.016600711000002377
+    },
+    {
+      "label": "build pinned test binary",
+      "argv": [
+        "go",
+        "test",
+        "-p=2",
+        "-c",
+        "-o",
+        "/home/runner/work/kubernetes/kubernetes/evidence/direct.test",
+        "./pkg/kubeapiserver/direct"
+      ],
+      "start_offset_seconds": 0.14840942700000426,
+      "stdout_file": "build.log",
+      "returncode": 0,
+      "elapsed_seconds": 506.86474919899996
+    },
+    {
+      "label": "correctness with controls",
+      "argv": [
+        "go",
+        "tool",
+        "test2json",
+        "-t",
+        "-p",
+        "k8s.io/kubernetes/pkg/kubeapiserver/direct",
+        "/home/runner/work/kubernetes/kubernetes/evidence/direct.test",
+        "-test.v=test2json",
+        "-test.count=1",
+        "-test.timeout=60s",
+        "-test.run=^(TestStorageClientReturnedObjectsAreIsolated|TestUnsafeConversionAliasesSource|TestPodListerSelectors|TestExperimentConversionGVKIsolation|TestExperimentGenericListIsolation|TestExperimentContextRoutes|TestExperimentManagedFieldsTransformBoundary|TestExperimentInformerLifecycle|TestExperimentSelectorParity|TestDirectListerReadCostFixtureParity)$"
+      ],
+      "start_offset_seconds": 507.17416888699995,
+      "stdout_file": "correctness.jsonl",
+      "returncode": 0,
+      "elapsed_seconds": 25.38656542500007
+    },
+    {
+      "label": "fresh-process replication",
+      "argv": [
+        "go",
+        "tool",
+        "test2json",
+        "-t",
+        "-p",
+        "k8s.io/kubernetes/pkg/kubeapiserver/direct",
+        "/home/runner/work/kubernetes/kubernetes/evidence/direct.test",
+        "-test.v=test2json",
+        "-test.count=1",
+        "-test.timeout=60s",
+        "-test.run=^TestExperiment"
+      ],
+      "start_offset_seconds": 532.5717187,
+      "stdout_file": "replication.jsonl",
+      "returncode": 0,
+      "elapsed_seconds": 0.5766298549999647
+    },
+    {
+      "label": "pair 00 cached",
+      "argv": [
+        "/home/runner/work/kubernetes/kubernetes/evidence/direct.test",
+        "-test.run=^$",
+        "-test.bench=^BenchmarkDirectListerReadCost$/op=.*/n=.*/managed_fields_bytes=.*/path=cached$",
+        "-test.benchmem",
+        "-test.benchtime=100x",
+        "-test.cpu=1",
+        "-test.count=1",
+        "-test.timeout=60s"
+      ],
+      "start_offset_seconds": 533.162899051,
+      "stdout_file": "bench-00-cached.txt",
+      "returncode": 0,
+      "elapsed_seconds": 0.27797760099997504
+    },
+    {
+      "label": "pair 00 direct_synthetic",
+      "argv": [
+        "/home/runner/work/kubernetes/kubernetes/evidence/direct.test",
+        "-test.run=^$",
+        "-test.bench=^BenchmarkDirectListerReadCost$/op=.*/n=.*/managed_fields_bytes=.*/path=direct_synthetic$",
+        "-test.benchmem",
+        "-test.benchtime=100x",
+        "-test.cpu=1",
+        "-test.count=1",
+        "-test.timeout=60s"
+      ],
+      "start_offset_seconds": 533.444129823,
+      "stdout_file": "bench-00-direct_synthetic.txt",
+      "returncode": 0,
+      "elapsed_seconds": 0.6227488609999909
+    },
+    {
+      "label": "pair 01 direct_synthetic",
+      "argv": [
+        "/home/runner/work/kubernetes/kubernetes/evidence/direct.test",
+        "-test.run=^$",
+        "-test.bench=^BenchmarkDirectListerReadCost$/op=.*/n=.*/managed_fields_bytes=.*/path=direct_synthetic$",
+        "-test.benchmem",
+        "-test.benchtime=100x",
+        "-test.cpu=1",
+        "-test.count=1",
+        "-test.timeout=60s"
+      ],
+      "start_offset_seconds": 534.067370449,
+      "stdout_file": "bench-01-direct_synthetic.txt",
+      "returncode": 0,
+      "elapsed_seconds": 0.7507061399999202
+    },
+    {
+      "label": "pair 01 cached",
+      "argv": [
+        "/home/runner/work/kubernetes/kubernetes/evidence/direct.test",
+        "-test.run=^$",
+        "-test.bench=^BenchmarkDirectListerReadCost$/op=.*/n=.*/managed_fields_bytes=.*/path=cached$",
+        "-test.benchmem",
+        "-test.benchtime=100x",
+        "-test.cpu=1",
+        "-test.count=1",
+        "-test.timeout=60s"
+      ],
+      "start_offset_seconds": 534.854849286,
+      "stdout_file": "bench-01-cached.txt",
+      "returncode": 0,
+      "elapsed_seconds": 0.38461637700004303
+    },
+    {
+      "label": "pair 02 cached",
+      "argv": [
+        "/home/runner/work/kubernetes/kubernetes/evidence/direct.test",
+        "-test.run=^$",
+        "-test.bench=^BenchmarkDirectListerReadCost$/op=.*/n=.*/managed_fields_bytes=.*/path=cached$",
+        "-test.benchmem",
+        "-test.benchtime=100x",
+        "-test.cpu=1",
+        "-test.count=1",
+        "-test.timeout=60s"
+      ],
+      "start_offset_seconds": 535.240000419,
+      "stdout_file": "bench-02-cached.txt",
+      "returncode": 0,
+      "elapsed_seconds": 0.3289943199999925
+    },
+    {
+      "label": "pair 02 direct_synthetic",
+      "argv": [
+        "/home/runner/work/kubernetes/kubernetes/evidence/direct.test",
+        "-test.run=^$",
+        "-test.bench=^BenchmarkDirectListerReadCost$/op=.*/n=.*/managed_fields_bytes=.*/path=direct_synthetic$",
+        "-test.benchmem",
+        "-test.benchtime=100x",
+        "-test.cpu=1",
+        "-test.count=1",
+        "-test.timeout=60s"
+      ],
+      "start_offset_seconds": 535.569541327,
+      "stdout_file": "bench-02-direct_synthetic.txt",
+      "returncode": 0,
+      "elapsed_seconds": 0.5353788310000027
+    },
+    {
+      "label": "pair 03 direct_synthetic",
+      "argv": [
+        "/home/runner/work/kubernetes/kubernetes/evidence/direct.test",
+        "-test.run=^$",
+        "-test.bench=^BenchmarkDirectListerReadCost$/op=.*/n=.*/managed_fields_bytes=.*/path=direct_synthetic$",
+        "-test.benchmem",
+        "-test.benchtime=100x",
+        "-test.cpu=1",
+        "-test.count=1",
+        "-test.timeout=60s"
+      ],
+      "start_offset_seconds": 536.1054769049999,
+      "stdout_file": "bench-03-direct_synthetic.txt",
+      "returncode": 0,
+      "elapsed_seconds": 0.5231620370000201
+    },
+    {
+      "label": "pair 03 cached",
+      "argv": [
+        "/home/runner/work/kubernetes/kubernetes/evidence/direct.test",
+        "-test.run=^$",
+        "-test.bench=^BenchmarkDirectListerReadCost$/op=.*/n=.*/managed_fields_bytes=.*/path=cached$",
+        "-test.benchmem",
+        "-test.benchtime=100x",
+        "-test.cpu=1",
+        "-test.count=1",
+        "-test.timeout=60s"
+      ],
+      "start_offset_seconds": 536.62925449,
+      "stdout_file": "bench-03-cached.txt",
+      "returncode": 0,
+      "elapsed_seconds": 0.1658485440000277
+    },
+    {
+      "label": "pair 04 cached",
+      "argv": [
+        "/home/runner/work/kubernetes/kubernetes/evidence/direct.test",
+        "-test.run=^$",
+        "-test.bench=^BenchmarkDirectListerReadCost$/op=.*/n=.*/managed_fields_bytes=.*/path=cached$",
+        "-test.benchmem",
+        "-test.benchtime=100x",
+        "-test.cpu=1",
+        "-test.count=1",
+        "-test.timeout=60s"
+      ],
+      "start_offset_seconds": 536.795618905,
+      "stdout_file": "bench-04-cached.txt",
+      "returncode": 0,
+      "elapsed_seconds": 0.17026722100001734
+    },
+    {
+      "label": "pair 04 direct_synthetic",
+      "argv": [
+        "/home/runner/work/kubernetes/kubernetes/evidence/direct.test",
+        "-test.run=^$",
+        "-test.bench=^BenchmarkDirectListerReadCost$/op=.*/n=.*/managed_fields_bytes=.*/path=direct_synthetic$",
+        "-test.benchmem",
+        "-test.benchtime=100x",
+        "-test.cpu=1",
+        "-test.count=1",
+        "-test.timeout=60s"
+      ],
+      "start_offset_seconds": 536.966467039,
+      "stdout_file": "bench-04-direct_synthetic.txt",
+      "returncode": 0,
+      "elapsed_seconds": 0.5737974319999921
+    },
+    {
+      "label": "pair 05 direct_synthetic",
+      "argv": [
+        "/home/runner/work/kubernetes/kubernetes/evidence/direct.test",
+        "-test.run=^$",
+        "-test.bench=^BenchmarkDirectListerReadCost$/op=.*/n=.*/managed_fields_bytes=.*/path=direct_synthetic$",
+        "-test.benchmem",
+        "-test.benchtime=100x",
+        "-test.cpu=1",
+        "-test.count=1",
+        "-test.timeout=60s"
+      ],
+      "start_offset_seconds": 537.5429425909999,
+      "stdout_file": "bench-05-direct_synthetic.txt",
+      "returncode": 0,
+      "elapsed_seconds": 0.4157605920000833
+    },
+    {
+      "label": "pair 05 cached",
+      "argv": [
+        "/home/runner/work/kubernetes/kubernetes/evidence/direct.test",
+        "-test.run=^$",
+        "-test.bench=^BenchmarkDirectListerReadCost$/op=.*/n=.*/managed_fields_bytes=.*/path=cached$",
+        "-test.benchmem",
+        "-test.benchtime=100x",
+        "-test.cpu=1",
+        "-test.count=1",
+        "-test.timeout=60s"
+      ],
+      "start_offset_seconds": 537.959349409,
+      "stdout_file": "bench-05-cached.txt",
+      "returncode": 0,
+      "elapsed_seconds": 0.16715560299996923
+    },
+    {
+      "label": "pair 06 cached",
+      "argv": [
+        "/home/runner/work/kubernetes/kubernetes/evidence/direct.test",
+        "-test.run=^$",
+        "-test.bench=^BenchmarkDirectListerReadCost$/op=.*/n=.*/managed_fields_bytes=.*/path=cached$",
+        "-test.benchmem",
+        "-test.benchtime=100x",
+        "-test.cpu=1",
+        "-test.count=1",
+        "-test.timeout=60s"
+      ],
+      "start_offset_seconds": 538.127070396,
+      "stdout_file": "bench-06-cached.txt",
+      "returncode": 0,
+      "elapsed_seconds": 0.16904894399999648
+    },
+    {
+      "label": "pair 06 direct_synthetic",
+      "argv": [
+        "/home/runner/work/kubernetes/kubernetes/evidence/direct.test",
+        "-test.run=^$",
+        "-test.bench=^BenchmarkDirectListerReadCost$/op=.*/n=.*/managed_fields_bytes=.*/path=direct_synthetic$",
+        "-test.benchmem",
+        "-test.benchtime=100x",
+        "-test.cpu=1",
+        "-test.count=1",
+        "-test.timeout=60s"
+      ],
+      "start_offset_seconds": 538.297584162,
+      "stdout_file": "bench-06-direct_synthetic.txt",
+      "returncode": 0,
+      "elapsed_seconds": 0.4663192089999484
+    },
+    {
+      "label": "pair 07 direct_synthetic",
+      "argv": [
+        "/home/runner/work/kubernetes/kubernetes/evidence/direct.test",
+        "-test.run=^$",
+        "-test.bench=^BenchmarkDirectListerReadCost$/op=.*/n=.*/managed_fields_bytes=.*/path=direct_synthetic$",
+        "-test.benchmem",
+        "-test.benchtime=100x",
+        "-test.cpu=1",
+        "-test.count=1",
+        "-test.timeout=60s"
+      ],
+      "start_offset_seconds": 538.764586407,
+      "stdout_file": "bench-07-direct_synthetic.txt",
+      "returncode": 0,
+      "elapsed_seconds": 0.37568023500000436
+    },
+    {
+      "label": "pair 07 cached",
+      "argv": [
+        "/home/runner/work/kubernetes/kubernetes/evidence/direct.test",
+        "-test.run=^$",
+        "-test.bench=^BenchmarkDirectListerReadCost$/op=.*/n=.*/managed_fields_bytes=.*/path=cached$",
+        "-test.benchmem",
+        "-test.benchtime=100x",
+        "-test.cpu=1",
+        "-test.count=1",
+        "-test.timeout=60s"
+      ],
+      "start_offset_seconds": 539.145637923,
+      "stdout_file": "bench-07-cached.txt",
+      "returncode": 0,
+      "elapsed_seconds": 0.165838076
+    },
+    {
+      "label": "pair 08 cached",
+      "argv": [
+        "/home/runner/work/kubernetes/kubernetes/evidence/direct.test",
+        "-test.run=^$",
+        "-test.bench=^BenchmarkDirectListerReadCost$/op=.*/n=.*/managed_fields_bytes=.*/path=cached$",
+        "-test.benchmem",
+        "-test.benchtime=100x",
+        "-test.cpu=1",
+        "-test.count=1",
+        "-test.timeout=60s"
+      ],
+      "start_offset_seconds": 539.313133448,
+      "stdout_file": "bench-08-cached.txt",
+      "returncode": 0,
+      "elapsed_seconds": 0.16586097099991548
+    },
+    {
+      "label": "pair 08 direct_synthetic",
+      "argv": [
+        "/home/runner/work/kubernetes/kubernetes/evidence/direct.test",
+        "-test.run=^$",
+        "-test.bench=^BenchmarkDirectListerReadCost$/op=.*/n=.*/managed_fields_bytes=.*/path=direct_synthetic$",
+        "-test.benchmem",
+        "-test.benchtime=100x",
+        "-test.cpu=1",
+        "-test.count=1",
+        "-test.timeout=60s"
+      ],
+      "start_offset_seconds": 539.479658419,
+      "stdout_file": "bench-08-direct_synthetic.txt",
+      "returncode": 0,
+      "elapsed_seconds": 0.4174147940000239
+    },
+    {
+      "label": "pair 09 direct_synthetic",
+      "argv": [
+        "/home/runner/work/kubernetes/kubernetes/evidence/direct.test",
+        "-test.run=^$",
+        "-test.bench=^BenchmarkDirectListerReadCost$/op=.*/n=.*/managed_fields_bytes=.*/path=direct_synthetic$",
+        "-test.benchmem",
+        "-test.benchtime=100x",
+        "-test.cpu=1",
+        "-test.count=1",
+        "-test.timeout=60s"
+      ],
+      "start_offset_seconds": 539.897769853,
+      "stdout_file": "bench-09-direct_synthetic.txt",
+      "returncode": 0,
+      "elapsed_seconds": 0.42148830099995394
+    },
+    {
+      "label": "pair 09 cached",
+      "argv": [
+        "/home/runner/work/kubernetes/kubernetes/evidence/direct.test",
+        "-test.run=^$",
+        "-test.bench=^BenchmarkDirectListerReadCost$/op=.*/n=.*/managed_fields_bytes=.*/path=cached$",
+        "-test.benchmem",
+        "-test.benchtime=100x",
+        "-test.cpu=1",
+        "-test.count=1",
+        "-test.timeout=60s"
+      ],
+      "start_offset_seconds": 540.319962559,
+      "stdout_file": "bench-09-cached.txt",
+      "returncode": 0,
+      "elapsed_seconds": 0.1694285349999518
+    },
+    {
+      "label": "independent evidence verification",
+      "argv": [
+        "/usr/bin/python3",
+        "/home/runner/work/kubernetes/kubernetes/docs/experiments/direct-lister-142304-20261002/verify_artifacts.py",
+        "/home/runner/work/kubernetes/kubernetes/evidence",
+        "/home/runner/work/kubernetes/kubernetes/docs/experiments/direct-lister-142304-20261002/PREREG.json"
+      ],
+      "start_offset_seconds": 540.497295775,
+      "stdout_file": "verification.log",
+      "returncode": 0,
+      "elapsed_seconds": 1.2687638490000381
+    }
+  ],
+  "source_hashes": {
+    "pkg/kubeapiserver/direct/client.go": "672fddb618a1b0a72014887471213aec12ebd24f69d8185c6958c48f93131e01",
+    "pkg/kubeapiserver/direct/client_conversion_benchmark_test.go": "6d1c41bf04f6e5a6f3aeba2e6835fba4af66604249527c07136919fb41e84946",
+    "pkg/kubeapiserver/direct/client_mutation_test.go": "a47cf23a77105a0686241f0f36ad257f5381fcd8c48635a2d5e15dd02b6db919",
+    "pkg/kubeapiserver/direct/context_route_test.go": "488b7e192f2856a474c6fd2e26572cfe2ff52714199caecae8bde330001619dd",
+    "pkg/kubeapiserver/direct/conversion_contract_test.go": "d24111a3d60a92b8d89faea9f80f613827af49ddd9e4c60312c7b902ffeef8eb",
+    "pkg/kubeapiserver/direct/factory.go": "9e2d543a4d707820de63527527dace905962ed581162e2b6ca4dde27c2de0b29",
+    "pkg/kubeapiserver/direct/lifecycle_contract_test.go": "b427c47d6b0f87dea8c1d4b42d210261bae9658d6133ee25230bc885f694ae3b",
+    "pkg/kubeapiserver/direct/lister.go": "aaf6c39b3be82d4307e22bb372e1005fa372220c58d91edd25820f1f02a15461",
+    "pkg/kubeapiserver/direct/lister_nothing_test.go": "e3f67fcd18090988f07b60bd3cbf9f36b386fbb180822c8f9e01176577ac104a",
+    "pkg/kubeapiserver/direct/read_cost_benchmark_test.go": "7e5493c131a799e8741f2eff182436b84a22173cfcbd94c9363fb39a9c146596",
+    "pkg/kubeapiserver/direct/selector_contract_test.go": "06912b4dd4ccec095df870bbe170003e46a5b147f98f7a6e71c6d43f468d8699",
+    "docs/experiments/direct-lister-142304-20261002/run_experiments.py": "155c49e6f04555ad4f49f150abd176e00aed06f3fa00855c29835f51a52930f2",
+    "docs/experiments/direct-lister-142304-20261002/verify_artifacts.py": "7f523568e0d8a17cd624e12917c8dcef68a085bc3e9fa22fd475a05f78538edb",
+    "docs/experiments/direct-lister-142304-20261002/PREREG.json": "51ed6f2f949cd227d03076b92129c37517f4160ee67a8c1f7d008c6e67012b39"
+  },
+  "status": "verified",
+  "elapsed_seconds": 541.766717051,
+  "named_command_seconds": 541.4956242849998,
+  "residual_seconds": 0.27109276600015164,
+  "binary_sha256": "5f82f9fd8066f985071402b93b66440af201936212998340a9f097da603ee6c9"
+}

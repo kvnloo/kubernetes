@@ -1,0 +1,115 @@
+{
+  "tested_sha": "1f0afa8df5d7813706d0ca9fa64d0cb7857017ea",
+  "evidence_publication_prior_commit": "7bb5186edc983702396a13e54e6a7a8a90c5e86f",
+  "upstream_head_rechecked": "5b10e94f39c7c5fdf4b07bf550525f9bdc2d07ed",
+  "hosted_run": "https://github.com/kvnloo/kubernetes/actions/runs/37044953930",
+  "artifact": "https://github.com/kvnloo/kubernetes/actions/runs/37044953930/artifacts/11244686886",
+  "artifact_zip_sha256": "52cc3804b48bd734f66702aed80d193e0d84426e14fca2294e0c2bee7e4793d5",
+  "artifact_expires_at": "2026-11-01T18:19:46Z",
+  "local_binary_sha256": "0a9bdb21bf15f9352e16015a864a07132cfc7c79679221188d23fff74e085446",
+  "hosted_binary_sha256": "5f82f9fd8066f985071402b93b66440af201936212998340a9f097da603ee6c9",
+  "raw_artifact_verified_and_verifier_rerun": true,
+  "required_tests_per_host": 10,
+  "fresh_process_experiment_tests_per_host": 6,
+  "benchmark_records_per_host": 240,
+  "structural_outcomes_agree": true,
+  "allocation_comparisons": [
+    {
+      "operation": "get",
+      "pod_count": 1,
+      "managed_fields_bytes": 0,
+      "median_allocation_bytes_agree": true,
+      "median_allocation_count_agrees": true
+    },
+    {
+      "operation": "get",
+      "pod_count": 1,
+      "managed_fields_bytes": 4082,
+      "median_allocation_bytes_agree": true,
+      "median_allocation_count_agrees": true
+    },
+    {
+      "operation": "get",
+      "pod_count": 1,
+      "managed_fields_bytes": 32748,
+      "median_allocation_bytes_agree": true,
+      "median_allocation_count_agrees": true
+    },
+    {
+      "operation": "get",
+      "pod_count": 100,
+      "managed_fields_bytes": 0,
+      "median_allocation_bytes_agree": true,
+      "median_allocation_count_agrees": true
+    },
+    {
+      "operation": "get",
+      "pod_count": 100,
+      "managed_fields_bytes": 4082,
+      "median_allocation_bytes_agree": true,
+      "median_allocation_count_agrees": true
+    },
+    {
+      "operation": "get",
+      "pod_count": 100,
+      "managed_fields_bytes": 32748,
+      "median_allocation_bytes_agree": true,
+      "median_allocation_count_agrees": true
+    },
+    {
+      "operation": "list",
+      "pod_count": 1,
+      "managed_fields_bytes": 0,
+      "median_allocation_bytes_agree": true,
+      "median_allocation_count_agrees": true
+    },
+    {
+      "operation": "list",
+      "pod_count": 1,
+      "managed_fields_bytes": 4082,
+      "median_allocation_bytes_agree": true,
+      "median_allocation_count_agrees": true
+    },
+    {
+      "operation": "list",
+      "pod_count": 1,
+      "managed_fields_bytes": 32748,
+      "median_allocation_bytes_agree": true,
+      "median_allocation_count_agrees": true
+    },
+    {
+      "operation": "list",
+      "pod_count": 100,
+      "managed_fields_bytes": 0,
+      "median_allocation_bytes_agree": true,
+      "median_allocation_count_agrees": true
+    },
+    {
+      "operation": "list",
+      "pod_count": 100,
+      "managed_fields_bytes": 4082,
+      "median_allocation_bytes_agree": true,
+      "median_allocation_count_agrees": true
+    },
+    {
+      "operation": "list",
+      "pod_count": 100,
+      "managed_fields_bytes": 32748,
+      "median_allocation_bytes_agree": true,
+      "median_allocation_count_agrees": true
+    }
+  ],
+  "timings": "Reported separately in each summary; never pooled.",
+  "local_archive": {
+    "path": "/workspace/k8s-experiments/k8s-142304-evidence.zip",
+    "sha256": "8bcb0728c19578bc59377fbb3259405d38130381c16c58a17349ef430a2a1229"
+  },
+  "independent_downloaded_binary_replay": {
+    "review": "HOSTED_REVIEW.json",
+    "experiment_roots": 6,
+    "named_pass_events": 111,
+    "exit_code": 0,
+    "launcher_failure_retained": true,
+    "benchmarks_rerun": false
+  }
+}

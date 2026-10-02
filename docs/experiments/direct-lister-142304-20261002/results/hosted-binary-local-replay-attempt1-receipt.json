@@ -1,0 +1,23 @@
+{
+  "argv": [
+    "/workspace/k8s-local/go/bin/go",
+    "tool",
+    "test2json",
+    "-t",
+    "-p",
+    "k8s.io/kubernetes/pkg/kubeapiserver/direct",
+    "/workspace/k8s-experiments/hosted-r2/direct.test",
+    "-test.v=test2json",
+    "-test.count=1",
+    "-test.timeout=60s",
+    "-test.run=^TestExperiment"
+  ],
+  "cwd": "/workspace/k8s-local/src",
+  "exit_code": 1,
+  "elapsed_seconds": 0.007801834999554558,
+  "stdout_file": "hosted-binary-local-replay.jsonl",
+  "stdout_sha256": "7891b1cf6b7253328f87d98e0d5514af5939ff456c3156d9b66cbb26ee491dd1",
+  "binary_sha256": "5f82f9fd8066f985071402b93b66440af201936212998340a9f097da603ee6c9",
+  "go_tool": "go version go1.27.0 linux/amd64",
+  "benchmarks_executed": false
+}

@@ -1,0 +1,17 @@
+goos: linux
+goarch: amd64
+pkg: k8s.io/kubernetes/pkg/kubeapiserver/direct
+cpu: AMD EPYC 7763 64-Core Processor                
+BenchmarkDirectListerReadCost/op=get/n=1/managed_fields_bytes=0/path=cached         	     100	       137.4 ns/op	      16 B/op	       1 allocs/op
+BenchmarkDirectListerReadCost/op=get/n=1/managed_fields_bytes=4082/path=cached      	     100	       120.7 ns/op	      16 B/op	       1 allocs/op
+BenchmarkDirectListerReadCost/op=get/n=1/managed_fields_bytes=32748/path=cached     	     100	       118.8 ns/op	      16 B/op	       1 allocs/op
+BenchmarkDirectListerReadCost/op=get/n=100/managed_fields_bytes=0/path=cached       	     100	       194.9 ns/op	      16 B/op	       1 allocs/op
+BenchmarkDirectListerReadCost/op=get/n=100/managed_fields_bytes=4082/path=cached    	     100	       121.4 ns/op	      16 B/op	       1 allocs/op
+BenchmarkDirectListerReadCost/op=get/n=100/managed_fields_bytes=32748/path=cached   	     100	       158.2 ns/op	      16 B/op	       1 allocs/op
+BenchmarkDirectListerReadCost/op=list/n=1/managed_fields_bytes=0/path=cached        	     100	       319.2 ns/op	     280 B/op	       4 allocs/op
+BenchmarkDirectListerReadCost/op=list/n=1/managed_fields_bytes=4082/path=cached     	     100	       298.6 ns/op	     280 B/op	       4 allocs/op
+BenchmarkDirectListerReadCost/op=list/n=1/managed_fields_bytes=32748/path=cached    	     100	       738.2 ns/op	     280 B/op	       4 allocs/op
+BenchmarkDirectListerReadCost/op=list/n=100/managed_fields_bytes=0/path=cached      	     100	      4663 ns/op	    4216 B/op	      11 allocs/op
+BenchmarkDirectListerReadCost/op=list/n=100/managed_fields_bytes=4082/path=cached   	     100	      4583 ns/op	    4216 B/op	      11 allocs/op
+BenchmarkDirectListerReadCost/op=list/n=100/managed_fields_bytes=32748/path=cached  	     100	      4007 ns/op	    4216 B/op	      11 allocs/op
+PASS

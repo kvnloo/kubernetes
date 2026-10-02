@@ -83,3 +83,20 @@ Next evidence level
    controlled error/freshness cases. A separate factorial system experiment must
    vary lister strategy and presence of event consumers before claiming net
    resource savings. These follow-ups are NOT_RUN.
+
+Hosted replication completed
+   Run 37044953930 passed on ubuntu-slim at the same tested source SHA. The
+   downloaded ZIP and binary hashes were verified, and the independent verifier
+   was rerun against the artifact. Both hosts passed the same 10 required tests,
+   fresh-process repeat and all 240 benchmark records. All 12 cells had identical
+   median allocation bytes/counts across hosts. Timing distributions are retained
+   separately; they are not pooled. See REPLICATION.json and r2-hosted/.
+
+Downloaded-binary replay
+   The independent reviewer verified all 14 hosted source hashes against the
+   pinned checkout, then executed the downloaded hosted binary locally. All six
+   experiment roots and 111 named events passed, with exact subcase names and
+   structural receipts matching both original executions. An initial launcher
+   failure caused by a read-only default Go cache occurred before tests and is
+   retained; retry set only a writable cache directory. No benchmarks were
+   rerun. See HOSTED_REVIEW.json and hosted-binary-local-replay.jsonl.
