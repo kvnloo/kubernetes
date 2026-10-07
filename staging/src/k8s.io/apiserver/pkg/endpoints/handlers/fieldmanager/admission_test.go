@@ -76,6 +76,10 @@ func TestAdmission(t *testing.T) {
 			managedFields.FieldsV1 = metav1.NewFieldsV1("{invalid}")
 			return managedFields, true
 		},
+		"invalid fieldsV1 SetRawBytes": func(managedFields metav1.ManagedFieldsEntry) (metav1.ManagedFieldsEntry, bool) {
+			managedFields.FieldsV1.SetRawBytes([]byte("{invalid}"))
+			return managedFields, true
+		},
 		"invalid manager": func(managedFields metav1.ManagedFieldsEntry) (metav1.ManagedFieldsEntry, bool) {
 			managedFields.Manager = ""
 			return managedFields, false
@@ -93,13 +97,22 @@ func TestAdmission(t *testing.T) {
 	for name, mutate := range managedFieldsMutators {
 		for _, style := range mutationStyles {
 			t.Run(name+"/"+style.name, func(t *testing.T) {
-				mutated, shouldReset := mutate(validManagedFieldsEntry)
-				validEntries := []metav1.ManagedFieldsEntry{validManagedFieldsEntry}
+				initial := *validManagedFieldsEntry.DeepCopy()
+				validEntries := []metav1.ManagedFieldsEntry{*validManagedFieldsEntry.DeepCopy()}
 
 				obj := &v1.ConfigMap{}
-				obj.SetManagedFields([]metav1.ManagedFieldsEntry{validManagedFieldsEntry})
+				obj.SetManagedFields([]metav1.ManagedFieldsEntry{initial})
 
-				wrap.admit = style.admitWith(mutated)
+				var mutated metav1.ManagedFieldsEntry
+				var shouldReset bool
+				wrap.admit = func(ctx context.Context, a admission.Attributes, o admission.ObjectInterfaces) error {
+					objectMeta, err := meta.Accessor(a.GetObject())
+					if err != nil {
+						return err
+					}
+					mutated, shouldReset = mutate(objectMeta.GetManagedFields()[0])
+					return style.admitWith(mutated)(ctx, a, o)
+				}
 
 				attrs := admission.NewAttributesRecord(obj, obj, schema.GroupVersionKind{}, "default", "", schema.GroupVersionResource{}, "", admission.Update, nil, false, nil)
 				if err := ac.(admission.MutationInterface).Admit(context.TODO(), attrs, nil); err != nil {
@@ -135,7 +148,8 @@ func TestAdmissionSkipsValidationWhenUnchanged(t *testing.T) {
 	}
 }
 
-// Research fixture for PR #142320: equivalent managedFields represented with fresh nested pointers.\nfunc TestAdmissionSkipsValidationForEquivalentManagedFieldsRepresentations(t *testing.T) {
+// Research fixture for PR #142320: equivalent managedFields represented with fresh nested pointers.
+func TestAdmissionSkipsValidationForEquivalentManagedFieldsRepresentations(t *testing.T) {
 	fields := metav1.NewFieldsV1(`{"f:metadata":{"f:labels":{"f:test":{}}}}`)
 	entry := metav1.ManagedFieldsEntry{
 		APIVersion: "v1",
@@ -145,48 +159,62 @@ func TestAdmissionSkipsValidationWhenUnchanged(t *testing.T) {
 		FieldsV1:   fields,
 	}
 
-	run := func(t *testing.T, obj runtime.Object) int {
-		t.Helper()
-		wrap := &mockAdmissionController{admit: func(context.Context, admission.Attributes, admission.ObjectInterfaces) error { return nil }}
-		ac := fieldmanager.NewManagedFieldsValidatingAdmissionController(wrap)
-		rec := &warningRecorder{}
-		ctx := warning.WithWarningRecorder(context.TODO(), rec)
-		attrs := admission.NewAttributesRecord(obj, obj, schema.GroupVersionKind{}, "default", "", schema.GroupVersionResource{}, "", admission.Update, nil, false, nil)
-		if err := ac.(admission.MutationInterface).Admit(ctx, attrs, nil); err != nil {
-			t.Fatal(err)
-		}
-		return len(rec.warnings)
-	}
-
-	typed := &v1.ConfigMap{}
-	typed.SetManagedFields([]metav1.ManagedFieldsEntry{entry})
-
-	unstructuredObj := &unstructured.Unstructured{Object: map[string]interface{}{
-		"apiVersion": "v1",
-		"kind":       "ConfigMap",
-		"metadata": map[string]interface{}{
-			"name": "test",
-		},
-	}}
-	unstructuredObj.SetManagedFields([]metav1.ManagedFieldsEntry{entry})
-
-	if got := run(t, typed); got != 0 {
-		t.Fatalf("typed object: expected unchanged managedFields to skip validation, got %d warning(s)", got)
-	}
-	if got := run(t, unstructuredObj); got != 0 {
-		t.Fatalf("unstructured object: expected equivalent reconstructed managedFields to skip validation, got %d warning(s)", got)
-	}
-
-	t.Run("changed unstructured managedFields are still validated", func(t *testing.T) {
-		validEntry := entry
-		validEntry.Operation = metav1.ManagedFieldsOperationApply
-		obj := &unstructured.Unstructured{Object: map[string]interface{}{
+	newUnstructured := func() *unstructured.Unstructured {
+		return &unstructured.Unstructured{Object: map[string]interface{}{
 			"apiVersion": "v1",
 			"kind":       "ConfigMap",
 			"metadata": map[string]interface{}{
 				"name": "test",
 			},
 		}}
+	}
+	for _, tc := range []struct {
+		name      string
+		newObject func() runtime.Object
+	}{
+		{name: "typed", newObject: func() runtime.Object { return &v1.ConfigMap{} }},
+		{name: "unstructured", newObject: func() runtime.Object { return newUnstructured() }},
+	} {
+		for _, reconstruct := range []bool{false, true} {
+			style := "unchanged"
+			if reconstruct {
+				style = "reconstructed"
+			}
+			t.Run(tc.name+"/"+style, func(t *testing.T) {
+				obj := tc.newObject()
+				objectMeta, err := meta.Accessor(obj)
+				if err != nil {
+					t.Fatal(err)
+				}
+				objectMeta.SetManagedFields([]metav1.ManagedFieldsEntry{*entry.DeepCopy()})
+				wrap := &mockAdmissionController{admit: func(_ context.Context, a admission.Attributes, _ admission.ObjectInterfaces) error {
+					if reconstruct {
+						copiedMeta, err := meta.Accessor(a.GetObject().DeepCopyObject())
+						if err != nil {
+							return err
+						}
+						objectMeta.SetManagedFields(copiedMeta.GetManagedFields())
+					}
+					return nil
+				}}
+				ac := fieldmanager.NewManagedFieldsValidatingAdmissionController(wrap)
+				rec := &warningRecorder{}
+				ctx := warning.WithWarningRecorder(context.TODO(), rec)
+				attrs := admission.NewAttributesRecord(obj, obj, schema.GroupVersionKind{}, "default", "", schema.GroupVersionResource{}, "", admission.Update, nil, false, nil)
+				if err := ac.(admission.MutationInterface).Admit(ctx, attrs, nil); err != nil {
+					t.Fatal(err)
+				}
+				if len(rec.warnings) != 0 {
+					t.Fatalf("expected equivalent managedFields to skip validation, got warnings: %v", rec.warnings)
+				}
+			})
+		}
+	}
+
+	t.Run("changed unstructured managedFields are still validated", func(t *testing.T) {
+		validEntry := *entry.DeepCopy()
+		validEntry.Operation = metav1.ManagedFieldsOperationApply
+		obj := newUnstructured()
 		obj.SetManagedFields([]metav1.ManagedFieldsEntry{validEntry})
 
 		wrap := &mockAdmissionController{admit: replaceManagedFields(entry)}
@@ -213,7 +241,7 @@ func BenchmarkAdmission(b *testing.B) {
 		b.Fatal(err)
 	}
 	entries := pod.ManagedFields
-	// Same content, distinct pointers. The content-equality fast path should avoid decoding these.
+	// Same content, distinct pointers. Keep this separate from genuinely changed values.
 	copied := pod.DeepCopy().ManagedFields
 	changedA := pod.DeepCopy().ManagedFields
 	changedA[0].Manager += "-a"
