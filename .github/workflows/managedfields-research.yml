@@ -9,29 +9,127 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: managedfields-research-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   verify:
+    name: verify (${{ matrix.name }})
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: default
+            goflags: -p=2
+          - name: fieldsv1string
+            goflags: -p=2 -tags=fieldsv1string
+    env:
+      GOMAXPROCS: '2'
+      GOFLAGS: ${{ matrix.goflags }}
+      ADMISSION: staging/src/k8s.io/apiserver/pkg/endpoints/handlers/fieldmanager/admission.go
+      PACKAGE: ./staging/src/k8s.io/apiserver/pkg/endpoints/handlers/fieldmanager
+      PACKAGES: ./staging/src/k8s.io/apiserver/pkg/endpoints/handlers/... ./staging/src/k8s.io/apimachinery/pkg/util/managedfields/... ./staging/src/k8s.io/apimachinery/pkg/apis/meta/v1/...
+      CONTENT_SHA: c850dde0f744b55fb4f9fa979d7d98c492a54d8b
+      REFERENCE_SHA: bf2dc929ad51f90df22cf9d4d834efc82850c92b
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - uses: actions/setup-go@v5
         with:
           go-version-file: go.mod
           cache: false
-      - name: Verify managedFields admission tests
+      - name: Record exact inputs and check formatting
         run: |
-          go test ./staging/src/k8s.io/apiserver/pkg/endpoints/handlers/fieldmanager \
-            -run '^TestAdmission' \
-            -count=1 -v
-      - name: Verify alternate FieldsV1 representation
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/managedfields-results"
+          {
+            git rev-parse HEAD
+            go version
+            go env GOFLAGS GOOS GOARCH
+            lscpu
+            printf 'Content-only control: %s\nUpstream safety reference: %s\n' "$CONTENT_SHA" "$REFERENCE_SHA"
+          } | tee "$RUNNER_TEMP/managedfields-results/environment.txt"
+          test -z "$(gofmt -l "$ADMISSION" "${ADMISSION%.go}_test.go")"
+          git diff --check
+          cp "$ADMISSION" "$RUNNER_TEMP/managedfields-results/reference.go"
+      - name: Full affected-package tests
         run: |
-          go test -tags=fieldsv1string ./staging/src/k8s.io/apiserver/pkg/endpoints/handlers/fieldmanager \
-            -run '^TestAdmission' \
-            -count=1 -v
-      - name: Benchmark admission fast paths
+          set -euo pipefail
+          go test -count=1 -shuffle=on -timeout=15m $PACKAGES 2>&1 | tee "$RUNNER_TEMP/managedfields-results/tests.txt"
+      - name: Vet affected packages
         run: |
-          go test ./staging/src/k8s.io/apiserver/pkg/endpoints/handlers/fieldmanager \
-            -run '^$' \
-            -bench '^BenchmarkAdmission/(unchanged|replaced|changed)$' \
-            -benchmem -count=5
+          set -euo pipefail
+          go vet $PACKAGES 2>&1 | tee "$RUNNER_TEMP/managedfields-results/vet.txt"
+      - name: Race detector across affected packages
+        run: |
+          set -euo pipefail
+          go test -race -count=1 -shuffle=on -timeout=15m $PACKAGES 2>&1 | tee "$RUNNER_TEMP/managedfields-results/race.txt"
+      - name: Verify historical control and upstream reference sources
+        run: |
+          set -euo pipefail
+          git fetch --no-tags --depth=1 origin "$CONTENT_SHA"
+          git show "$CONTENT_SHA:$ADMISSION" > "$RUNNER_TEMP/managedfields-results/content-only.go"
+          git fetch --no-tags --depth=1 https://github.com/kubernetes/kubernetes.git "$REFERENCE_SHA"
+          git show "$REFERENCE_SHA:$ADMISSION" > "$RUNNER_TEMP/managedfields-results/upstream-reference.go"
+          cmp "$ADMISSION" "$RUNNER_TEMP/managedfields-results/upstream-reference.go"
+          python3 - <<'PY'
+          import os
+          from pathlib import Path
+          root = Path(os.environ['RUNNER_TEMP']) / 'managedfields-results'
+          source = (root / 'content-only.go').read_text()
+          old = 'slices.Equal(managedFieldsBeforeAdmission, managedFieldsAfterAdmission) || managedFieldsEqual(managedFieldsBeforeAdmission, managedFieldsAfterAdmission)'
+          assert source.count(old) == 1
+          # Generated pointer-only control; not claimed to be a separate upstream commit.
+          (root / 'pointer-only.go').write_text(source.replace(old, 'slices.Equal(managedFieldsBeforeAdmission, managedFieldsAfterAdmission)'))
+          PY
+      - name: Expected RED controls and same-run benchmarks
+        run: |
+          set -euo pipefail
+          results="$RUNNER_TEMP/managedfields-results"
+          trap 'cp "$RUNNER_TEMP/managedfields-results/reference.go" "$ADMISSION"' EXIT
+          for variant in pointer-only content-only; do
+            cp "$results/$variant.go" "$ADMISSION"
+            set +e
+            go test "$PACKAGE" -run '^TestAdmission$/^invalid_fieldsV1_SetRawBytes$' -count=1 -json > "$results/$variant-expected-red.json" 2>&1
+            status=$?
+            set -e
+            test "$status" -ne 0
+            python3 - "$results/$variant-expected-red.json" <<'PY'
+          import json
+          import sys
+          events = [json.loads(line) for line in open(sys.argv[1]) if line.startswith('{')]
+          failed = {event['Test'] for event in events if event.get('Action') == 'fail' and 'Test' in event}
+          root = 'TestAdmission/invalid_fieldsV1_SetRawBytes'
+          leaves = {root + '/replaceSlice', root + '/overwriteElement'}
+          assert leaves <= failed, failed
+          assert failed <= leaves | {root, 'TestAdmission'}, failed
+          print('Expected assertion-level RED confirmed:', sorted(leaves))
+          PY
+            if [[ "$variant" == content-only ]]; then
+              go test "$PACKAGE" -run '^TestAdmissionSkipsValidationForEquivalentManagedFieldsRepresentations$' -count=1 -v | tee "$results/content-only-representations.txt"
+            fi
+          done
+          # Interleave variants so a single warmup/drift period does not select the winner.
+          for round in 1 2 3 4 5 6; do
+            for variant in pointer-only content-only reference; do
+              cp "$results/$variant.go" "$ADMISSION"
+              go test "$PACKAGE" -run '^$' -bench '^BenchmarkAdmission/(unchanged|replaced|changed)$' -benchmem -benchtime=300ms -count=1 | tee -a "$results/$variant-bench.txt"
+            done
+          done
+      - name: Confirm reference restored and regression GREEN
+        run: |
+          set -euo pipefail
+          git diff --exit-code -- "$ADMISSION"
+          go test "$PACKAGE" -run '^TestAdmission' -count=1 -v | tee "$RUNNER_TEMP/managedfields-results/regressions-green.txt"
+      - name: Publish research receipts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: managedfields-${{ matrix.name }}-${{ github.sha }}
+          path: ${{ runner.temp }}/managedfields-results/
+          retention-days: 14
+          if-no-files-found: error
