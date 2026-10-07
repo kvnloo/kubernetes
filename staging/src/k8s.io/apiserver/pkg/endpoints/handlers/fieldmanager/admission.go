@@ -19,8 +19,8 @@ package fieldmanager
 import (
 	"context"
 	"fmt"
-	"slices"
 
+	apiequality "k8s.io/apimachinery/pkg/api/equality"
 	"k8s.io/apimachinery/pkg/api/meta"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/managedfields"
@@ -68,12 +68,19 @@ func (admit *managedFieldsValidatingAdmissionController) Admit(ctx context.Conte
 		// just call the wrapped admission
 		return mutationInterface.Admit(ctx, a, o)
 	}
-	managedFieldsBeforeAdmission := slices.Clone(objectMeta.GetManagedFields())
+	before := objectMeta.GetManagedFields()
+	var managedFieldsBeforeAdmission []metav1.ManagedFieldsEntry
+	if before != nil {
+		managedFieldsBeforeAdmission = make([]metav1.ManagedFieldsEntry, len(before))
+		for i := range before {
+			before[i].DeepCopyInto(&managedFieldsBeforeAdmission[i])
+		}
+	}
 	if err := mutationInterface.Admit(ctx, a, o); err != nil {
 		return err
 	}
 	managedFieldsAfterAdmission := objectMeta.GetManagedFields()
-	if slices.Equal(managedFieldsBeforeAdmission, managedFieldsAfterAdmission) || managedFieldsEqual(managedFieldsBeforeAdmission, managedFieldsAfterAdmission) {
+	if apiequality.Semantic.DeepEqual(managedFieldsBeforeAdmission, managedFieldsAfterAdmission) {
 		return nil
 	}
 	if err := managedfields.ValidateManagedFields(managedFieldsAfterAdmission); err != nil {
@@ -84,34 +91,6 @@ func (admit *managedFieldsValidatingAdmissionController) Admit(ctx context.Conte
 		)
 	}
 	return nil
-}
-
-func managedFieldsEqual(a, b []metav1.ManagedFieldsEntry) bool {
-	if len(a) != len(b) {
-		return false
-	}
-	for i := range a {
-		if a[i].Manager != b[i].Manager ||
-			a[i].Operation != b[i].Operation ||
-			a[i].APIVersion != b[i].APIVersion ||
-			a[i].FieldsType != b[i].FieldsType ||
-			a[i].Subresource != b[i].Subresource {
-			return false
-		}
-		if (a[i].Time == nil) != (b[i].Time == nil) {
-			return false
-		}
-		if a[i].Time != nil && !a[i].Time.Equal(b[i].Time) {
-			return false
-		}
-		if (a[i].FieldsV1 == nil) != (b[i].FieldsV1 == nil) {
-			return false
-		}
-		if a[i].FieldsV1 != nil && !a[i].FieldsV1.Equal(*b[i].FieldsV1) {
-			return false
-		}
-	}
-	return true
 }
 
 // Validate calls the wrapped admission.Interface if aplicable
